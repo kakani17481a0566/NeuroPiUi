@@ -74,7 +74,7 @@ export default function UsersDatatable() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('https://localhost:7171/api/User/by-tenant?tenantId=2', {
+        const response = await fetch('https://localhost:7171/tenantId?tenantId=2', {
           headers: { 'accept': '*/*' }
         });
         const data = await response.json();

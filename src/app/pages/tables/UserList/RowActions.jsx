@@ -1,4 +1,3 @@
-// Import Dependencies
 import {
   Menu,
   MenuButton,
@@ -14,57 +13,103 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import {  useCallback, useState } from "react";
-import PropTypes from "prop-types";
+import { useCallback, useState } from "react";
 
-// Local Imports
 import { ConfirmModal } from "components/shared/ConfirmModal";
 import { Button } from "components/ui";
-
-// ----------------------------------------------------------------------
 
 const confirmMessages = {
   pending: {
     description:
-      "Are you sure you want to delete this order? Once deleted, it cannot be restored.",
+      "Are you sure you want to delete this user? Once deleted, it cannot be restored.",
   },
   success: {
-    title: "Order Deleted",
+    title: "User Deleted",
   },
 };
 
 export function RowActions({ row, table }) {
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [confirmDeleteLoading, setConfirmDeleteLoading] = useState(false);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const [deleteError, setDeleteError] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
 
-  const closeModal = () => {
-    setDeleteModalOpen(false);
-  };
+  const handleDelete = useCallback(async () => {
+    const { userId, tenantId } = row.original;
 
-  const openModal = () => {
-    setDeleteModalOpen(true);
-    setDeleteError(false);
-    setDeleteSuccess(false);
-  };
+    setLoading(true);
+    setError(false);
+    setSuccess(false);
 
-  const handleDeleteRows = useCallback(() => {
-    setConfirmDeleteLoading(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch(
+        `https://localhost:7171/api/User?id=${userId}&tenantId=${tenantId}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to delete user");
+
       table.options.meta?.deleteRow(row);
-      setDeleteSuccess(true);
-      setConfirmDeleteLoading(false);
-    }, 1000);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      setSuccess(true);
+    } catch (err) {
+      console.error("Delete error:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, [row, table]);
+
+  const state = error ? "error" : success ? "success" : "pending";
+  
+  const handleEdit = useCallback(async () => {
+    const { userId, tenantId } = row.original;
+
+    try {
+      const response = await fetch(
+        `https://localhost:7171/api/User?id=${userId}&tenantId=${tenantId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "*/*",
+          },
+          body: JSON.stringify({
+            username: row.original.username,
+            firstName: row.original.firstName,
+            middleName: row.original.middleName,
+            lastName: row.original.lastName,
+            email: row.original.email,
+            password: row.original.password,
+            mobileNumber: row.original.mobileNumber,
+            alternateNumber: row.original.alternateNumber,
+            dateOfBirth: row.original.dateOfBirth,
+            address: row.original.address,
+            updatedBy:userId ,
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update user.");
+      }
+
+      const result = await response.json();
+      console.log("User updated:", result);
+      // Optionally show a success toast here
+    } catch (error) {
+      console.error("Edit error:", error);
+      // Optionally show an error toast here
+    }
   }, [row]);
 
-  const state = deleteError ? "error" : deleteSuccess ? "success" : "pending";
 
   return (
     <>
       <div className="flex justify-center">
-        {row.getCanExpand() ? (
+        {row.getCanExpand() && (
           <Button
             isIcon
             className="size-7 rounded-full"
@@ -74,20 +119,17 @@ export function RowActions({ row, table }) {
             <ChevronUpIcon
               className={clsx(
                 "size-4.5 transition-transform",
-                row.getIsExpanded() && "rotate-180",
+                row.getIsExpanded() && "rotate-180"
               )}
             />
           </Button>
-        ) : null}
+        )}
+
         <Menu as="div" className="relative inline-block text-left">
-          <MenuButton
-            as={Button}
-            variant="flat"
-            isIcon
-            className="size-7 rounded-full"
-          >
+          <MenuButton as={Button} variant="flat" isIcon className="size-7 rounded-full">
             <EllipsisHorizontalIcon className="size-4.5" />
           </MenuButton>
+
           <Transition
             as={MenuItems}
             enter="transition ease-out"
@@ -96,18 +138,17 @@ export function RowActions({ row, table }) {
             leave="transition ease-in"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-2"
-            className="absolute z-100 mt-1.5 min-w-[10rem] rounded-lg border border-gray-300 bg-white py-1 shadow-lg shadow-gray-200/50 outline-hidden focus-visible:outline-hidden dark:border-dark-500 dark:bg-dark-750 dark:shadow-none ltr:right-0 rtl:left-0"
+            className="absolute z-10 mt-1.5 min-w-[10rem] rounded-lg border bg-white py-1 shadow-lg ltr:right-0 rtl:left-0"
           >
             <MenuItem>
               {({ focus }) => (
                 <button
                   className={clsx(
-                    "flex h-9 w-full items-center space-x-3 px-3 tracking-wide outline-hidden transition-colors ",
-                    focus &&
-                      "bg-gray-100 text-gray-800 dark:bg-dark-600 dark:text-dark-100",
+                    "flex h-9 w-full items-center space-x-3 px-3 transition-colors",
+                    focus && "bg-gray-100"
                   )}
                 >
-                  <EyeIcon className="size-4.5 stroke-1" />
+                  <EyeIcon className="size-4.5" />
                   <span>View</span>
                 </button>
               )}
@@ -115,13 +156,13 @@ export function RowActions({ row, table }) {
             <MenuItem>
               {({ focus }) => (
                 <button
+                  onClick={handleEdit}
                   className={clsx(
-                    "flex h-9 w-full items-center space-x-3 px-3 tracking-wide outline-hidden transition-colors ",
-                    focus &&
-                      "bg-gray-100 text-gray-800 dark:bg-dark-600 dark:text-dark-100",
+                    "flex h-9 w-full items-center space-x-3 px-3 transition-colors",
+                    focus && "bg-gray-100"
                   )}
                 >
-                  <PencilIcon className="size-4.5 stroke-1" />
+                  <PencilIcon className="size-4.5" />
                   <span>Edit</span>
                 </button>
               )}
@@ -129,13 +170,13 @@ export function RowActions({ row, table }) {
             <MenuItem>
               {({ focus }) => (
                 <button
-                  onClick={openModal}
+                  onClick={() => setShowModal(true)}
                   className={clsx(
-                    "this:error flex h-9 w-full items-center space-x-3 px-3 tracking-wide text-this outline-hidden transition-colors dark:text-this-light ",
-                    focus && "bg-this/10 dark:bg-this-light/10",
+                    "text-red-600 flex h-9 w-full items-center space-x-3 px-3 transition-colors",
+                    focus && "bg-red-50"
                   )}
                 >
-                  <TrashIcon className="size-4.5 stroke-1" />
+                  <TrashIcon className="size-4.5" />
                   <span>Delete</span>
                 </button>
               )}
@@ -145,18 +186,13 @@ export function RowActions({ row, table }) {
       </div>
 
       <ConfirmModal
-        show={deleteModalOpen}
-        onClose={closeModal}
+        show={showModal}
+        onClose={() => setShowModal(false)}
         messages={confirmMessages}
-        onOk={handleDeleteRows}
-        confirmLoading={confirmDeleteLoading}
+        onOk={handleDelete}
+        confirmLoading={loading}
         state={state}
       />
     </>
   );
 }
-
-RowActions.propTypes = {
-  row: PropTypes.object,
-  table: PropTypes.object,
-};
