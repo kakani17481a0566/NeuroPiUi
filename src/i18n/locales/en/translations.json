@@ -4,6 +4,11 @@
       "dashboards": "Dashboards",
       "home": "Home"
     },
+    "academics": {
+      "academics": "Academics",
+      "termplan": "Term Plan",
+      "weeklyplan":"Weekly Plan"
+    },
     "settings": {
       "settings": "Settings",
       "general": "General",

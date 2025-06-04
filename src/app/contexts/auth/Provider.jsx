@@ -1,6 +1,6 @@
 // Import Dependencies
 import { useEffect, useReducer } from "react";
-import isObject from "lodash/isObject";
+// import isObject from "lodash/isObject";
 import PropTypes from "prop-types";
 import isString from "lodash/isString";
 
@@ -8,6 +8,7 @@ import isString from "lodash/isString";
 import axios from "utils/axios";
 import { isTokenValid, setSession } from "utils/jwt";
 import { AuthContext } from "./context";
+import { setSessionData, clearSessionData } from "utils/sessionStorage";
 
 // ----------------------------------------------------------------------
 
@@ -17,6 +18,8 @@ const initialState = {
   isInitialized: false,
   errorMessage: null,
   user: null,
+  userId:null,
+  tenantId:null
 };
 
 const reducerHandlers = {
@@ -83,7 +86,8 @@ export function AuthProvider({ children }) {
         if (authToken && isTokenValid(authToken)) {
           setSession(authToken);
 
-          const response = await axios.get("/user/profile");
+         const response = await axios.get("/user/profile");
+         
           const { user } = response.data;
 
           dispatch({
@@ -123,18 +127,24 @@ export function AuthProvider({ children }) {
     });
 
     try {
-      const response = await axios.post("/login", {
-        username,
-        password,
-      });
+      const response = await axios.get(`https://localhost:7171/api/User/login?username=${username}&password=${password}`);
 
-      const { authToken, user } = response.data;
+      // const { authToken, user } = response.data;
+      const {  tenantId, userId, user } = response.data.data;
+      const token=response.data.data.token;
+      console.log(token);
 
-      if (!isString(authToken) && !isObject(user)) {
+      if (!isString(token)) {
         throw new Error("Response is not vallid");
       }
+      
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("tenantId", tenantId);
+      localStorage.setItem("userId", userId);
+      setSessionData({ token:token, tid: tenantId, uid: userId });
 
-      setSession(authToken);
+
+      setSession(token);
 
       dispatch({
         type: "LOGIN_SUCCESS",
@@ -154,6 +164,7 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     setSession(null);
+    clearSessionData();
     dispatch({ type: "LOGOUT" });
   };
 
