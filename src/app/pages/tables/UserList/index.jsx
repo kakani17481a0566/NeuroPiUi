@@ -39,6 +39,7 @@ import { Toolbar } from "./Toolbar";
 import { useThemeContext } from "app/contexts/theme/context";
 import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 import { getSessionData } from "utils/sessionStorage";
+import { USER_LIST } from "constants/apis";
 
 // ----------------------------------------------------------------------
 
@@ -70,14 +71,14 @@ export default function UsersDatatable() {
 
   const cardRef = useRef();
   // const { width: cardWidth } = useBoxSize({ ref: cardRef });
-    const { token, tenantId } = getSessionData();
+    const { token } = getSessionData();
 
 
   // Fetch users from API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`https://localhost:7171/api/user/by-tenant?tenantId=${tenantId}`, {
+        const response = await fetch(USER_LIST, {
           headers: { 'accept': '*/*' ,
                     'Authorization':token
           }

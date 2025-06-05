@@ -132,7 +132,6 @@ export function AuthProvider({ children }) {
       // const { authToken, user } = response.data;
       const {  tenantId, userId, user } = response.data.data;
       const token=response.data.data.token;
-      console.log(token);
 
       if (!isString(token)) {
         throw new Error("Response is not vallid");
