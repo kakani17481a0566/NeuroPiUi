@@ -21,8 +21,8 @@ import {
 } from "@heroicons/react/20/solid";
 
 // Local Imports
-// import { TableSortIcon } from "components/shared/table/TableSortIcon";
-// import { ColumnFilter } from "components/shared/table/ColumnFilter";
+import { TableSortIcon } from "components/shared/table/TableSortIcon";
+import { ColumnFilter } from "components/shared/table/ColumnFilter";
 import { PaginationSection } from "components/shared/table/PaginationSection";
 import { Button, Card, Table, THead, TBody, Th, Tr, Td } from "components/ui";
 import {
@@ -38,12 +38,14 @@ import { columns } from "./columns";
 import { Toolbar } from "./Toolbar";
 import { useThemeContext } from "app/contexts/theme/context";
 import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
+import { getSessionData } from "utils/sessionStorage";
+import { USER_LIST } from "constants/apis";
 
 // ----------------------------------------------------------------------
 
 const isSafari = getUserAgentBrowser() === "Safari";
 
-export default function TermPlan() {
+export default function UsersDatatable() {
   const { cardSkin } = useThemeContext();
   const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
   const [users, setUsers] = useState([]);
@@ -56,7 +58,7 @@ export default function TermPlan() {
     enableRowDense: false,
   });
 
-  // const [globalFilter, setGlobalFilter] = useState("");
+  const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
   const [columnVisibility, setColumnVisibility] = useLocalStorage(
     "column-visibility-users",
@@ -69,17 +71,17 @@ export default function TermPlan() {
 
   const cardRef = useRef();
   // const { width: cardWidth } = useBoxSize({ ref: cardRef });
+    const { token } = getSessionData();
+
 
   // Fetch users from API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(
-          // 'https://localhost:7171/tenantId?tenantId=2',
-          'https://localhost:7202/tenantId?tenantId=2',
-          
-          {
-          headers: { 'accept': '*/*' }
+        const response = await fetch(USER_LIST, {
+          headers: { 'accept': '*/*' ,
+                    'Authorization':token
+          }
         });
         const data = await response.json();
         if (data.data) {
@@ -99,6 +101,7 @@ export default function TermPlan() {
     data: users,
     columns: columns,
     state: {
+      globalFilter,
       sorting,
       columnVisibility,
       columnPinning,
@@ -124,7 +127,7 @@ export default function TermPlan() {
     enableSorting: tableSettings.enableSorting,
     enableColumnFilters: tableSettings.enableColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    // onGlobalFilterChange: setGlobalFilter,
+    onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
@@ -154,7 +157,7 @@ export default function TermPlan() {
       <div className="flex items-center justify-between space-x-4">
         <div className="min-w-0">
           <h2 className="truncate text-xl font-medium tracking-wide text-gray-800 dark:text-dark-50">
-            Term Plan
+            Users Management
           </h2>
         </div>
         <Button
@@ -162,7 +165,7 @@ export default function TermPlan() {
           color="primary"
         >
           <PlusIcon className="size-5" />
-          {/* <span>Add User</span> */}
+          <span>Add User</span>
         </Button>
       </div>
 
@@ -218,9 +221,9 @@ export default function TermPlan() {
                                     header.getContext()
                                   )}
                             </span>
-                            {/* <TableSortIcon
+                            <TableSortIcon
                               sorted={header.column.getIsSorted()}
-                            /> */}
+                            />
                           </div>
                         ) : header.isPlaceholder ? null : (
                           flexRender(
@@ -228,9 +231,9 @@ export default function TermPlan() {
                             header.getContext()
                           )
                         )}
-                        {/* {header.column.getCanFilter() ? (
+                        {header.column.getCanFilter() ? (
                           <ColumnFilter column={header.column} />
-                        ) : null} */}
+                        ) : null}
                       </Th>
                     ))}
                   </Tr>

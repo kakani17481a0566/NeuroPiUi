@@ -74,7 +74,11 @@ export default function TermPlan() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('https://localhost:7171/tenantId?tenantId=2', {
+        const response = await fetch(
+          // 'https://localhost:7171/tenantId?tenantId=2'
+          'https://localhost:7202/tenantId?tenantId=2'
+          
+          , {
           headers: { 'accept': '*/*' }
         });
         const data = await response.json();

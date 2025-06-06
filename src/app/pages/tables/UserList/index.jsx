@@ -2,7 +2,6 @@
 import {
   flexRender,
   getCoreRowModel,
-  // getExpandedRowModel,
   getFacetedMinMaxValues,
   getFacetedUniqueValues,
   getFilteredRowModel,
@@ -12,13 +11,7 @@ import {
 } from "@tanstack/react-table";
 import clsx from "clsx";
 import { Fragment, useRef, useState, useEffect } from "react";
-import {
-  // ArrowPathIcon,
-  // CheckBadgeIcon,
-  // ClockIcon,
-  PlusIcon,
-  // XCircleIcon,
-} from "@heroicons/react/20/solid";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
 // Local Imports
 import { TableSortIcon } from "components/shared/table/TableSortIcon";
@@ -26,7 +19,6 @@ import { ColumnFilter } from "components/shared/table/ColumnFilter";
 import { PaginationSection } from "components/shared/table/PaginationSection";
 import { Button, Card, Table, THead, TBody, Th, Tr, Td } from "components/ui";
 import {
-  // useBoxSize,
   useLockScrollbar,
   useLocalStorage,
   useDidUpdate,
@@ -39,9 +31,7 @@ import { Toolbar } from "./Toolbar";
 import { useThemeContext } from "app/contexts/theme/context";
 import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 import { getSessionData } from "utils/sessionStorage";
-import { USER_LIST } from "constants/apis";
-
-// ----------------------------------------------------------------------
+import { fetchUsers } from "./data";
 
 const isSafari = getUserAgentBrowser() === "Safari";
 
@@ -70,36 +60,21 @@ export default function UsersDatatable() {
   );
 
   const cardRef = useRef();
-  // const { width: cardWidth } = useBoxSize({ ref: cardRef });
-    const { token } = getSessionData();
+  const { token } = getSessionData();
 
-
-  // Fetch users from API
+  // ✅ Fetch users via centralized fetchUsers()
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(USER_LIST, {
-          headers: { 'accept': '*/*' ,
-                    'Authorization':token
-          }
-        });
-        const data = await response.json();
-        if (data.data) {
-          setUsers(data.data);
-        }
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      } finally {
-        setLoading(false);
-      }
+    const loadUsers = async () => {
+      const result = await fetchUsers(token);
+      setUsers(result);
+      setLoading(false);
     };
-
-    fetchUsers();
+    loadUsers();
   }, []);
 
   const table = useReactTable({
     data: users,
-    columns: columns,
+    columns,
     state: {
       globalFilter,
       sorting,
@@ -153,23 +128,18 @@ export default function UsersDatatable() {
 
   return (
     <div className="transition-content grid grid-cols-1 grid-rows-[auto_1fr] px-(--margin-x) py-4">
-      {/* Header Section */}
       <div className="flex items-center justify-between space-x-4">
         <div className="min-w-0">
           <h2 className="truncate text-xl font-medium tracking-wide text-gray-800 dark:text-dark-50">
             Users Management
           </h2>
         </div>
-        <Button
-          className="h-8 space-x-1.5 rounded-md px-3 text-xs"
-          color="primary"
-        >
+        <Button className="h-8 space-x-1.5 rounded-md px-3 text-xs" color="primary">
           <PlusIcon className="size-5" />
           <span>Add User</span>
         </Button>
       </div>
 
-      {/* Main Table Section */}
       <div
         className={clsx(
           "flex flex-col pt-4",
@@ -221,19 +191,14 @@ export default function UsersDatatable() {
                                     header.getContext()
                                   )}
                             </span>
-                            <TableSortIcon
-                              sorted={header.column.getIsSorted()}
-                            />
+                            <TableSortIcon sorted={header.column.getIsSorted()} />
                           </div>
                         ) : header.isPlaceholder ? null : (
-                          flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )
+                          flexRender(header.column.columnDef.header, header.getContext())
                         )}
-                        {header.column.getCanFilter() ? (
+                        {header.column.getCanFilter() && (
                           <ColumnFilter column={header.column} />
-                        ) : null}
+                        )}
                       </Th>
                     ))}
                   </Tr>
@@ -250,7 +215,6 @@ export default function UsersDatatable() {
                           "row-selected after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500"
                       )}
                     >
-                      {/* Normal Row Cells */}
                       {row.getVisibleCells().map((cell) => (
                         <Td
                           key={cell.id}
@@ -277,10 +241,7 @@ export default function UsersDatatable() {
                               )}
                             />
                           )}
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </Td>
                       ))}
                     </Tr>
@@ -290,18 +251,14 @@ export default function UsersDatatable() {
             </Table>
           </div>
 
-          {/* Selected Rows Actions */}
           <SelectedRowsActions table={table} />
 
-          {/* Pagination Section */}
           {table.getCoreRowModel().rows.length > 0 && (
             <div
               className={clsx(
                 "px-4 pb-4 sm:px-5 sm:pt-4",
                 tableSettings.enableFullScreen && "bg-gray-50 dark:bg-dark-800",
-                !(
-                  table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()
-                ) && "pt-4"
+                !(table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && "pt-4"
               )}
             >
               <PaginationSection table={table} />

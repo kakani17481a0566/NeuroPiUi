@@ -127,8 +127,10 @@ export function AuthProvider({ children }) {
     });
 
     try {
-      const response = await axios.get(`https://localhost:7171/api/User/login?username=${username}&password=${password}`);
+      // const response = await axios.get(`https://localhost:7171/api/User/login?username=${username}&password=${password}`);
+      const response = await axios.get(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/User/login?username=${username}&password=${password}`);
 
+//
       // const { authToken, user } = response.data;
       const {  tenantId, userId, user } = response.data.data;
       const token=response.data.data.token;

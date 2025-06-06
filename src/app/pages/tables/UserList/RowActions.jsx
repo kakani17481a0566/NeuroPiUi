@@ -43,7 +43,10 @@ export function RowActions({ row, table }) {
 
     try {
       const res = await fetch(
-        `https://localhost:7171/api/User?id=${userId}&tenantId=${tenantId}`,
+        // `https://localhost:7171/api/User?id=${userId}&tenantId=${tenantId}`,
+
+        `https://localhost:7202/api/User?id=${userId}&tenantId=${tenantId}`,
+
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
@@ -69,7 +72,11 @@ export function RowActions({ row, table }) {
 
     try {
       const response = await fetch(
-        `https://localhost:7171/api/User?id=${userId}&tenantId=${tenantId}`,
+        // `https://localhost:7171/api/User?id=${userId}&tenantId=${tenantId}`,
+
+
+        `https://localhost:7202/api/User?id=${userId}&tenantId=${tenantId}`,
+
         {
           method: "PUT",
           headers: {

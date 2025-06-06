@@ -31,7 +31,10 @@ export const userStatusOptions = [
 export const fetchUsers = async () => {
   try {
     const response = await fetch(
-      "https://localhost:7171/api/User/by-tenant?tenantId=2",
+      // "https://localhost:7171/api/User/by-tenant?tenantId=2",
+
+      "https://localhost:7202/api/User/by-tenant?tenantId=2",
+
       {
         headers: { accept: "*/*" },
       },
