@@ -305,6 +305,7 @@ export default function TermPlan() {
             </div>
           )}
         </Card>
+
       </div>
     </div>
   );

@@ -43,7 +43,7 @@ import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 
 const isSafari = getUserAgentBrowser() === "Safari";
 
-export default function TermPlan() {
+export default function WeeklyPlan() {
   const { cardSkin } = useThemeContext();
   const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
   const [users, setUsers] = useState([]);
@@ -154,7 +154,7 @@ export default function TermPlan() {
       <div className="flex items-center justify-between space-x-4">
         <div className="min-w-0">
           <h2 className="truncate text-xl font-medium tracking-wide text-gray-800 dark:text-dark-50">
-            Term Plan
+            Weekly Plan 
           </h2>
         </div>
         <Button

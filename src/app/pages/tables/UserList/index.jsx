@@ -31,7 +31,10 @@ import { Toolbar } from "./Toolbar";
 import { useThemeContext } from "app/contexts/theme/context";
 import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 import { getSessionData } from "utils/sessionStorage";
-import { fetchUsers } from "./data";
+import { USER_LIST } from "constants/apis";
+// import { setExportData } from "./data";
+
+// ----------------------------------------------------------------------
 
 const isSafari = getUserAgentBrowser() === "Safari";
 
@@ -64,13 +67,32 @@ export default function UsersDatatable() {
 
   // ✅ Fetch users via centralized fetchUsers()
   useEffect(() => {
-    const loadUsers = async () => {
-      const result = await fetchUsers(token);
-      setUsers(result);
-      setLoading(false);
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch(USER_LIST, {
+          headers: { 'accept': '*/*' ,
+                    'Authorization':token
+          }
+        });
+        const data = await response.json();
+        if (data.data) {
+          setUsers(data.data);
+        //   setExportData(users, columns);
+        // console.log(users)
+        // console.log(columns)
+        }
+     
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      } finally {
+        setLoading(false);
+        
+      }
     };
-    loadUsers();
-  }, []);
+
+    fetchUsers();
+  },[]);
+          
 
   const table = useReactTable({
     data: users,
@@ -134,7 +156,12 @@ export default function UsersDatatable() {
             Users Management
           </h2>
         </div>
-        <Button className="h-8 space-x-1.5 rounded-md px-3 text-xs" color="primary">
+            
+
+        <Button
+          className="h-8 space-x-1.5 rounded-md px-3 text-xs"
+          color="primary"
+        >
           <PlusIcon className="size-5" />
           <span>Add User</span>
         </Button>
@@ -266,6 +293,7 @@ export default function UsersDatatable() {
           )}
         </Card>
       </div>
-    </div>
+      {/* <MenuAction data={users} columns={columns} /> */}
+      </div>
   );
 }

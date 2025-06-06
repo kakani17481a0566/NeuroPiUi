@@ -54,6 +54,13 @@ const protectedRoutes = {
                 Component: (await import("app/pages/academics/termplan")).default,
               }),
 
+            },
+            {
+              path: "weeklyplan",
+              lazy: async () => ({
+                Component: (await import("app/pages/academics/weeklyplan")).default,
+              }),
+
             }
           ]
         }

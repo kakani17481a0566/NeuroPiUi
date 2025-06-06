@@ -30,7 +30,8 @@ export const academics = {
             transKey: 'nav.academics.weeklyplan',
             Icon: AcademicsIcon,
 
-        }
+        },
+        
 
     ]
 }
