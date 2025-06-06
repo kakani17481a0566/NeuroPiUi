@@ -1,145 +1,143 @@
-import { useEffect, useState, useRef, Fragment } from "react";
-import clsx from "clsx";
-
+// Import Dependencies
 import {
-    flexRender,
-  useReactTable,
+  flexRender,
   getCoreRowModel,
+  // getExpandedRowModel,
+  getFacetedMinMaxValues,
+  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  getFacetedUniqueValues,
-  getFacetedMinMaxValues,
+  useReactTable,
 } from "@tanstack/react-table";
+import clsx from "clsx";
+import { Fragment, useRef, useState, useEffect } from "react";
+import {
+  // ArrowPathIcon,
+  // CheckBadgeIcon,
+  // ClockIcon,
+  PlusIcon,
+  // XCircleIcon,
+} from "@heroicons/react/20/solid";
 
-import { PlusIcon } from "@heroicons/react/20/solid";
-
+// Local Imports
+// import { TableSortIcon } from "components/shared/table/TableSortIcon";
+// import { ColumnFilter } from "components/shared/table/ColumnFilter";
+import { PaginationSection } from "components/shared/table/PaginationSection";
 import { Button, Card, Table, THead, TBody, Th, Tr, Td } from "components/ui";
-import { Toolbar } from "./Toolbar";
-import { SelectedRowsActions } from "./SelectedRowsActions";
-import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
-
-import { fetchTimeTableRawData, transformTimeTableDataForGrid } from "./data";
-import { TopicWorksheetCell } from "./rows";
-
-// Utils & helpers from your UsersDatatable setup (if needed)
-import { useSkipper } from "utils/react-table/useSkipper";
+import {
+  // useBoxSize,
+  useLockScrollbar,
+  useLocalStorage,
+  useDidUpdate,
+} from "hooks";
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
+import { useSkipper } from "utils/react-table/useSkipper";
+import { SelectedRowsActions } from "./SelectedRowsActions";
+import { columns } from "./columns";
+import { Toolbar } from "./Toolbar";
 import { useThemeContext } from "app/contexts/theme/context";
 import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
+
+// ----------------------------------------------------------------------
 
 const isSafari = getUserAgentBrowser() === "Safari";
 
 export default function WeeklyPlan() {
   const { cardSkin } = useThemeContext();
-  const cardRef = useRef();
-
-  const [timeTableRows, setTimeTableRows] = useState([]);
-  const [orderedSubjects, setOrderedSubjects] = useState([]);
+  const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // For paging reset control (same pattern)
-  const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
-
-  // Table settings same as user list
   const [tableSettings, setTableSettings] = useState({
     enableSorting: true,
     enableColumnFilters: true,
     enableFullScreen: false,
-    enableRowDense: true,
-    
+    enableRowDense: false,
   });
 
-  // State management for filters, sorting, visibility
-  const [globalFilter, setGlobalFilter] = useState("");
+  // const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
   const [columnVisibility, setColumnVisibility] = useLocalStorage(
-    "column-visibility-weeklyplan",
+    "column-visibility-users",
     {}
   );
   const [columnPinning, setColumnPinning] = useLocalStorage(
-    "column-pinning-weeklyplan",
+    "column-pinning-users",
     {}
   );
 
-  // Load data once on mount
+  const cardRef = useRef();
+  // const { width: cardWidth } = useBoxSize({ ref: cardRef });
+
+  // Fetch users from API
   useEffect(() => {
-    const loadData = async () => {
+    const fetchUsers = async () => {
       try {
-        const rawData = await fetchTimeTableRawData();
-        const { tableRows, orderedSubjects } = transformTimeTableDataForGrid(rawData);
-        setTimeTableRows(tableRows);
-        setOrderedSubjects(orderedSubjects);
+        const response = await fetch(
+          // 'https://localhost:7171/tenantId?tenantId=2',
+          'https://localhost:7202/tenantId?tenantId=2',
+          
+          {
+          headers: { 'accept': '*/*' }
+        });
+        const data = await response.json();
+        if (data.data) {
+          setUsers(data.data);
+        }
       } catch (error) {
-        console.error("Error fetching timetable:", error);
+        console.error("Error fetching users:", error);
       } finally {
         setLoading(false);
       }
     };
-    loadData();
+
+    fetchUsers();
   }, []);
 
-  // Define columns dynamically based on orderedSubjects
-  const columns = [
-    {
-      accessorKey: "dayName",
-      header: "DAYS",
-      cell: ({ getValue }) => <span className="font-semibold">{getValue()}</span>,
-      enablePinning: true,
-      enableSorting: true,
-      enableColumnFilter: true,
-    },
-    ...orderedSubjects.map(([code, name]) => ({
-      accessorKey: code,
-      header: `${name} (${code})`,
-      cell: ({ row }) => <TopicWorksheetCell data={row.original[code]} />,
-      enableSorting: false,
-      enableColumnFilter: false,
-    })),
-  ];
-
-  // Setup react-table instance with all features and state handlers
   const table = useReactTable({
-    data: timeTableRows,
-    columns,
+    data: users,
+    columns: columns,
     state: {
-      globalFilter,
       sorting,
       columnVisibility,
       columnPinning,
       tableSettings,
     },
+    meta: {
+      setTableSettings,
+      deleteRow: (row) => {
+        skipAutoResetPageIndex();
+        setUsers((old) =>
+          old.filter((oldRow) => oldRow.userId !== row.original.userId)
+        );
+      },
+      deleteRows: (rows) => {
+        skipAutoResetPageIndex();
+        const rowIds = rows.map((row) => row.original.userId);
+        setUsers((old) => old.filter((row) => !rowIds.includes(row.userId)));
+      },
+    },
     filterFns: {
       fuzzy: fuzzyFilter,
     },
-    globalFilterFn: fuzzyFilter,
-    onGlobalFilterChange: setGlobalFilter,
-    onSortingChange: setSorting,
-    onColumnVisibilityChange: setColumnVisibility,
-    onColumnPinningChange: setColumnPinning,
+    enableSorting: tableSettings.enableSorting,
+    enableColumnFilters: tableSettings.enableColumnFilters,
     getCoreRowModel: getCoreRowModel(),
+    // onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
+    globalFilterFn: fuzzyFilter,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnPinningChange: setColumnPinning,
     autoResetPageIndex,
-    meta: {
-      setTableSettings,
-      // Add row delete if you want, or any other row actions
-      deleteRow: (row) => {
-        skipAutoResetPageIndex();
-        setTimeTableRows((old) =>
-          old.filter((oldRow) => oldRow.dayName !== row.original.dayName)
-        );
-      },
-    },
   });
 
-  // Reset selection on data changes (if you implement selection)
-  useDidUpdate(() => table.resetRowSelection(), [timeTableRows]);
-
-  // Lock scrollbar when full screen enabled
+  useDidUpdate(() => table.resetRowSelection(), [users]);
   useLockScrollbar(tableSettings.enableFullScreen);
 
   if (loading) {
@@ -152,17 +150,23 @@ export default function WeeklyPlan() {
 
   return (
     <div className="transition-content grid grid-cols-1 grid-rows-[auto_1fr] px-(--margin-x) py-4">
+      {/* Header Section */}
       <div className="flex items-center justify-between space-x-4">
-        <h1 className="truncate text-xl font-medium tracking-wide text-gray-800 dark:text-dark-50">
-          Weekly Plan
-        </h1>
-
-        <Button className="h-8 space-x-1.5 rounded-md px-3 text-xs" color="primary">
-          <PlusIcon className="w-5 h-5" />
-          <span>Add Entry</span>
+        <div className="min-w-0">
+          <h2 className="truncate text-xl font-medium tracking-wide text-gray-800 dark:text-dark-50">
+            Weekly Plan 
+          </h2>
+        </div>
+        <Button
+          className="h-8 space-x-1.5 rounded-md px-3 text-xs"
+          color="primary"
+        >
+          <PlusIcon className="size-5" />
+          {/* <span>Add User</span> */}
         </Button>
       </div>
 
+      {/* Main Table Section */}
       <div
         className={clsx(
           "flex flex-col pt-4",
@@ -171,7 +175,6 @@ export default function WeeklyPlan() {
         )}
       >
         <Toolbar table={table} />
-
         <Card
           className={clsx(
             "relative mt-3 flex grow flex-col",
@@ -210,19 +213,24 @@ export default function WeeklyPlan() {
                             <span className="flex-1">
                               {header.isPlaceholder
                                 ? null
-                                : flexRender(header.column.columnDef.header, header.getContext())}
+                                : flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                  )}
                             </span>
-                            {/* TableSortIcon can be imported or replaced with your icon */}
-                            <span>
-                              {header.column.getIsSorted() === "asc" ? " 🔼" : header.column.getIsSorted() === "desc" ? " 🔽" : ""}
-                            </span>
+                            {/* <TableSortIcon
+                              sorted={header.column.getIsSorted()}
+                            /> */}
                           </div>
                         ) : header.isPlaceholder ? null : (
-                          flexRender(header.column.columnDef.header, header.getContext())
+                          flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )
                         )}
-                        {header.column.getCanFilter() && (
-                          <div>{/* Add your ColumnFilter component here if needed */}</div>
-                        )}
+                        {/* {header.column.getCanFilter() ? (
+                          <ColumnFilter column={header.column} />
+                        ) : null} */}
                       </Th>
                     ))}
                   </Tr>
@@ -239,6 +247,7 @@ export default function WeeklyPlan() {
                           "row-selected after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500"
                       )}
                     >
+                      {/* Normal Row Cells */}
                       {row.getVisibleCells().map((cell) => (
                         <Td
                           key={cell.id}
@@ -265,7 +274,10 @@ export default function WeeklyPlan() {
                               )}
                             />
                           )}
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
                         </Td>
                       ))}
                     </Tr>
@@ -275,34 +287,21 @@ export default function WeeklyPlan() {
             </Table>
           </div>
 
+          {/* Selected Rows Actions */}
           <SelectedRowsActions table={table} />
 
+          {/* Pagination Section */}
           {table.getCoreRowModel().rows.length > 0 && (
             <div
               className={clsx(
                 "px-4 pb-4 sm:px-5 sm:pt-4",
                 tableSettings.enableFullScreen && "bg-gray-50 dark:bg-dark-800",
-                !(table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && "pt-4"
+                !(
+                  table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()
+                ) && "pt-4"
               )}
             >
-              {/* Your Pagination Section Component or custom pagination controls */}
-              {/* Replace PaginationSection below with your actual pagination component */}
-              <div className="flex justify-end space-x-2">
-                <button
-                  onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage()}
-                  className="btn"
-                >
-                  Prev
-                </button>
-                <button
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
-                  className="btn"
-                >
-                  Next
-                </button>
-              </div>
+              <PaginationSection table={table} />
             </div>
           )}
         </Card>

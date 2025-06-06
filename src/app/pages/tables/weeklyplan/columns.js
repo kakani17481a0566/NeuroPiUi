@@ -1,55 +1,64 @@
 // columns.js
 import { createColumnHelper } from "@tanstack/react-table";
-import { UserIdCell, UsernameCell, NameCell, EmailCell, MobileCell, StatusCell } from "./rows";
-import { RowActions } from "./RowActions";
-// import { SelectCell, SelectHeader } from "components/shared/table/SelectCheckbox";
+import {
+  WeekCell,
+  FairyTaleCell,
+  MondayCell,
+  TuesdayCell,
+  WednesdayCell,
+  ThursdayCell,
+  FridayCell,
+  SaturdayCell,
+  RowActions,
+} from "./rows";
 
+// Create a column helper instance for typed column definitions
 const columnHelper = createColumnHelper();
 
+// Define your columns array
 export const columns = [
-  // columnHelper.display
-  //   id: "select",
-  //   label: "Row Selection",
-  //   header: SelectHeader,
-  //   cell: SelectCell,
-  // }),
-  columnHelper.accessor(row => row.userId, {
-    id: "userId",
-    header: "Week",
-    cell: UserIdCell,
+  // Week column
+  columnHelper.accessor("week", {
+    header: "WEEK",
+    cell: WeekCell, // Custom cell renderer for Week
   }),
-  columnHelper.accessor(row => row.username, {
-    id: "username",
-    header:"Fairy Tale ",
-    cell: UsernameCell,
+
+  // Fairy Tale column
+  columnHelper.accessor("fairyTale", {
+    header: "FAIRY TALE",
+    cell: FairyTaleCell, // Custom cell renderer for Fairy Tale
   }),
-  columnHelper.accessor(row => ({
-    firstName: row.firstName,
-    middleName: row.middleName,
-    lastName: row.lastName,
-  }), {
-    id: "fullName",
+
+  // Days columns with their respective custom cell renderers
+  columnHelper.accessor("mondayActivity", {
     header: "MONDAY",
-    cell: NameCell,
+    cell: MondayCell,
   }),
-  columnHelper.accessor(row => row.email, {
-    id: "email",
+  columnHelper.accessor("tuesdayActivity", {
     header: "TUESDAY",
-    cell: EmailCell,
+    cell: TuesdayCell,
   }),
-  columnHelper.accessor(row => row.mobileNumber, {
-    id: "mobileNumber",
+  columnHelper.accessor("wednesdayActivity", {
     header: "WEDNESDAY",
-    cell: MobileCell,
+    cell: WednesdayCell,
   }),
-  columnHelper.accessor(row => row.status, {
-    id: "status",
+  columnHelper.accessor("thursdayActivity", {
     header: "THURSDAY",
-    cell: StatusCell,
+    cell: ThursdayCell,
   }),
+  columnHelper.accessor("fridayActivity", {
+    header: "FRIDAY",
+    cell: FridayCell,
+  }),
+  columnHelper.accessor("saturdayActivity", {
+    header: "SATURDAY",
+    cell: SaturdayCell,
+  }),
+
+  // Actions column with buttons like edit/delete using RowActions component
   columnHelper.display({
     id: "actions",
-    header: "SATURDAY",
-    cell: RowActions,
+    header: "ACTIONS",
+    cell: RowActions, // Renders action buttons for each row
   }),
 ];
