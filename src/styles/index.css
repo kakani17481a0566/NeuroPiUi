@@ -142,3 +142,37 @@
     border-color: var(--color-gray-200, currentColor);
   }
 }
+
+@layer utilities {
+  @keyframes dotBlink {
+    0%, 80%, 100% {
+      opacity: 0.2;
+    }
+    40% {
+      opacity: 1;
+    }
+  }
+
+  .dot-anim {
+    display: inline-flex;
+    gap: 2px;
+  }
+
+  .dot {
+    font-weight: bold;
+    animation: dotBlink 1.4s infinite ease-in-out;
+    opacity: 0.2;
+  }
+
+  .dot1 {
+    animation-delay: 0s;
+  }
+
+  .dot2 {
+    animation-delay: 0.2s;
+  }
+
+  .dot3 {
+    animation-delay: 0.4s;
+  }
+}

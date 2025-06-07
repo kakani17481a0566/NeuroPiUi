@@ -48,7 +48,7 @@ export default function UsersDatatable() {
     enableSorting: true,
     enableColumnFilters: true,
     enableFullScreen: false,
-    enableRowDense: false,
+    enableRowDense: true,
   });
 
   const [globalFilter, setGlobalFilter] = useState("");

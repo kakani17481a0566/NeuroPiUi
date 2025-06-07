@@ -10,7 +10,7 @@ export default function weeklyplan(){
                 Academics
               </h2>
               
-              <div className="mt-4"> {/* Added margin top for better spacing */}
+              <div className="mt-1"> {/* Added margin top for better spacing */}
                 <WeeklyPlan/>
               </div>
             </div>

@@ -2,14 +2,17 @@ import { getSessionData } from "utils/sessionStorage";
 const {tenantId}=getSessionData();
 // export const USER_LIST=`https://localhost:7171/api/user/by-tenant?tenantId=${tenantId}`;
 
+export const BASE_URL=`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api`;
+
+export const USER_LIST=`${BASE_URL}/user/by-tenant?tenantId=${tenantId}`;
+
+export const USER_LOGIN=`${BASE_URL}/User/login?username=aaa&password=aa`;
+
+export const WEEK_PLAN_LIST=`${BASE_URL}/VwComprehensive/all`;
 
 
-export const USER_LIST=`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/user/by-tenant?tenantId=${tenantId}`;
-
-export const USER_LOGIN=`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/User/login?username=aaa&password=aa`;
-//https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/VwComprehensive/all
+// EXAMPLE URL  : // https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/VwTermPlanDetailsView/GetAll/1 
+export const TERM_PLAN_DETAILS=`${BASE_URL}/VwTermPlanDetailsView/GetAll?tenantId=${tenantId}`;
 
 
-export const WEEAK_PLAN_LIST=`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/VwComprehensive/all`;
 
-//   'https://localhost:7202/api/User/login?username=aaa&password=aa' \
