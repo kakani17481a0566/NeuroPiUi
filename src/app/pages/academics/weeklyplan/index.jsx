@@ -1,7 +1,9 @@
 import { Page } from "components/shared/Page";
 // import TermPlan from "app/pages/tables/TermPlan";
 // import WeeklyPlan from "app/pages/tables/WeeklyPlan";
-import WeeklyPlan from "../../tables/WeeklyPlan";
+// import WeeklyPlan from "../../tables/WeeklyPlan";
+import WeeklyPlan from "app/pages/tables/WeeklyPlan";
+
 
 export default function weeklyplan(){
     return (
