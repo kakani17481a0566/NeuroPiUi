@@ -4,8 +4,7 @@
 // // import WeeklyPlan from "../../tables/WeeklyPlan";
 // 
 // 
-import WeeklyPlan from "app/pages/tables/WeeklyPlan";
-
+import WeeklyTimeTable from 'app/pages/tables/WeekTimeTable';
 
 export default function weeklyplan(){
     return (
@@ -17,7 +16,7 @@ export default function weeklyplan(){
               </h2>
               
               <div className="mt-1"> {/* Added margin top for better spacing */}
-                <WeeklyPlan/>
+                <WeeklyTimeTable/>
               </div>
             </div>
           </div>
