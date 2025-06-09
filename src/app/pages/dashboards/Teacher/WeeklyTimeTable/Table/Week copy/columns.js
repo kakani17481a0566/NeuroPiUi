@@ -19,7 +19,7 @@ import {
 import { orderStatusOptions } from "./data";
 
 // ----------------------------------------------------------------------
-
+import { createColumnHelper } from "@tanstack/react-table";
 const columnHelper = createColumnHelper();
 
 export const columns = [

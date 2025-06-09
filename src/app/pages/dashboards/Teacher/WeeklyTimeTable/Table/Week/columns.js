@@ -1,70 +1,49 @@
+// columns.js
+
 // Import Dependencies
+import React from "react"; // ✅ Required for JSX
 import { createColumnHelper } from "@tanstack/react-table";
 
 // Local Imports
 import { RowActions } from "./RowActions";
-import {
-    SelectCell,
-    SelectHeader,
-} from "components/shared/table/SelectCheckbox";
 
-// ----------------------------------------------------------------------
-
+// Create Column Helper
 const columnHelper = createColumnHelper();
 
-export const columns = [
-    columnHelper.display({
-        id: "select",
-        label: "Row Selection",
-        header: SelectHeader,
-        cell: SelectCell,
-    }),
-    columnHelper.accessor((row) => row.column1, {
-        id: "column1",
-        label: "Day",
-        header: "Day",
-        cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor((row) => row.column2, {
-        id: "column2",
-        label: "Period 1",
-        header: "Period 1",
-        cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor((row) => row.column3, {
-        id: "column3",
-        label: "Period 2",
-        header: "Period 2",
-        cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor((row) => row.column4, {
-        id: "column4",
-        label: "Period 3",
-        header: "Period 3",
-        cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor((row) => row.column5, {
-        id: "column5",
-        label: "Period 4",
-        header: "Period 4",
-        cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor((row) => row.column6, {
-        id: "column6",
-        label: "Period 5",
-        header: "Period 5",
-        cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor((row) => row.column7, {
-        id: "column7",
-        label: "Period 6",
-        header: "Period 6",
-        cell: (info) => info.getValue(),
-    }),
-    columnHelper.display({
+/**
+ * Generates columns based on headers array.
+ * Appends RowActions column at the end.
+ * @param {string[]} headers
+ * @returns {array}
+ */
+export function generateWeeklyTimeTableColumns(headers) {
+  console.log("✅ Generating columns with headers:", headers);
+
+  const dynamicColumns = [headers.map((header, index) =>
+    columnHelper.accessor(`column${index + 1}`, {
+      id: `column${index + 1}`,
+      header: header,
+      cell: (info) => info.getValue(),
+    })
+  ),
+columnHelper.display({
         id: "actions",
         label: "Row Actions",
         header: "Actions",
-        cell: RowActions,
-    }),
+        cell: RowActions
+    })
 ];
+
+  // Append RowActions column
+  dynamicColumns.push(
+    columnHelper.display({
+      id: "actions",
+      header: "Actions",
+      cell: ({ row, table }) => <RowActions row={row} table={table} />,
+      enableSorting: false,
+      enableColumnFilter: false,
+    })
+  );
+
+  return dynamicColumns;
+}
