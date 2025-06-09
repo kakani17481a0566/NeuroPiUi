@@ -3,7 +3,7 @@ import clsx from "clsx";
 import PropTypes from "prop-types";
 
 // Local Imports
-// import { CollapsibleSearch } from "components/shared/CollapsibleSearch";
+import { CollapsibleSearch } from "components/shared/CollapsibleSearch";
 import { MenuAction } from "./MenuActions";
 import { TableConfig } from "./TableConfig";
 
@@ -21,11 +21,11 @@ export function Toolbar({ table }) {
         Orders Table
       </h2>
       <div className={clsx("flex", enableFullScreen && "ltr:-mr-2 rtl:-ml-2")}>
-        {/* <CollapsibleSearch
+        <CollapsibleSearch
           placeholder="Search here..."
           value={table.getState().globalFilter}
           onChange={(e) => table.setGlobalFilter(e.target.value)}
-        /> */}
+        />
         <TableConfig table={table} />
         <MenuAction />
       </div>
