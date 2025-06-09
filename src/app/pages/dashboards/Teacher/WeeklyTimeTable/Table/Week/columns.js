@@ -1,49 +1,70 @@
-// columns.js
-
-// Import Dependencies
-import React from "react"; // ✅ Required for JSX
+import { createElement, Fragment } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
-
-// Local Imports
 import { RowActions } from "./RowActions";
 
-// Create Column Helper
 const columnHelper = createColumnHelper();
 
+const headerClassMap = {
+  PSED: "psed",
+  CLL: "cll",
+  PSRN: "psrn",
+  KUW: "kuw",
+  PD: "pd",
+  EAD: "ead",
+  DAYS: "days",
+ ACTION: "actions", // ✅ Already present
+};
+
 /**
- * Generates columns based on headers array.
- * Appends RowActions column at the end.
- * @param {string[]} headers
- * @returns {array}
+ * Generate column definitions based on headers from API
+ * Adds `.columnClassName` meta for custom tailwind-based styling
  */
 export function generateWeeklyTimeTableColumns(headers) {
-  console.log("✅ Generating columns with headers:", headers);
+  return [
+    ...headers.map((header, index) => {
+      const headerLines = header.split("\n");
+      const code = headerLines[1]?.replace(/[()]/g, "").trim().toUpperCase(); // Extract PSED, CLL etc.
+      const className = headerClassMap[code] || ""; // fallback to empty
 
-  const dynamicColumns = [headers.map((header, index) =>
-    columnHelper.accessor(`column${index + 1}`, {
-      id: `column${index + 1}`,
-      header: header,
-      cell: (info) => info.getValue(),
-    })
-  ),
-columnHelper.display({
-        id: "actions",
-        label: "Row Actions",
-        header: "Actions",
-        cell: RowActions
-    })
-];
+      return {
+        id: `column${index + 1}`,
+        accessorKey: `column${index + 1}`,
+        meta: {
+          columnClassName: className,
+        },
+        header: () =>
+          createElement(
+            Fragment,
+            {},
+            ...headerLines.map((line, i) =>
+              createElement("div", { key: i }, line.trim())
+            )
+          ),
+        cell: (info) => {
+          const value = info.getValue();
+          if (!value || typeof value !== "string") return null;
 
-  // Append RowActions column
-  dynamicColumns.push(
+          const lines = value.split(/,\s*|\n/).filter(Boolean);
+          return createElement(
+            Fragment,
+            {},
+            ...lines.map((line, i) =>
+              createElement("div", { key: i }, line.trim())
+            )
+          );
+        },
+      };
+    }),
+
+    // Add optional action column
     columnHelper.display({
       id: "actions",
+      label: "Row Actions",
       header: "Actions",
-      cell: ({ row, table }) => <RowActions row={row} table={table} />,
-      enableSorting: false,
-      enableColumnFilter: false,
-    })
-  );
-
-  return dynamicColumns;
+      cell: RowActions,
+      meta: {
+    columnClassName: "actions", // ✅ Add this line
+  },
+    }),
+  ];
 }

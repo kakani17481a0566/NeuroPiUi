@@ -1,3 +1,8 @@
+/* ───────────────────────────────────────────── */
+/* ✅ Base Table Layout and Behavior Styles       */
+/* ───────────────────────────────────────────── */
+
+/* Hover effect and zebra stripes for rows */
 .table.is-hoverable
   > .table-tbody
   > .table-tr:hover:not(.row-selected)
@@ -6,15 +11,18 @@
   @apply bg-gray-100 dark:bg-surface-2/50;
 }
 
+/* Default cell styles: padding, wrapping, border, center alignment */
 .table-td,
 .table-th {
-  @apply whitespace-nowrap px-4 py-3 sm:px-5;
+  @apply whitespace-nowrap px-4 py-3 sm:px-5 border border-black text-center;
 }
 
+/* Sticky header support */
 .table.is-sticky .table-thead {
   @apply sticky top-0 z-3;
 }
 
+/* Dense mode support */
 .table.is-dense > .table-tbody > .table-tr > .table-td {
   @apply px-2 py-1.5;
 }
@@ -23,6 +31,77 @@
   @apply px-2;
 }
 
+/* Uppercase all table headers */
 .table-th {
   @apply uppercase;
+}
+
+
+/* ───────────────────────────────────────────── */
+/* ✅ Subject-Based Column Coloring (Timetable)   */
+/* ───────────────────────────────────────────── */
+
+.table-th.psed,
+.table-td.psed {
+  @apply bg-pink-200 text-black;
+}
+
+.table-th.cll,
+.table-td.cll {
+  @apply bg-red-200 text-black;
+}
+
+.table-th.psrn,
+.table-td.psrn {
+  @apply bg-yellow-200 text-black;
+}
+
+.table-th.kuw,
+.table-td.kuw {
+  @apply bg-blue-200 text-black;
+}
+
+.table-th.pd,
+.table-td.pd {
+  @apply bg-yellow-100 text-black;
+}
+
+.table-th.ead,
+.table-td.ead {
+  @apply bg-stone-300 text-black;
+}
+
+.table-th.days,
+.table-td.days {
+  @apply bg-gray-200 font-bold text-black;
+}
+
+
+/* ───────────────────────────────────────────── */
+/* ✅ Action Column Styling                       */
+/* ───────────────────────────────────────────── */
+
+.table-th.actions,
+.table-td.actions {
+  @apply bg-red-200 text-gray-800 dark:bg-dark-700 dark:text-gray-200 text-center;
+}
+
+
+/* ───────────────────────────────────────────── */
+/* ✅ Row State Styling                           */
+/* ───────────────────────────────────────────── */
+
+/* Selected row highlight */
+.table-tr.row-selected {
+  @apply relative;
+}
+
+.table-tr.row-selected::after {
+  content: "";
+  @apply pointer-events-none absolute inset-0 z-2 h-full w-full border-4 border-transparent bg-primary-500/10;
+}
+
+/* Expanded row (e.g., future use) */
+.table-tr.is-expanded {
+  @apply border-dashed;
 }
