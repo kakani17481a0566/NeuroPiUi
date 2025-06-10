@@ -88,7 +88,9 @@ export function RowActions({ row, table }) {
   const [showPdfViewerModal, setShowPdfViewerModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
 
-  const pdfPath = "/public/sample.pdf";
+  //   const pdfPath = "/public/sample.pdf";
+
+  const pdfPath = "https://drive.google.com/file/d/1LeSR1WhBKEaNFnkljfFSThrbIZ4QRblK/view?usp=sharing";
 
 
   const handleEdit = useCallback(async () => {
