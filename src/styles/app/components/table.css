@@ -6,7 +6,11 @@
 .table.is-hoverable
   > .table-tbody
   > .table-tr:hover:not(.row-selected)
-  > .table-td,
+  > .table-td {
+  @apply bg-violet-600 text-white font-bold;
+}
+
+/* Optional: zebra styling stays soft for non-hover rows */
 .table.is-zebra > .table-tbody > .table-tr:nth-child(even) > .table-td {
   @apply bg-gray-100 dark:bg-surface-2/50;
 }
@@ -14,7 +18,25 @@
 /* Default cell styles: padding, wrapping, border, center alignment */
 .table-td,
 .table-th {
-  @apply whitespace-nowrap px-4 py-3 sm:px-5 border border-black text-center;
+  /* @apply whitespace-nowrap px-4 py-3 sm:px-5 border border-black text-center; */
+
+  @apply whitespace-nowrap px-4 py-3 sm:px-5  text-center;
+}
+
+/* Rounded corners for the first and last header cells */
+.table-th:first-child {
+  @apply rounded-tl-lg;
+}
+.table-th:last-child {
+  @apply rounded-tr-lg;
+}
+
+/* Optional: rounded bottom corners (for last row if needed) */
+.table-tbody > .table-tr:last-child > .table-td:first-child {
+  @apply rounded-bl-lg;
+}
+.table-tbody > .table-tr:last-child > .table-td:last-child {
+  @apply rounded-br-lg;
 }
 
 /* Sticky header support */
@@ -26,7 +48,6 @@
 .table.is-dense > .table-tbody > .table-tr > .table-td {
   @apply px-2 py-1.5;
 }
-
 .table.is-dense > .table-thead > .table-tr > .table-th {
   @apply px-2;
 }
@@ -43,7 +64,7 @@
 
 .table-th.psed,
 .table-td.psed {
-  @apply bg-pink-200 text-black;
+  @apply bg-pink-200 border-black text-black;
 }
 
 .table-th.cll,
@@ -73,7 +94,7 @@
 
 .table-th.days,
 .table-td.days {
-  @apply bg-gray-200 font-bold text-black;
+  @apply bg-yellow-100 font-bold text-black;
 }
 
 
