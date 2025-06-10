@@ -4829,7 +4829,7 @@ react-markdown@^10.1.0:
 
 react-pdf@^9.2.1:
   version "9.2.1"
-  resolved "https://registry.npmjs.org/react-pdf/-/react-pdf-9.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/react-pdf/-/react-pdf-9.2.1.tgz#35294da1232d310243ffe5e54f39281e6c98d8d4"
   integrity sha512-AJt0lAIkItWEZRA5d/mO+Om4nPCuTiQ0saA+qItO967DTjmGjnhmF+Bi2tL286mOTfBlF5CyLzJ35KTMaDoH+A==
   dependencies:
     clsx "^2.0.0"

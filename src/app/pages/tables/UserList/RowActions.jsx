@@ -32,14 +32,15 @@ const confirmMessages = {
   success: {
     title: "User Deleted",
   },
-};
+};  
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
 
 export function RowActions({ row, table }) {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-  pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
   const [numPages, setNumPages] = useState();
   const [pageNumber, setPageNumber] = useState(1);
   function onDocumentLoadSuccess({ numPages }) {
@@ -148,24 +149,7 @@ export function RowActions({ row, table }) {
     setShowVideoModal(true);
   }, []);
 
-  /**
-   * Closes the PDF viewer modal.
-   */
-  // const handleClosePdfViewerModal = useCallback(() => {
-  //   setShowPdfViewerModal(false);
-  // }, []);
 
-  /**
-   * Triggers the download of the PDF file.
-   */
-  // const handleDownloadPdf = useCallback(() => {
-  //   const link = document.createElement('a');
-  //   link.href = pdfPath;
-  //   link.download = 'sample.pdf'; // Desired filename for download
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // }, [pdfPath]);
 
 
 

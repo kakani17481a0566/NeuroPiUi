@@ -11,59 +11,59 @@ import {
   ChevronUpIcon,
   EllipsisHorizontalIcon,
   EyeIcon,
-  PencilIcon,
-  TrashIcon,
+  LinkIcon
 } from "@heroicons/react/24/outline";
-import clsx from "clsx";
 import { useCallback, useState } from "react";
+
+
+import clsx from "clsx";
+// import { useCallback, useState } from "react";
 import PropTypes from "prop-types";
 
 // Local Imports
-import { ConfirmModal } from "components/shared/ConfirmModal";
+// import { ConfirmModal } from "components/shared/ConfirmModal";
 import { Button } from "components/ui";
+import { pdfjs } from "react-pdf";
+import { Document, Page } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString();
 
 // ----------------------------------------------------------------------
 
-const confirmMessages = {
-  pending: {
-    description:
-      "Are you sure you want to delete this row? Once deleted, it cannot be restored.",
-  },
-  success: {
-    title: "Row Deleted",
-  },
-};
+// const confirmMessages = {
+//   pending: {
+//     description:
+//       "Are you sure you want to delete this row? Once deleted, it cannot be restored.",
+//   },
+//   success: {
+//     title: "Row Deleted",
+//   },
+// };
 
-export function RowActions({ row, table }) {
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [confirmDeleteLoading, setConfirmDeleteLoading] = useState(false);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const [deleteError, setDeleteError] = useState(false);
+export function RowActions({ row }) {
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+    const [showPdfViewerModal, setShowPdfViewerModal] = useState(false);
+      function nextPage() {
+    setPageNumber((v) => ++v);
+  }
+  function prevPage() {
+    setPageNumber((v) => --v);
+  }
+    const pdfPath = "https://drive.google.com/file/d/1-apEdtuKa0-0Lm0-VF0KXWmgYsyIhWCu/view?usp=sharing";
 
-  const closeModal = () => setDeleteModalOpen(false);
 
-  const openModal = () => {
-    setDeleteModalOpen(true);
-    setDeleteError(false);
-    setDeleteSuccess(false);
-  };
+     function onDocumentLoadSuccess({ numPages }) {
+            setNumPages(numPages);
+          }
+            const handleViewPdfPopup = useCallback(() => {
+              setShowPdfViewerModal(true);
+            }, []);
 
-  const handleDeleteRows = useCallback(() => {
-    console.log("🗑️ Deleting row:", row.original);
-    setConfirmDeleteLoading(true);
-    setTimeout(() => {
-      try {
-        table.options.meta?.deleteRow?.(row.original);
-        setDeleteSuccess(true);
-      } catch (err) {
-        console.error("❌ Delete failed:", err);
-        setDeleteError(true);
-      }
-      setConfirmDeleteLoading(false);
-    }, 1000);
-  }, [row, table]);
 
-  const state = deleteError ? "error" : deleteSuccess ? "success" : "pending";
+
 
   return (
     <>
@@ -114,52 +114,80 @@ export function RowActions({ row, table }) {
                   )}
                 >
                   <EyeIcon className="size-4.5 stroke-1" />
-                  <span>View</span>
+                  <span>Lesson Plan</span>
                 </button>
               )}
             </MenuItem>
             <MenuItem>
               {({ focus }) => (
                 <button
-                  onClick={() =>
-                    console.log("✏️ Edit clicked:", row.original)
-                  }
+                  onClick={ handleViewPdfPopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
                     focus && "bg-gray-100 dark:bg-dark-600"
                   )}
                 >
-                  <PencilIcon className="size-4.5 stroke-1" />
-                  <span>Edit</span>
+                  <LinkIcon className="size-4.5 stroke-1" />
+                  <span>Resource Link</span>
                 </button>
               )}
             </MenuItem>
-            <MenuItem>
-              {({ focus }) => (
-                <button
-                  onClick={openModal}
-                  className={clsx(
-                    "flex h-9 w-full items-center space-x-3 px-3 text-red-600",
-                    focus && "bg-red-100 dark:bg-red-600/10"
-                  )}
-                >
-                  <TrashIcon className="size-4.5 stroke-1" />
-                  <span>Delete</span>
-                </button>
-              )}
-            </MenuItem>
+
           </Transition>
         </Menu>
       </div>
 
-      <ConfirmModal
+      {/* <ConfirmModal
         show={deleteModalOpen}
         onClose={closeModal}
         messages={confirmMessages}
         onOk={handleDeleteRows}
         confirmLoading={confirmDeleteLoading}
         state={state}
-      />
+      /> */}
+       {showPdfViewerModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-4 max-w-3xl w-full relative shadow-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">PDF View </h2>
+              <button
+                onClick={() => setShowPdfViewerModal(false)}
+                className="text-red-500 font-bold text-xl"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="flex justify-between mb-2">
+              <button
+                onClick={prevPage}
+                disabled={pageNumber <= 1}
+                className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <button
+                onClick={nextPage}
+                disabled={pageNumber >= (numPages ?? -1)}
+                className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+            <div className="overflow-auto max-h-[70vh] border rounded">
+              <Document
+                file={pdfPath}
+                onLoadSuccess={onDocumentLoadSuccess}
+                className="my-react-pdf"
+              >
+                <Page pageNumber={pageNumber} />
+              </Document>
+            </div>
+            <p className="mt-2 text-center text-sm">
+              Page {pageNumber} of {numPages}
+            </p>
+          </div>
+        </div>
+      )}
     </>
   );
 }
