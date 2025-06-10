@@ -2,21 +2,13 @@
 // ✅ Component Imports
 // ───────────────────────────────────────────────
 
-// Page wrapper component for SEO and layout framing
 import { Page } from "components/shared/Page";
-
-// Dashboard widgets
-// import { Welcome } from "./Welcome"; // (currently unused)
 import { WorkingHours } from "./WorkingHours";
 import { Students } from "./Students";
 import { Calendar } from "./Calendar";
 import { WeeklyTimeTable } from "./WeeklyTimeTable";
 // import { Classes } from "./Classes";
-
-// React core
 import { useState } from "react";
-
-// Form control component
 import { Combobox } from "components/shared/form/Combobox";
 
 // ───────────────────────────────────────────────
@@ -35,11 +27,11 @@ const pages = [
 // ✅ Main Component: Teacher Dashboard
 // ───────────────────────────────────────────────
 export default function Teacher() {
-  const [selectedPage, setSelectedPage] = useState(pages[0]); // Combobox selected value
+  const [selectedPage, setSelectedPage] = useState(pages[0]);
 
   return (
     <Page title="Teacher Dashboard">
-      {/* Page Selector */}
+      {/* Combobox Selector */}
       <div className="mb-4 px-4 sm:px-5 lg:px-6">
         <Combobox
           data={pages}
@@ -51,21 +43,16 @@ export default function Teacher() {
         />
       </div>
 
-      {/* Main Grid Layout */}
-      <div
-        className="transition-content mt-4 grid w-full grid-cols-12 gap-4 pb-8 sm:mt-5 sm:gap-5 lg:mt-6 lg:gap-6"
-        style={{ paddingInline: "var(--margin-x)" }}
-      >
-        {/* Main Content */}
-        <div className="col-span-12 lg:col-span-11 xl:col-span-10">
+      {/* Responsive 12-column Grid Layout */}
+      <div className="grid grid-cols-12 gap-4 px-4 pb-8 sm:gap-5 lg:gap-6 sm:px-5 lg:px-6">
+        {/* Left/Main Section (10 of 12 columns) */}
+        <div className="col-span-12 xl:col-span-10 lg:col-span-9">
           {/* <Classes /> */}
-        <div>
-            <WeeklyTimeTable />
-        </div>
+          <WeeklyTimeTable />
         </div>
 
-        {/* Sidebar */}
-        <div className="col-span-12 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:sticky lg:top-20 lg:col-span-1 lg:grid-cols-1 lg:gap-6 lg:self-start xl:col-span-2">
+        {/* Right Sidebar (2 of 12 columns) */}
+        <div className="col-span-12 lg:col-span-3 xl:col-span-2 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-1 lg:gap-6 lg:sticky lg:top-20 lg:self-start">
           <WorkingHours />
           <Students />
           <Calendar />
