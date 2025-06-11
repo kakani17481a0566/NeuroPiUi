@@ -10,7 +10,7 @@ import { Avatar, Button, Card, Tag } from "components/ui";
 
 export function ClassCard({ image, name, category, time, color, students }) {
   return (
-    <Card className="flex overflow-hidden">
+    <Card className="flex overflow-hidden border-[3px] border-black rounded-lg p-4">
       <div
         className={clsx(
           `this:${color}`,
@@ -66,3 +66,6 @@ ClassCard.propTypes = {
   color: PropTypes.string,
   students: PropTypes.array,
 };
+
+
+

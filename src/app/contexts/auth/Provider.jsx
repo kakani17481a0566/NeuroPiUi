@@ -86,15 +86,15 @@ export function AuthProvider({ children }) {
         if (authToken && isTokenValid(authToken)) {
           setSession(authToken);
 
-         const response = await axios.get("/user/profile");
+        //  const response = await axios.get("/user/profile");
          
-          const { user } = response.data;
+          // const { user } = response.data;
 
           dispatch({
             type: "INITIALIZE",
             payload: {
               isAuthenticated: true,
-              user,
+              // user,
             },
           });
         } else {

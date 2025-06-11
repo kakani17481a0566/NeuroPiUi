@@ -28,19 +28,24 @@ export function Classes() {
         </a>
       </div>
 
-      <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5">
-        {classes.map((item) => (
-          <ClassCard
-            key={item.uid}
-            name={item.name}
-            image={item.image}
-            time={item.time}
-            category={item.category}
-            color={item.color}
-            students={item.students}
-          />
-        ))}
+      {/* 🔽 Horizontal scroll container */}
+      <div className="mt-3 overflow-x-auto whitespace-nowrap pb-2 px-2 ">
+  <div className="flex gap-4 ">
+    {classes.map((item) => (
+      <div key={item.uid} className="inline-block min-w-[300px]">
+        <ClassCard
+          name={item.category}
+          image={item.image}
+          time={item.time}
+          category={item.name}
+          color={item.color}
+          students={item.students}
+        />
       </div>
+    ))}
+  </div>
+</div>
+
     </div>
   );
 }
