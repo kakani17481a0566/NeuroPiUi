@@ -11,59 +11,44 @@ import {
   ChevronUpIcon,
   EllipsisHorizontalIcon,
   EyeIcon,
-  LinkIcon
-} from "@heroicons/react/24/outline";
+  LinkIcon} from "@heroicons/react/24/outline";
+import clsx from "clsx";
 import { useCallback, useState } from "react";
 
 
-import clsx from "clsx";
+// import clsx from "clsx";
 // import { useCallback, useState } from "react";
 import PropTypes from "prop-types";
+import Vimeo from '@u-wave/react-vimeo';
+
 
 // Local Imports
 // import { ConfirmModal } from "components/shared/ConfirmModal";
 import { Button } from "components/ui";
 import { pdfjs } from "react-pdf";
-import { Document, Page } from "react-pdf";
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url,
-).toString();
+// import { Document, Page } from "react-pdf";
+  pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
 
 // ----------------------------------------------------------------------
 
-// const confirmMessages = {
-//   pending: {
-//     description:
-//       "Are you sure you want to delete this row? Once deleted, it cannot be restored.",
-//   },
-//   success: {
-//     title: "Row Deleted",
-//   },
-// };
+
 
 export function RowActions({ row }) {
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
+
     const [showPdfViewerModal, setShowPdfViewerModal] = useState(false);
-      function nextPage() {
-    setPageNumber((v) => ++v);
-  }
-  function prevPage() {
-    setPageNumber((v) => --v);
-  }
-    const pdfPath = "https://drive.google.com/file/d/1-apEdtuKa0-0Lm0-VF0KXWmgYsyIhWCu/view?usp=sharing";
+  const[pdfPath, setPdfPath] = useState("");
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  
 
+ const handleViewPdfPopup = useCallback(() => {
+    setShowPdfViewerModal(true);
+    setPdfPath(row.original.column8) // Set the PDF path from row data or a default path  
+  }, []);
+ 
 
-     function onDocumentLoadSuccess({ numPages }) {
-            setNumPages(numPages);
-          }
-            const handleViewPdfPopup = useCallback(() => {
-              setShowPdfViewerModal(true);
-            }, []);
-
-
-
+ 
+  
 
   return (
     <>
@@ -105,9 +90,7 @@ export function RowActions({ row }) {
             <MenuItem>
               {({ focus }) => (
                 <button
-                  onClick={() =>
-                    console.log("👁️ View clicked:", row.original)
-                  }
+                  onClick={handleViewPdfPopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
                     focus && "bg-gray-100 dark:bg-dark-600"
@@ -121,73 +104,85 @@ export function RowActions({ row }) {
             <MenuItem>
               {({ focus }) => (
                 <button
-                  onClick={ handleViewPdfPopup}
+                  onClick={() =>
+                    setShowVideoModal(true)}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
                     focus && "bg-gray-100 dark:bg-dark-600"
                   )}
                 >
                   <LinkIcon className="size-4.5 stroke-1" />
-                  <span>Resource Link</span>
+                  <span>Resourses</span>
                 </button>
               )}
             </MenuItem>
-
+            {/* <MenuItem>
+              {({ focus }) => (
+                <button
+                  onClick={openModal}
+                  className={clsx(
+                    "flex h-9 w-full items-center space-x-3 px-3 text-red-600",
+                    focus && "bg-red-100 dark:bg-red-600/10"
+                  )}
+                >
+                  <TrashIcon className="size-4.5 stroke-1" />
+                  <span>Assignment</span>
+                </button>
+              )}
+            </MenuItem> */}
           </Transition>
         </Menu>
       </div>
 
-      {/* <ConfirmModal
-        show={deleteModalOpen}
-        onClose={closeModal}
-        messages={confirmMessages}
-        onOk={handleDeleteRows}
-        confirmLoading={confirmDeleteLoading}
-        state={state}
-      /> */}
-       {showPdfViewerModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-4 max-w-3xl w-full relative shadow-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">PDF View </h2>
-              <button
-                onClick={() => setShowPdfViewerModal(false)}
-                className="text-red-500 font-bold text-xl"
-              >
-                &times;
-              </button>
-            </div>
-            <div className="flex justify-between mb-2">
-              <button
-                onClick={prevPage}
-                disabled={pageNumber <= 1}
-                className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <button
-                onClick={nextPage}
-                disabled={pageNumber >= (numPages ?? -1)}
-                className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-            <div className="overflow-auto max-h-[70vh] border rounded">
-              <Document
-                file={pdfPath}
-                onLoadSuccess={onDocumentLoadSuccess}
-                className="my-react-pdf"
-              >
-                <Page pageNumber={pageNumber} />
-              </Document>
-            </div>
-            <p className="mt-2 text-center text-sm">
-              Page {pageNumber} of {numPages}
-            </p>
-          </div>
-        </div>
-      )}
+      
+
+      {showPdfViewerModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="bg-white rounded-lg p-4 max-w-3xl w-full relative shadow-lg">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-semibold">PDF View </h2>
+                    <button
+                      onClick={() => setShowPdfViewerModal(false)}
+                      className="text-red-500 font-bold text-xl"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  <div className="flex justify-between mb-2">
+                    <iframe
+                      src={pdfPath}
+                      className="w-full h-[70vh] border rounded"
+                      title="PDF Viewer"
+                    ></iframe>
+
+                  </div>
+                </div>
+              </div>
+            )}
+            {showVideoModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                      <div className="bg-white rounded-lg p-4 max-w-3xl w-full relative shadow-lg">
+                        <div className="flex justify-between items-center mb-4">
+                          <h2 className="text-lg font-semibold">Video Player</h2>
+                          <button
+                            onClick={() => setShowVideoModal(false)}
+                            className="text-red-500 font-bold text-xl"
+                          >
+                            &times;
+                          </button>
+                        </div>
+                        <div className="w-full aspect-video rounded overflow-hidden border">
+                          <Vimeo
+                            video="785969913" 
+                            width="100%"
+                            height="100%"
+                            responsive
+                            autoplay
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
     </>
   );
 }

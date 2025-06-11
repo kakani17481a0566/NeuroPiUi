@@ -12,19 +12,24 @@ const headerClassMap = {
   PD: "pd",
   EAD: "ead",
   DAYS: "days",
- ACTION: "actions", // ✅ Already present
+  ACTION: "actions",
 };
 
 /**
  * Generate column definitions based on headers from API
  * Adds `.columnClassName` meta for custom tailwind-based styling
+ * Applies color styling based on cell prefix (AS:, FT:, NR:)
  */
 export function generateWeeklyTimeTableColumns(headers) {
   return [
     ...headers.map((header, index) => {
-      const headerLines = header.split("\n");
-      const code = headerLines[1]?.replace(/[()]/g, "").trim().toUpperCase(); // Extract PSED, CLL etc.
-      const className = headerClassMap[code] || ""; // fallback to empty
+      const headerLines = header
+        .split(/\n|&/)
+        .map((line) => line.trim())
+        .filter(Boolean);
+
+      const code = headerLines[1]?.replace(/[()]/g, "").trim().toUpperCase();
+      const className = headerClassMap[code] || "";
 
       return {
         id: `column${index + 1}`,
@@ -37,7 +42,7 @@ export function generateWeeklyTimeTableColumns(headers) {
             Fragment,
             {},
             ...headerLines.map((line, i) =>
-              createElement("div", { key: i }, line.trim())
+              createElement("div", { key: i }, line)
             )
           ),
         cell: (info) => {
@@ -48,23 +53,38 @@ export function generateWeeklyTimeTableColumns(headers) {
           return createElement(
             Fragment,
             {},
-            ...lines.map((line, i) =>
-              createElement("div", { key: i }, line.trim())
-            )
+            ...lines.map((line, i) => {
+              const trimmed = line.trim();
+              let textClass = "";
+
+              if (trimmed.startsWith("AS:")) {
+                textClass = "text-purple-600 font-semibold";
+              } else if (trimmed.startsWith("FT:")) {
+                textClass = "text-yellow-600 font-semibold";
+              } else if (trimmed.startsWith("NR:")) {
+                textClass = "text-green-600 font-semibold";
+              }
+             else if (trimmed.startsWith("ET:")) {
+                textClass = "text-red-600 font-semibold";
+              }
+
+              return createElement(
+                "div",
+                { key: i, className: textClass },
+                trimmed
+              );
+            })
           );
         },
       };
     }),
 
-    // Add optional action column
+    // Optional row action column
     columnHelper.display({
       id: "actions",
       label: "Row Actions",
       header: "Actions",
       cell: RowActions,
-      meta: {
-    columnClassName: "actions", // ✅ Add this line
-  },
     }),
   ];
 }
