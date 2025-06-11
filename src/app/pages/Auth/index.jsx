@@ -1,4 +1,4 @@
-import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
+import { UserIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { Button, Card, Input, InputErrorMsg } from "components/ui";
@@ -54,7 +54,7 @@ export default function SignIn() {
                   <Input
                     label="Username"
                     placeholder="Enter your username"
-                    prefix={<EnvelopeIcon className="size-5" strokeWidth="1" />}
+                    prefix={<UserIcon className="size-5" strokeWidth="1" />}
                     {...register("username")}
                     error={errors?.username?.message}
                   />

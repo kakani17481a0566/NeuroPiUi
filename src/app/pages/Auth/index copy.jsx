@@ -1,6 +1,6 @@
 // Import Dependencies
 // import { Link } from "react-router";
-import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
+import { UserIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 
@@ -68,7 +68,7 @@ export default function SignIn() {
                   label="Username"
                   placeholder="Enter Username"
                   prefix={
-                    <EnvelopeIcon
+                    <UserIcon
                       className="size-5 transition-colors duration-200"
                       strokeWidth="1"
                     />
