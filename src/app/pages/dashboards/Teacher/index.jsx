@@ -7,7 +7,7 @@ import { WorkingHours } from "./WorkingHours";
 import { Students } from "./Students";
 import { Calendar } from "./Calendar";
 import { WeeklyTimeTable } from "./WeeklyTimeTable";
-// import { Classes } from "./Classes";
+import { Classes } from "./Classes";
 import { useState } from "react";
 import { Combobox } from "components/shared/form/Combobox";
 
@@ -47,7 +47,7 @@ export default function Teacher() {
       <div className="grid grid-cols-12 gap-4 px-4 pb-8 sm:gap-5 lg:gap-6 sm:px-5 lg:px-6">
         {/* Left/Main Section (10 of 12 columns) */}
         <div className="col-span-12 xl:col-span-10 lg:col-span-9">
-          {/* <Classes /> */}
+          <Classes />
           <WeeklyTimeTable />
         </div>
 

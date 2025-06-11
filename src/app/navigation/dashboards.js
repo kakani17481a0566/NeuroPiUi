@@ -14,22 +14,22 @@ export const dashboards = {
     transKey: 'nav.dashboards.dashboards',
     Icon: DashboardsIcon,
     childs: [
-        {
-            id: 'dashboards.home',
-            path: path(ROOT_DASHBOARDS, '/home'),
-            type: NAV_TYPE_ITEM,
-            title: 'Home',
-            transKey: 'nav.dashboards.home',
-            Icon: HomeIcon,
-        },
-        {
-            id: 'dashboards.Test',
-            path: path(ROOT_DASHBOARDS, '/test'),
-            type: NAV_TYPE_ITEM,
-            title: 'Test',
-            transKey: 'nav.dashboards.Test',
-            Icon: HomeIcon,
-        },
+        // {
+        //     id: 'dashboards.home',
+        //     path: path(ROOT_DASHBOARDS, '/home'),
+        //     type: NAV_TYPE_ITEM,
+        //     title: 'Home',
+        //     transKey: 'nav.dashboards.home',
+        //     Icon: HomeIcon,
+        // },
+        // {
+        //     id: 'dashboards.Test',
+        //     path: path(ROOT_DASHBOARDS, '/test'),
+        //     type: NAV_TYPE_ITEM,
+        //     title: 'Test',
+        //     transKey: 'nav.dashboards.Test',
+        //     Icon: HomeIcon,
+        // },
         {
             id: 'dashboards.Teacher',
             path: path(ROOT_DASHBOARDS, '/teacher'),

@@ -11,59 +11,40 @@ import {
   ChevronUpIcon,
   EllipsisHorizontalIcon,
   EyeIcon,
-  PencilIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+  LinkIcon} from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { useCallback, useState } from "react";
 import PropTypes from "prop-types";
+import Vimeo from '@u-wave/react-vimeo';
+
 
 // Local Imports
-import { ConfirmModal } from "components/shared/ConfirmModal";
+// import { ConfirmModal } from "components/shared/ConfirmModal";
 import { Button } from "components/ui";
+import { pdfjs } from "react-pdf";
+// import { Document, Page } from "react-pdf";
+  pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
 
 // ----------------------------------------------------------------------
 
-const confirmMessages = {
-  pending: {
-    description:
-      "Are you sure you want to delete this row? Once deleted, it cannot be restored.",
-  },
-  success: {
-    title: "Row Deleted",
-  },
-};
 
-export function RowActions({ row, table }) {
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [confirmDeleteLoading, setConfirmDeleteLoading] = useState(false);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const [deleteError, setDeleteError] = useState(false);
 
-  const closeModal = () => setDeleteModalOpen(false);
+export function RowActions({ row }) {
 
-  const openModal = () => {
-    setDeleteModalOpen(true);
-    setDeleteError(false);
-    setDeleteSuccess(false);
-  };
+    const [showPdfViewerModal, setShowPdfViewerModal] = useState(false);
+  const[pdfPath, setPdfPath] = useState("");
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  
 
-  const handleDeleteRows = useCallback(() => {
-    console.log("🗑️ Deleting row:", row.original);
-    setConfirmDeleteLoading(true);
-    setTimeout(() => {
-      try {
-        table.options.meta?.deleteRow?.(row.original);
-        setDeleteSuccess(true);
-      } catch (err) {
-        console.error("❌ Delete failed:", err);
-        setDeleteError(true);
-      }
-      setConfirmDeleteLoading(false);
-    }, 1000);
-  }, [row, table]);
+ const handleViewPdfPopup = useCallback(() => {
+    setShowPdfViewerModal(true);
+    setPdfPath(row.original.column8) // Set the PDF path from row data or a default path  
+  }, []);
+ 
 
-  const state = deleteError ? "error" : deleteSuccess ? "success" : "pending";
+ 
+  
 
   return (
     <>
@@ -105,16 +86,14 @@ export function RowActions({ row, table }) {
             <MenuItem>
               {({ focus }) => (
                 <button
-                  onClick={() =>
-                    console.log("👁️ View clicked:", row.original)
-                  }
+                  onClick={handleViewPdfPopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
                     focus && "bg-gray-100 dark:bg-dark-600"
                   )}
                 >
                   <EyeIcon className="size-4.5 stroke-1" />
-                  <span>View</span>
+                  <span>Lesson Plan</span>
                 </button>
               )}
             </MenuItem>
@@ -122,19 +101,18 @@ export function RowActions({ row, table }) {
               {({ focus }) => (
                 <button
                   onClick={() =>
-                    console.log("✏️ Edit clicked:", row.original)
-                  }
+                    setShowVideoModal(true)}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
                     focus && "bg-gray-100 dark:bg-dark-600"
                   )}
                 >
-                  <PencilIcon className="size-4.5 stroke-1" />
-                  <span>Edit</span>
+                  <LinkIcon className="size-4.5 stroke-1" />
+                  <span>Resourses</span>
                 </button>
               )}
             </MenuItem>
-            <MenuItem>
+            {/* <MenuItem>
               {({ focus }) => (
                 <button
                   onClick={openModal}
@@ -144,22 +122,63 @@ export function RowActions({ row, table }) {
                   )}
                 >
                   <TrashIcon className="size-4.5 stroke-1" />
-                  <span>Delete</span>
+                  <span>Assignment</span>
                 </button>
               )}
-            </MenuItem>
+            </MenuItem> */}
           </Transition>
         </Menu>
       </div>
 
-      <ConfirmModal
-        show={deleteModalOpen}
-        onClose={closeModal}
-        messages={confirmMessages}
-        onOk={handleDeleteRows}
-        confirmLoading={confirmDeleteLoading}
-        state={state}
-      />
+      
+
+      {showPdfViewerModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="bg-white rounded-lg p-4 max-w-3xl w-full relative shadow-lg">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-semibold">PDF View </h2>
+                    <button
+                      onClick={() => setShowPdfViewerModal(false)}
+                      className="text-red-500 font-bold text-xl"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  <div className="flex justify-between mb-2">
+                    <iframe
+                      src={pdfPath}
+                      className="w-full h-[70vh] border rounded"
+                      title="PDF Viewer"
+                    ></iframe>
+
+                  </div>
+                </div>
+              </div>
+            )}
+            {showVideoModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                      <div className="bg-white rounded-lg p-4 max-w-3xl w-full relative shadow-lg">
+                        <div className="flex justify-between items-center mb-4">
+                          <h2 className="text-lg font-semibold">Video Player</h2>
+                          <button
+                            onClick={() => setShowVideoModal(false)}
+                            className="text-red-500 font-bold text-xl"
+                          >
+                            &times;
+                          </button>
+                        </div>
+                        <div className="w-full aspect-video rounded overflow-hidden border">
+                          <Vimeo
+                            video="785969913" 
+                            width="100%"
+                            height="100%"
+                            responsive
+                            autoplay
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
     </>
   );
 }

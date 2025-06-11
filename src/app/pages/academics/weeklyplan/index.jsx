@@ -4,7 +4,9 @@
 // // import WeeklyPlan from "../../tables/WeeklyPlan";
 // 
 // 
-import WeeklyTimeTable from 'app/pages/tables/WeekTimeTable';
+// import WeeklyTimeTable from 'app/pages/tables/WeekTimeTable';
+
+import Week from "app/pages/dashboards/Teacher/WeeklyTimeTable/Table/Week";
 
 export default function weeklyplan(){
     return (
@@ -14,9 +16,11 @@ export default function weeklyplan(){
               <h2 className="truncate text-xl font-medium tracking-wide text-gray-800 dark:text-dark-50">
                 Academics
               </h2>
-              
-              <div className="mt-1"> {/* Added margin top for better spacing */}
-                <WeeklyTimeTable/>
+            
+              <div > {/* Added margin top for better spacing */}
+
+                  <Week/>
+                {/* <WeeklyTimeTable/> */}
               </div>
             </div>
           </div>
