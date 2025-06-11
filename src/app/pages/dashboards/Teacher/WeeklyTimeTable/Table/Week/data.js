@@ -8,6 +8,7 @@ export async function fetchWeeklyTimeTableData() {
       // "https://localhost:7202/api/TimeTable/weekId/1/tenantId/1/courseId/1"
     );
 
+    
     if (response.status === 200 && response.data?.data) {
       const { headers, timeTableData,resources } = response.data.data;
       return { headers, timeTableData ,resources}; 

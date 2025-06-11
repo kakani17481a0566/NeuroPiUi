@@ -132,6 +132,7 @@ export default function Week() {
                     {headerGroup.headers.map((header) => (
                       <Th
                         key={header.id}
+                            //  style={{backgroundColor : "#80DD8E"}}
                         className={clsx(
                           "dark:bg-dark-800 dark:text-dark-100 bg-gray-200 text-center font-semibold text-gray-800 uppercase",
                           header.column.getCanPin() && [

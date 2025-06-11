@@ -27,10 +27,12 @@ export function Header() {
         cardSkin === "bordered" ? "dark:bg-dark-900/80" : "dark:bg-dark-700/80",
       )}
     >
+
+    
       <div className="contents xl:hidden">
         <SidebarToggleBtn />
       </div>
-
+1
       <div className="flex items-center gap-2 sm:flex-1">
         <div className="flex-1">
           <Search
@@ -41,7 +43,9 @@ export function Header() {
                     onClick={open}
                     className="flex cursor-pointer items-center gap-4 outline-hidden max-sm:hidden"
                   >
+                  2
                     <div className="flex items-center gap-2">
+                3
                       <MagnifyingGlassIcon className="size-5" />
                       <span>Search here...</span>
                     </div>
@@ -64,14 +68,15 @@ export function Header() {
                     </svg>
                   </button>
                 )}
+                4
                 <Button
                   onClick={open}
                   variant="flat"
                   isIcon
                   className="relative size-9 rounded-full sm:hidden"
-                >
+                >5
                   <SearchIcon className="size-6 text-gray-900 dark:text-dark-100" />
-                </Button>
+                </Button>6
               </>
             )}
           />

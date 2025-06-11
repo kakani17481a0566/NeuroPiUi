@@ -1,92 +1,24 @@
-// Local Imports
+// src/app/pages/dashboards/Teacher/Classes/index.jsx
+import { useEffect, useState } from "react";
 import { ClassCard } from "./ClassCard";
-
-// ----------------------------------------------------------------------
-
-const classes = [
-  {
-    uid: 1,
-    image: "/images/600x400.png",
-    name: "Basic English",
-    category: "Language",
-    time: "Mon. 08:00 - 09:00",
-    color: "primary",
-    students: [
-      {
-        uid: "5",
-        name: "Katrina West",
-        avatar: "/images/200x200.png",
-      },
-      {
-        uid: "6",
-        name: "Henry Curtis",
-        avatar: "/images/200x200.png",
-      },
-      {
-        uid: "7",
-        name: "Raul Bradley",
-        avatar: "/images/200x200.png",
-      },
-    ],
-  },
-  {
-    uid: 2,
-    image: "/images/600x400.png",
-    name: "Learn UI/UX Design",
-    category: "UI/UX Design",
-    time: "Tue. 10:00 - 11:30",
-    color: "info",
-    students: [
-      {
-        uid: "8",
-        name: "Samantha Shelton",
-        avatar: null,
-      },
-      {
-        uid: "9",
-        name: "Corey Evans",
-        avatar: "/images/200x200.png",
-      },
-      {
-        uid: "10",
-        name: "Lance Tucker",
-        avatar: null,
-      },
-    ],
-  },
-  {
-    uid: 3,
-    image: "/images/800x800.png",
-    name: "Basic of digital marketing",
-    category: "Marketing",
-    time: "Wed. 09:00 - 11:00",
-    color: "secondary",
-    students: [
-      {
-        uid: "6",
-        name: "Henry Curtis",
-        avatar: "/images/200x200.png",
-      },
-      {
-        uid: "7",
-        name: "Raul Bradley",
-        avatar: "/images/200x200.png",
-      },
-      {
-        uid: "8",
-        name: "Samantha Shelton",
-        avatar: null,
-      },
-    ],
-  },
-];
+import { fetchWeeklyClasses } from "./fetchWeeklyClasses";
 
 export function Classes() {
+  const [classes, setClasses] = useState([]);
+  const [weekInfo, setWeekInfo] = useState({ weekName: "", currentDate: "" });
+
+  useEffect(() => {
+    fetchWeeklyClasses().then(({ classes, weekName, currentDate }) => {
+      setClasses(classes);
+      setWeekInfo({ weekName, currentDate });
+    });
+  }, []);
+
   return (
     <div className="mt-4 sm:mt-5 lg:mt-6">
       <div className="flex h-8 min-w-0 items-center justify-between">
         <h2 className="truncate text-base font-medium tracking-wide text-gray-800 dark:text-dark-100">
-          Week 2 Classes
+          {weekInfo.weekName} - ({weekInfo.currentDate})
         </h2>
         <a
           href="##"
@@ -95,6 +27,7 @@ export function Classes() {
           View All
         </a>
       </div>
+
       <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5">
         {classes.map((item) => (
           <ClassCard

@@ -12,6 +12,7 @@ export default function Sideblock() {
     <>
       <Header />
       <main className="main-content transition-content grid grid-cols-1">
+        1
         <Outlet />
       </main>
       <Sidebar />

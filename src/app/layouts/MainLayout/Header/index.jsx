@@ -38,13 +38,42 @@ export function Header() {
   const { cardSkin } = useThemeContext();
 
   return (
-    <header
+    // <header
+    //   className={clsx(
+    //     "app-header transition-content sticky top-0 z-20 flex h-[65px] shrink-0 items-center justify-between border-b border-gray-200 bg-white/80 px-(--margin-x) backdrop-blur-sm backdrop-saturate-150 dark:border-dark-600",
+    //     cardSkin === "shadow-sm" ? "dark:bg-dark-750/80" : "dark:bg-dark-900/80",
+    //   )}
+    // >
+
+    // <header
+    //   className={clsx(
+    //     "app-header transition-content dark:border-dark-600 sticky top-0 z-20 flex h-20 shrink-0 items-center justify-between border-b border-gray-200 bg-white/80 px-(--margin-x) backdrop-blur-sm backdrop-saturate-150",
+    //     cardSkin === "shadow-sm"
+    //       ? "dark:bg-dark-750/80"
+    //       : "dark:bg-dark-900/80",
+    //   )}
+    // >
+
+
+      <header
       className={clsx(
         "app-header transition-content sticky top-0 z-20 flex h-[65px] shrink-0 items-center justify-between border-b border-gray-200 bg-white/80 px-(--margin-x) backdrop-blur-sm backdrop-saturate-150 dark:border-dark-600",
         cardSkin === "shadow-sm" ? "dark:bg-dark-750/80" : "dark:bg-dark-900/80",
       )}
     >
+      
       <SidebarToggleBtn />
+      
+
+      <div className="px-4">
+        <img
+          id="header-logo-main-bar" 
+          src="https://res.cloudinary.com/kakani7/image/upload/v1746172182/MSI/yqjbpqtuvuf0co08zai4.svg" // Replace with your actual image path
+          alt="Company Logo"
+          // className="h-8 w-auto object-contain"
+          className="h-500 w-auto max-w-[300px] object-contain"
+        />
+      </div>
 
       <div className="flex items-center gap-2 ltr:-mr-1.5 rtl:-ml-1.5">
         <Search
@@ -53,11 +82,11 @@ export function Header() {
               <Button
                 onClick={open}
                 unstyled
-                className="h-8 w-64 justify-between gap-2 rounded-full border border-gray-200 px-3 text-xs-plus hover:border-gray-400 dark:border-dark-500 dark:hover:border-dark-400 max-sm:hidden"
+                className="text-xs-plus dark:border-dark-500 dark:hover:border-dark-400 h-8 w-64 justify-between gap-2 rounded-full border border-gray-200 px-3 hover:border-gray-400 max-sm:hidden"
               >
                 <div className="flex items-center gap-2">
                   <MagnifyingGlassIcon className="size-4" />
-                  <span className="text-gray-400 dark:text-dark-300">
+                  <span className="dark:text-dark-300 text-gray-400">
                     Search here...
                   </span>
                 </div>
@@ -70,7 +99,7 @@ export function Header() {
                 isIcon
                 className="relative size-9 rounded-full sm:hidden"
               >
-                <SearchIcon className="size-6 text-gray-900 dark:text-dark-100" />
+                <SearchIcon className="dark:text-dark-100 size-6 text-gray-900" />
               </Button>
             </>
           )}
