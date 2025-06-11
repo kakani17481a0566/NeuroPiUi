@@ -9,8 +9,8 @@ export async function fetchWeeklyTimeTableData() {
     );
 
     if (response.status === 200 && response.data?.data) {
-      const { headers, timeTableData } = response.data.data;
-      return { headers, timeTableData }; 
+      const { headers, timeTableData,resources } = response.data.data;
+      return { headers, timeTableData ,resources}; 
     } else {
       console.warn("Unexpected response format:", response);
       return { headers: [], timeTableData: [] };
