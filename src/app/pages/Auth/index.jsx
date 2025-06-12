@@ -6,9 +6,13 @@ import { useAuthContext } from "app/contexts/auth/context";
 import { schema } from "./schema";
 import { Page } from "components/shared/Page";
 import { useState } from "react";
+import { useNavigate  } from "react-router-dom";
+
 import "./Auth.css";
 
 export default function SignIn() {
+      const navigate = useNavigate();
+  
   const { login, errorMessage } = useAuthContext();
   const {
     register,
@@ -31,6 +35,7 @@ export default function SignIn() {
         username: data.username,
         password: data.password,
       });
+        navigate("/dashboards/Teacher");
     } finally {
       setLoading(false);
     }

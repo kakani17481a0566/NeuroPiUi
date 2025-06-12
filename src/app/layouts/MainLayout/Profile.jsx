@@ -11,6 +11,15 @@ import {
 } from "@heroicons/react/24/outline";
 import { TbCoins, TbUser } from "react-icons/tb";
 import { Link } from "react-router";
+// import { Navigate } from "react-router";
+import { useNavigate  } from "react-router-dom";
+// import { clearSessionData } from "utils/sessionStorage";
+import { useAuthContext } from "app/contexts/auth/context";
+  // ✅ logout function from context
+
+
+
+
 
 // Local Imports
 import { Avatar, AvatarDot, Button } from "components/ui";
@@ -44,7 +53,18 @@ const links = [
   },
 ];
 
+
 export function Profile() {
+    const navigate = useNavigate();
+      // const { setAuthenticated } = useAuthContext(); // or whatever updates auth
+// const { dispatch } = useAuthContext();
+const { logout } = useAuthContext(); 
+
+
+const handleLogOut=async ()=>{
+   console.log("Logging out...");
+    await logout(); // ✅ clear session + auth state
+    navigate("/login?redirectUrl=/");}
   return (
     <Popover className="relative">
       <PopoverButton
@@ -119,7 +139,7 @@ export function Profile() {
                   </Link>
                 ))}
                 <div className="px-4 pt-4">
-                  <Button className="w-full gap-2">
+                  <Button className="w-full gap-2" onClick={handleLogOut}>
                     <ArrowLeftStartOnRectangleIcon className="size-4.5" />
                     <span>Logout</span>
                   </Button>
