@@ -1,5 +1,5 @@
 import { Page } from "components/shared/Page";
-import OrdersDatatableV2 from "app/pages/tables/UserList"; // verify this path is correct
+// import OrdersDatatableV2 from "app/pages/tables/UserList"; // verify this path is correct
 
 export default function Home() {
   return (
@@ -11,7 +11,8 @@ export default function Home() {
           </h2>
           
           <div className="mt-4"> {/* Added margin top for better spacing */}
-            <OrdersDatatableV2 />
+            {/* <OrdersDatatableV2 /> */}
+            
           </div>
         </div>
       </div>

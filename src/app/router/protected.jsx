@@ -25,7 +25,7 @@ const protectedRoutes = {
           children: [
             {
               index: true,
-              element: <Navigate to="/dashboards/home" />,
+              element: <Navigate to="/dashboards/Teacher" />,
             },
             {
               path: "home",
