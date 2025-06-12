@@ -12,17 +12,17 @@ import {
 import { TbCoins, TbUser } from "react-icons/tb";
 import { Link } from "react-router";
 // import { Navigate } from "react-router";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import { clearSessionData } from "utils/sessionStorage";
 import { useAuthContext } from "app/contexts/auth/context";
-  // ✅ logout function from context
-
+// import { getSessionData } from "utils/sessionStorage";
 
 
 
 
 // Local Imports
 import { Avatar, AvatarDot, Button } from "components/ui";
+
 
 // ----------------------------------------------------------------------
 
@@ -55,16 +55,17 @@ const links = [
 
 
 export function Profile() {
-    const navigate = useNavigate();
-      // const { setAuthenticated } = useAuthContext(); // or whatever updates auth
-// const { dispatch } = useAuthContext();
-const { logout } = useAuthContext(); 
+  const navigate = useNavigate();
+  // const { setAuthenticated } = useAuthContext(); // or whatever updates auth
+  // const { dispatch } = useAuthContext();
+  const { logout, userProfile } = useAuthContext();
+  // const { user } = getSessionData();
 
-
-const handleLogOut=async ()=>{
-   console.log("Logging out...");
+  const handleLogOut = async () => {
+    console.log("Logging out...");
     await logout(); // ✅ clear session + auth state
-    navigate("/login?redirectUrl=/");}
+    navigate("/login?redirectUrl=/");
+  }
   return (
     <Popover className="relative">
       <PopoverButton
@@ -101,12 +102,8 @@ const handleLogOut=async ()=>{
                   alt="Profile"
                 />
                 <div>
-                  <Link
-                    className="hover:text-primary-600 focus:text-primary-600 dark:text-dark-100 dark:hover:text-primary-400 dark:focus:text-primary-400 text-base font-medium text-gray-700"
-                    to="/settings/general"
-                  >
-                    Travis Fuller
-                  </Link>
+                
+                    <p  className="hover:text-primary-600 focus:text-primary-600 dark:text-dark-100 dark:hover:text-primary-400 dark:focus:text-primary-400 text-base font-medium text-gray-700">{userProfile?.username ?? "Guest"}</p> 
 
                   <p className="dark:text-dark-300 mt-0.5 text-xs text-gray-400">
                     Product Designer
