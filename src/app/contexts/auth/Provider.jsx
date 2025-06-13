@@ -17,19 +17,20 @@ const initialState = {
   isLoading: false,
   isInitialized: false,
   errorMessage: null,
-  user: null,
-  userId:null,
-  tenantId:null
+  userProfile: null,
+  userId: null,
+  tenantId: null
 };
+
 
 const reducerHandlers = {
   INITIALIZE: (state, action) => {
-    const { isAuthenticated, user } = action.payload;
+    const { isAuthenticated, userProfile } = action.payload;
     return {
       ...state,
       isAuthenticated,
       isInitialized: true,
-      user,
+      userProfile,
     };
   },
 
@@ -41,12 +42,12 @@ const reducerHandlers = {
   },
 
   LOGIN_SUCCESS: (state, action) => {
-    const { user } = action.payload;
+    const { userProfile } = action.payload;
     return {
       ...state,
       isAuthenticated: true,
       isLoading: false,
-      user,
+      userProfile,
     };
   },
 
@@ -63,7 +64,7 @@ const reducerHandlers = {
   LOGOUT: (state) => ({
     ...state,
     isAuthenticated: false,
-    user: null,
+    userProfile: null,
   }),
 };
 
@@ -82,19 +83,24 @@ export function AuthProvider({ children }) {
     const init = async () => {
       try {
         const authToken = window.localStorage.getItem("authToken");
+        const userProfileString = localStorage.getItem("userProfile");
+
+        const parsedUserProfile = userProfileString ? JSON.parse(userProfileString) : null;
+
 
         if (authToken && isTokenValid(authToken)) {
           setSession(authToken);
 
-        //  const response = await axios.get("/user/profile");
-         
+          //  const response = await axios.get("/user/profile");
+
           // const { user } = response.data;
 
           dispatch({
             type: "INITIALIZE",
             payload: {
               isAuthenticated: true,
-              // user,
+              parsedUserProfile
+
             },
           });
         } else {
@@ -112,7 +118,7 @@ export function AuthProvider({ children }) {
           type: "INITIALIZE",
           payload: {
             isAuthenticated: false,
-            user: null,
+            userProfile: null,
           },
         });
       }
@@ -127,22 +133,21 @@ export function AuthProvider({ children }) {
     });
 
     try {
-      // const response = await axios.get(`https://localhost:7171/api/User/login?username=${username}&password=${password}`);
+      //const response = await axios.get(`https://localhost:7171/api/User/login?username=${username}&password=${password}`);
       const response = await axios.get(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/User/login?username=${username}&password=${password}`);
 
-//
-      // const { authToken, user } = response.data;
-      const {  tenantId, userId, user } = response.data.data;
-      const token=response.data.data.token;
-
+      const { tenantId, userId, userProfile } = response.data.data;
+      const token = response.data.data.token;
       if (!isString(token)) {
         throw new Error("Response is not vallid");
       }
-      
+
       localStorage.setItem("authToken", token);
       localStorage.setItem("tenantId", tenantId);
       localStorage.setItem("userId", userId);
-      setSessionData({ token:token, tid: tenantId, uid: userId });
+      localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
+      setSessionData({ token: token, tid: tenantId, uid: userId, userProfile: userProfile });
 
 
       setSession(token);
@@ -150,7 +155,7 @@ export function AuthProvider({ children }) {
       dispatch({
         type: "LOGIN_SUCCESS",
         payload: {
-          user,
+          userProfile,
         },
       });
     } catch (err) {
@@ -200,6 +205,8 @@ export function AuthProvider({ children }) {
         ...state,
         login,
         logout,
+        userProfile: state.userProfile,
+
       }}
     >
       {children}

@@ -15,13 +15,18 @@ export default function GhostGuard() {
   const url = `${new URLSearchParams(window.location.search).get(
     REDIRECT_URL_KEY,
   )}`;
+    const redirectUrl = url && url !== "null" ? url : null;
+
 
   if (isAuthenticated) {
+    if(redirectUrl){
     if (url && url !== "") {
-      return <Navigate to={url} />;
+      return <Navigate to={url} replace />;
     }
-    return <Navigate to={HOME_PATH} />;
+
+    return <Navigate to={HOME_PATH}  replace/>;
   }
+}
 
   return <>{outlet}</>;
 }
