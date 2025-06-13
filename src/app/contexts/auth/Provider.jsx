@@ -163,11 +163,32 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // const logout = async () => {
+  //   setSession(null);
+  //   clearSessionData();
+  //   dispatch({ type: "LOGOUT" });
+  // };
+
+
   const logout = async () => {
-    setSession(null);
-    clearSessionData();
-    dispatch({ type: "LOGOUT" });
-  };
+  // Remove the auth token from axios headers
+  setSession(null);
+
+  // Clear session data from localStorage or sessionStorage
+  clearSessionData();
+
+  // Remove auth-related items explicitly from localStorage
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("tenantId");
+  localStorage.removeItem("userId");
+
+  // Update state to logged out
+  dispatch({ type: "LOGOUT" });
+
+  // Optional: redirect user to login page (if you have react-router)
+  // window.location.href = "/login";
+};
+
 
   if (!children) {
     return null;

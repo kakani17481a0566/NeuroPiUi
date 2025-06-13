@@ -1,6 +1,6 @@
 import { createElement, Fragment } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
-import { RowActions } from "./RowActions";
+// import { RowActions } from "./RowActions";
 
 const columnHelper = createColumnHelper();
 
@@ -52,12 +52,12 @@ export function generateTermColumns(headers) {
     ),
 
     // Optional row action column
-    columnHelper.display({
-      id: "actions",
-      header: "Actions",
-      cell: RowActions,
-      enableSorting: false,
-      enableColumnFilter: false,
-    }),
+    // columnHelper.display({
+    //   id: "actions",
+    //   header: "Actions",
+    //   cell: RowActions,
+    //   enableSorting: false,
+    //   enableColumnFilter: false,
+    // }),
   ];
 }
