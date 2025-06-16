@@ -28,6 +28,8 @@ export function RowActions({ row }) {
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoId, setVideoId] = useState(null); // Vimeo video ID should be number/string
   const [openedFromResources, setOpenedFromResources] = useState(false);
+  const [openedFromAssignments, setOpenedFromAssignments] = useState(false);
+
 
   const [showAssignmentsPopup, setShowAssignmentsPopup] = useState(false);
   const [assignments, setAssignments] = useState([]);
@@ -51,6 +53,7 @@ export function RowActions({ row }) {
   const handleViewPdfPopup = useCallback(() => {
     setShowPdfViewerModal(true);
     setOpenedFromResources(false);
+    setOpenedFromAssignments(false);
     setPdfPath(normalizeUrl(row.original.column8));
   }, [row.original.column8]);
 
@@ -69,6 +72,7 @@ export function RowActions({ row }) {
     setOpenedFromResources(true);
     setShowResourcePopup(true);
     setLoadingResources(true);
+    setOpenedFromAssignments(false);
     try {
       const resourceList = await fetchWeeklyTimeTableData();
       setResources(resourceList.resources);
@@ -96,15 +100,25 @@ export function RowActions({ row }) {
     if (openedFromResources) {
       setShowResourcePopup(true);
     }
+    if(openedFromAssignments){
+      setShowAssignmentsPopup(true);
+    }
   };
-
-  // Parse assignments correctly: line format: "Wk01 WS: 01: https://..."
+   const handleAssignmentView = (link) => {
+    setPdfPath(normalizeUrl(link));
+    setShowAssignmentsPopup(false);
+    
+    setShowPdfViewerModal(true);
+  };
   const handleViewAssignmentsPopup = () => {
     if (!row.original.column9) {
       setAssignments([]);
       setShowAssignmentsPopup(true);
+      setOpenedFromAssignments(true);
+      setShowResourcePopup(false);
       return;
     }
+ 
 
     const parsedAssignments = row.original.column9
       .split("\n")
@@ -131,14 +145,12 @@ export function RowActions({ row }) {
 
     setAssignments(parsedAssignments);
     setShowAssignmentsPopup(true);
+    setOpenedFromAssignments(true);
+
   };
 
-  // View assignment PDF by link
-  const handleAssignmentView = (link) => {
-    setPdfPath(normalizeUrl(link));
-    setShowAssignmentsPopup(false);
-    setShowPdfViewerModal(true);
-  };
+  
+
 
   return (
     <>
