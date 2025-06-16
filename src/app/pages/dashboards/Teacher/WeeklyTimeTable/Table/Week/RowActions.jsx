@@ -26,10 +26,10 @@ export function RowActions({ row }) {
   const [loadingResources, setLoadingResources] = useState(false);
   const [pdfPath, setPdfPath] = useState("");
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
-  const [videoId, setVideoId] = useState(null); // Vimeo video ID should be number/string
+  const [linkId, setlinkId] = useState("");
+  // const [videoId, setVideoId] = useState(null); // Vimeo video ID should be number/string
   const [openedFromResources, setOpenedFromResources] = useState(false);
   const [openedFromAssignments, setOpenedFromAssignments] = useState(false);
-
 
   const [showAssignmentsPopup, setShowAssignmentsPopup] = useState(false);
   const [assignments, setAssignments] = useState([]);
@@ -41,13 +41,6 @@ export function RowActions({ row }) {
   };
 
   // Extract Vimeo video ID from URL if possible
-  const extractVimeoId = (url) => {
-    if (!url) return null;
-    // Vimeo URLs formats:
-    // https://vimeo.com/123456789 or https://player.vimeo.com/video/123456789
-    const match = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
-    return match ? match[1] : null;
-  };
 
   // Show PDF from column8
   const handleViewPdfPopup = useCallback(() => {
@@ -86,13 +79,8 @@ export function RowActions({ row }) {
 
   // On clicking a video resource, extract Vimeo ID and open player
   const handleResourceClick = (res) => {
-    const vimeoId = extractVimeoId(res.link);
-    if (vimeoId) {
-      setVideoId(vimeoId);
-      setShowVideoPlayer(true);
-    } else {
-      alert("Invalid Vimeo video link");
-    }
+    setlinkId(res.link);
+    setShowVideoPlayer(true);
   };
 
   const handlePdfPopUpClose = () => {
@@ -100,14 +88,14 @@ export function RowActions({ row }) {
     if (openedFromResources) {
       setShowResourcePopup(true);
     }
-    if(openedFromAssignments){
+    if (openedFromAssignments) {
       setShowAssignmentsPopup(true);
     }
   };
-   const handleAssignmentView = (link) => {
+  const handleAssignmentView = (link) => {
     setPdfPath(normalizeUrl(link));
     setShowAssignmentsPopup(false);
-    
+
     setShowPdfViewerModal(true);
   };
   const handleViewAssignmentsPopup = () => {
@@ -118,7 +106,6 @@ export function RowActions({ row }) {
       setShowResourcePopup(false);
       return;
     }
- 
 
     const parsedAssignments = row.original.column9
       .split("\n")
@@ -146,11 +133,7 @@ export function RowActions({ row }) {
     setAssignments(parsedAssignments);
     setShowAssignmentsPopup(true);
     setOpenedFromAssignments(true);
-
   };
-
-  
-
 
   return (
     <>
@@ -354,13 +337,13 @@ export function RowActions({ row }) {
       {/* Assignments Modal */}
       {showAssignmentsPopup && (
         <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black backdrop-blur-sm">
-          <div className="relative w-full max-w-4xl overflow-auto rounded-lg bg-white p-6 shadow-lg max-h-[80vh]">
+          <div className="relative max-h-[80vh] w-full max-w-4xl overflow-auto rounded-lg bg-white p-6 shadow-lg">
             <h2 className="mb-4 text-lg font-semibold">Assignments</h2>
 
             {assignments.length === 0 ? (
               <p>No assignments found.</p>
             ) : (
-              <table className="w-full border table-fixed">
+              <table className="w-full table-fixed border">
                 <thead>
                   <tr className="bg-gray-100">
                     <th className="border p-2 text-left">Worksheet Name</th>
@@ -414,7 +397,13 @@ export function RowActions({ row }) {
               </button>
             </div>
             <div className="aspect-video w-full overflow-hidden rounded border">
-              <Vimeo video={videoId} width="100%" height="100%" responsive autoplay />
+              <Vimeo
+                video={linkId}
+                width="100%"
+                height="100%"
+                responsive
+                autoplay
+              />
             </div>
           </div>
         </div>
