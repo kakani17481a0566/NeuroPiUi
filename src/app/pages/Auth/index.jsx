@@ -6,13 +6,13 @@ import { useAuthContext } from "app/contexts/auth/context";
 import { schema } from "./schema";
 import { Page } from "components/shared/Page";
 import { useState } from "react";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import "./Auth.css";
 
 export default function SignIn() {
-      const navigate = useNavigate();
-  
+  const navigate = useNavigate();
+
   const { login, errorMessage } = useAuthContext();
   const {
     register,
@@ -35,7 +35,7 @@ export default function SignIn() {
         username: data.username,
         password: data.password,
       });
-        navigate("/dashboards/Teacher");
+      navigate("/dashboards/Teacher");
     } finally {
       setLoading(false);
     }
@@ -51,25 +51,23 @@ export default function SignIn() {
 
             {/* Right: Login Form */}
             <div className="auth-right-form">
-              <h2 className="auth-title">Welcome Back</h2>
-              <p className="auth-subtitle">Please enter your credentials to sign in.</p>
-
+              {/* Form */}
               <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                 <div className="auth-inputs">
                   <Input
                     label="Username"
-                    placeholder="Enter your username"
                     prefix={<UserIcon className="size-5" strokeWidth="1" />}
                     {...register("username")}
                     error={errors?.username?.message}
+                    className="input-black-text"
                   />
                   <Input
                     label="Password"
-                    placeholder="Enter your password"
                     type="password"
                     prefix={<LockClosedIcon className="size-5" strokeWidth="1" />}
                     {...register("password")}
                     error={errors?.password?.message}
+                    className="input-black-text"
                   />
                 </div>
 
@@ -99,9 +97,6 @@ export default function SignIn() {
                   )}
                 </Button>
               </form>
-
-              {/* Optional Divider */}
-              <div className="auth-divider"></div>
             </div>
           </Card>
         </div>

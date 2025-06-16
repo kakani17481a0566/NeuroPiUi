@@ -1,44 +1,51 @@
-// Local Imports
+import { useEffect, useState } from "react";
 import { StudentCard } from "./StudentCard";
-
-// ----------------------------------------------------------------------
-
-const students = [
-  {
-    uid: "1",
-    name: "Travis Fuller",
-    messagesCount: 4,
-    avatar: "/images/200x200.png",
-    isOnline: true,
-    progress: 64,
-  },
-  {
-    uid: "2",
-    name: "Konnor Guzman",
-    messagesCount: null,
-    avatar: "/images/200x200.png",
-    isOnline: false,
-    progress: 78,
-  },
-  {
-    uid: "3",
-    name: "Alfredo Elliott",
-    messagesCount: 3,
-    avatar: "/images/200x200.png",
-    isOnline: false,
-    progress: 43,
-  },
-  {
-    uid: "4",
-    name: "Derrick Simmons",
-    messagesCount: null,
-    avatar: null,
-    isOnline: true,
-    progress: 39,
-  },
-];
+import { Spinner } from "components/ui";
 
 export function Students() {
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  // Handle device resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          "https://localhost:7202/api/Student/by-tenant-course-branch?tenantId=1&courseId=1&branchId=1"
+        );
+        const result = await response.json();
+        if (result.statusCode === 200 && Array.isArray(result.data)) {
+          const enriched = result.data.map((s, index) => ({
+            uid: s.id,
+            name: s.name,
+            avatar: "/images/200x200.png",
+            isOnline: index % 2 === 0,
+            progress: Math.floor(Math.random() * 100),
+            messagesCount: index % 3 === 0 ? index : null,
+          }));
+          setStudents(enriched);
+        }
+      } catch (error) {
+        console.error("Failed to fetch students:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
   return (
     <div className="sm:col-span-2 lg:col-span-1">
       <div className="flex h-8 items-center justify-between">
@@ -52,18 +59,28 @@ export function Students() {
           View All
         </a>
       </div>
-      <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-x-5 lg:grid-cols-1">
-        {students.map((student) => (
-          <StudentCard
-            key={student.uid}
-            name={student.name}
-            avatar={student.avatar}
-            isOnline={student.isOnline}
-            progress={student.progress}
-            messagesCount={student.messagesCount}
+
+      {loading ? (
+        <div className="flex justify-center py-6">
+          <Spinner
+            color="primary"
+            className={isMobile ? "size-10 border-2" : "size-14 border-4"}
           />
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-x-5 lg:grid-cols-1">
+          {students.map((student) => (
+            <StudentCard
+              key={student.uid}
+              name={student.name}
+              avatar={student.avatar}
+              isOnline={student.isOnline}
+              progress={student.progress}
+              messagesCount={student.messagesCount}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
