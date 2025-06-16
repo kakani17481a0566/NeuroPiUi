@@ -15,7 +15,7 @@ import { Link } from "react-router";
 import { useNavigate } from "react-router-dom";
 // import { clearSessionData } from "utils/sessionStorage";
 import { useAuthContext } from "app/contexts/auth/context";
-// import { getSessionData } from "utils/sessionStorage";
+import { getSessionData } from "utils/sessionStorage";
 
 
 
@@ -58,7 +58,8 @@ export function Profile() {
   const navigate = useNavigate();
   // const { setAuthenticated } = useAuthContext(); // or whatever updates auth
   // const { dispatch } = useAuthContext();
-  const { logout, userProfile } = useAuthContext();
+  const { logout } = useAuthContext();
+  const {user,role}=getSessionData();
   // const { user } = getSessionData();
 
   const handleLogOut = async () => {
@@ -102,11 +103,13 @@ export function Profile() {
                   alt="Profile"
                 />
                 <div>
-                
-                    <p  className="hover:text-primary-600 focus:text-primary-600 dark:text-dark-100 dark:hover:text-primary-400 dark:focus:text-primary-400 text-base font-medium text-gray-700">{userProfile?.username ?? "Guest"}</p> 
+
+                  <p className="hover:text-primary-600 focus:text-primary-600 dark:text-dark-100 dark:hover:text-primary-400 dark:focus:text-primary-400 text-base font-medium text-gray-700">
+                    {user}
+                    </p>
 
                   <p className="dark:text-dark-300 mt-0.5 text-xs text-gray-400">
-                    Product Designer
+                    {role}
                   </p>
                 </div>
               </div>
