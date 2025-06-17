@@ -107,28 +107,43 @@ export function RowActions({ row }) {
       return;
     }
 
+    // const parsedAssignments = row.original.column9
+    //   .split("\n")
+    //   .map((line) => {
+    //     // Split into parts by colon
+    //     // e.g. ["Wk01 WS", " 01", " https://..."]
+    //     const parts = line.split(":").map((p) => p.trim());
+
+    //     if (parts.length < 3) return null;
+
+    //     // Join first two parts as name: "Wk01 WS: 01"
+    //     const name = parts.slice(0, 2).join(":");
+    //     const link = parts.slice(2).join(":");
+
+    //     const isUrl = /^https?:\/\//i.test(link);
+
+    //     return {
+    //       name,
+    //       link: isUrl ? link : null,
+    //       rawText: line,
+    //     };
+    //   })
+    //   .filter(Boolean);
+
     const parsedAssignments = row.original.column9
-      .split("\n")
-      .map((line) => {
-        // Split into parts by colon
-        // e.g. ["Wk01 WS", " 01", " https://..."]
-        const parts = line.split(":").map((p) => p.trim());
+  .split("\n")
+  .map((link, index) => {
+    const cleanLink = link.trim();
+    if (!cleanLink || !/^https?:\/\//i.test(cleanLink)) return null;
 
-        if (parts.length < 3) return null;
+    return {
+      name: `Worksheet ${index + 1}`,
+      link: cleanLink,
+      rawText: cleanLink,
+    };
+  })
+  .filter(Boolean);
 
-        // Join first two parts as name: "Wk01 WS: 01"
-        const name = parts.slice(0, 2).join(":");
-        const link = parts.slice(2).join(":");
-
-        const isUrl = /^https?:\/\//i.test(link);
-
-        return {
-          name,
-          link: isUrl ? link : null,
-          rawText: line,
-        };
-      })
-      .filter(Boolean);
 
     setAssignments(parsedAssignments);
     setShowAssignmentsPopup(true);
