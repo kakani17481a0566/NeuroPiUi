@@ -27,7 +27,7 @@ export function Right({ isOpen, onClose, role, isEditMode, onSave }) {
 
   const handleSubmit = async () => {
     try {
-      const res = await fetch(`https://localhost:7202/api/Role/tenant/1/id/${role.id}`, {
+      const res = await fetch(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/Role/tenant/1/id/${role.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: formData.name, updatedBy: 1 }),

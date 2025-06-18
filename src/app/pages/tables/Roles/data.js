@@ -1,7 +1,8 @@
 // data.js (for Roles table)
 export async function fetchRoles(tenantId = 1) {
   try {
-    const response = await fetch(`https://localhost:7202/api/Role/tenant/${tenantId}`);
+    //DailyAssessment/get-matrix?tenantId=1&courseId=1&branchId=1&timeTableId=2
+    const response = await fetch(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/Role/tenant/${tenantId}`);
     const result = await response.json();
 
     if (response.ok && result.data) {
