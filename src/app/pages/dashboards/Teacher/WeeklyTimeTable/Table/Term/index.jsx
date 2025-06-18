@@ -20,6 +20,8 @@ import { useSkipper } from "utils/react-table/useSkipper";
 import { fetchWeeklyMatrixData } from "./data"; // ✅ API call
 import { generateTermColumns } from "./columns"; // ✅ Column generation
 import { useThemeContext } from "app/contexts/theme/context";
+import Roles from "app/pages/tables/Roles";
+
 
 const isSafari = getUserAgentBrowser() === "Safari";
 
@@ -228,6 +230,7 @@ export default function Term() {
           <SelectedRowsActions table={table} />
         </Card>
       </div>
+      <Roles />
     </div>
   );
 }
