@@ -1,5 +1,3 @@
-// index.jsx (Roles Table Component)
-
 import {
   flexRender,
   getCoreRowModel,
@@ -15,17 +13,11 @@ import clsx from "clsx";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-// Local Imports
 import { TableSortIcon } from "components/shared/table/TableSortIcon";
 import { ColumnFilter } from "components/shared/table/ColumnFilter";
 import { PaginationSection } from "components/shared/table/PaginationSection";
 import { Button, Card, Table, THead, TBody, Th, Tr, Td, Spinner } from "components/ui";
-import {
-  useBoxSize,
-  useLockScrollbar,
-  useLocalStorage,
-  useDidUpdate,
-} from "hooks";
+import { useBoxSize, useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
 import { useSkipper } from "utils/react-table/useSkipper";
 import { SelectedRowsActions } from "./SelectedRowsActions";
@@ -107,9 +99,7 @@ export default function Roles() {
       setSelectedRole,
       setEditMode,
     },
-    filterFns: {
-      fuzzy: fuzzyFilter,
-    },
+    filterFns: { fuzzy: fuzzyFilter },
     enableSorting: tableSettings.enableSorting,
     enableColumnFilters: tableSettings.enableColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -139,19 +129,28 @@ export default function Roles() {
             Roles
           </h2>
         </div>
-        <Button className="h-8 space-x-1.5 rounded-md px-3 text-xs" color="primary">
+        <Button className="h-10 px-4 text-sm" color="primary">
           <PlusIcon className="size-5" />
           <span>New Role</span>
         </Button>
       </div>
 
-      <div className={clsx("flex flex-col pt-4", tableSettings.enableFullScreen && "fixed inset-0 z-61 h-full w-full bg-white pt-3 dark:bg-dark-900")}>        
+      <div
+        className={clsx(
+          "flex flex-col pt-4",
+          tableSettings.enableFullScreen && "fixed inset-0 z-61 h-full w-full bg-white pt-3 dark:bg-dark-900"
+        )}
+      >
         <Toolbar table={table} />
+
         <Card
-          className={clsx("relative mt-3 flex grow flex-col", tableSettings.enableFullScreen && "overflow-hidden")}
+          className={clsx(
+            "relative mt-3 flex grow flex-col max-h-[calc(100vh-10rem)] overflow-auto",
+            tableSettings.enableFullScreen && "overflow-hidden"
+          )}
           ref={cardRef}
         >
-          <div className="table-wrapper min-w-full grow overflow-x-auto">
+          <div className="table-wrapper w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-dark-600">
             <Table
               hoverable
               dense={tableSettings.enableRowDense}
@@ -165,7 +164,7 @@ export default function Roles() {
                       <Th
                         key={header.id}
                         className={clsx(
-                          "bg-gray-200 font-semibold uppercase text-gray-800 dark:bg-dark-800 dark:text-dark-100 first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
+                          "bg-gray-200 font-semibold uppercase text-gray-800 dark:bg-dark-800 dark:text-dark-100",
                           header.column.getCanPin() && [
                             header.column.getIsPinned() === "left" && "sticky z-2 ltr:left-0 rtl:right-0",
                             header.column.getIsPinned() === "right" && "sticky z-2 ltr:right-0 rtl:left-0",
@@ -187,12 +186,13 @@ export default function Roles() {
                         ) : header.isPlaceholder ? null : (
                           flexRender(header.column.columnDef.header, header.getContext())
                         )}
-                        {header.column.getCanFilter() ? <ColumnFilter column={header.column} /> : null}
+                        {header.column.getCanFilter() && <ColumnFilter column={header.column} />}
                       </Th>
                     ))}
                   </Tr>
                 ))}
               </THead>
+
               <TBody>
                 {loading ? (
                   <Tr>
@@ -234,7 +234,7 @@ export default function Roles() {
                                     ? "ltr:border-r rtl:border-l"
                                     : "ltr:border-l rtl:border-r"
                                 )}
-                              ></div>
+                              />
                             )}
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           </Td>
@@ -253,6 +253,7 @@ export default function Roles() {
               </TBody>
             </Table>
           </div>
+
           <SelectedRowsActions table={table} />
           {table.getCoreRowModel().rows.length > 0 && (
             <div
