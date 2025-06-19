@@ -11,6 +11,10 @@
       "Students":"Students",
       "Grades":"Grades"
     },
+    "usermanagement": {
+      "usermanagement":"UserManagement",
+      "role":"Roles"
+    },
     "settings": {
       "settings": "Settings",
       "general": "General",

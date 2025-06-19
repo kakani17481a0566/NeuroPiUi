@@ -78,12 +78,28 @@ const protectedRoutes = {
 
             },
             {
-              
+
               path: "grades",
               lazy: async () => ({
                 Component: (await import("app/pages/academics/Grades")).default,
               }),
             }
+          ]
+        },
+        {
+          path: "usermanagement",
+          children: [
+            {
+              index: true,
+              element: <Navigate to="/usermanagement/usermanagement" />
+            },
+            {
+              path: "role",
+              lazy: async () => ({
+                Component: (await import("app/pages/tables/Roles")).default,
+              }),
+
+            },
           ]
         }
       ],
