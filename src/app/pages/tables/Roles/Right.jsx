@@ -8,7 +8,7 @@ import {
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { Fragment, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Avatar, Button } from "components/ui";
+import { Button } from "components/ui";
 
 export function Right({ isOpen, onClose, role, onSave }) {
   const [formData, setFormData] = useState({ name: "" });
@@ -105,30 +105,21 @@ export function Right({ isOpen, onClose, role, onSave }) {
           leaveTo="translate-x-full"
         >
           <DialogPanel className="fixed right-0 top-0 h-full w-full max-w-sm sm:max-w-xs bg-white dark:bg-dark-700 flex flex-col shadow-lg">
-            <div className="h-24">
-              <img
-                className="h-full w-full object-cover object-center"
-                src="/images/800x600.png"
-                alt="Drawer Banner"
-              />
-            </div>
-
-            <div className="flex space-x-4 px-4">
-              <Avatar size={20} src="/images/200x200.png" className="-mt-5" />
+            <div className="flex space-x-4 px-4 pt-5">
               <div className="mt-2 w-full min-w-0">
                 <div className="flex justify-between items-start">
                   <div>
                     <h4 className="truncate text-base font-medium text-gray-800 dark:text-dark-50">
-                      {isCreating ? "Create Role" : "Edit Role"}
+                      {isCreating ? "Create Role" : "Roles"}
                     </h4>
                     {!isCreating && (
                       <span className="text-xs-plus text-primary-600 dark:text-primary-400">
-                        ID: {role.id}
+                        Tenant: {role.tenantName}
                       </span>
                     )}
                   </div>
                   <Button onClick={onClose} variant="flat" isIcon className="size-6 rounded-full">
-                    <XMarkIcon className="size-4.5" />
+                    <XMarkIcon className="size-5" />
                   </Button>
                 </div>
               </div>
