@@ -17,11 +17,10 @@ import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
 import { useSkipper } from "utils/react-table/useSkipper";
 
-import { fetchWeeklyMatrixData } from "./data"; // ✅ API call
-import { generateTermColumns } from "./columns"; // ✅ Column generation
+import { fetchWeeklyMatrixData } from "./data";
+import { generateTermColumns } from "./columns";
 import { useThemeContext } from "app/contexts/theme/context";
 import Roles from "app/pages/tables/Roles";
-
 
 const isSafari = getUserAgentBrowser() === "Safari";
 
@@ -33,7 +32,6 @@ export default function Term() {
   const [columns, setColumns] = useState([]);
   const [month, setMonth] = useState("");
 
-  // ✅ New parsed metadata state
   const [academicYear, setAcademicYear] = useState("");
   const [term, setTerm] = useState("");
   const [dateRange, setDateRange] = useState("");
@@ -62,20 +60,19 @@ export default function Term() {
   useEffect(() => {
     async function loadData() {
       try {
-        const response = await fetchWeeklyMatrixData(1, 1, 1); // tenantId, courseId, termId
+        const response = await fetchWeeklyMatrixData(1, 1, 1);
         const { headers, dataTerm, month } = response;
 
         setColumns(generateTermColumns(headers));
         setOrders(dataTerm);
         setMonth(month);
 
-        // ✅ Split the month string
         if (month) {
           const parts = month.split(" ");
           if (parts.length >= 6) {
-            setAcademicYear(`${parts[0]} ${parts[1]} ${parts[2]}`); // e.g. "Academic Year 2025-26"
-            setTerm(`${parts[3]} ${parts[4]}`); // e.g. "Term 1"
-            setDateRange(parts.slice(5).join(" ")); // e.g. "2025-06-09 - 2025-08-29"
+            setAcademicYear(`${parts[0]} ${parts[1]} ${parts[2]}`);
+            setTerm(`${parts[3]} ${parts[4]}`);
+            setDateRange(parts.slice(5).join(" "));
           }
         }
       } catch (err) {
@@ -128,22 +125,21 @@ export default function Term() {
             "dark:bg-dark-900 fixed inset-0 z-61 h-full w-full bg-white pt-3"
         )}
       >
-        {/* ✅ Formatted Academic Term Info Box */}
-{month && (
-  <Box className="w-full mb-4 rounded-lg  bg-gray-200 dark:bg-dark-500 px-4 py-3">
-    <div className="flex flex-col items-center justify-center space-y-1 text-center">
-      <div className="text-base font-semibold text-primary-500 dark:text-primary-400">
-        {academicYear}
-      </div>
-      <div className="text-base font-semibold text-gray-800 dark:text-dark-100">
-        {term}
-      </div>
-      <div className="text-sm font-medium text-gray-800 dark:text-dark-100">
-        {dateRange}
-      </div>
-    </div>
-  </Box>
-)}
+        {month && (
+          <Box className="w-full mb-4 rounded-lg bg-gray-200 dark:bg-dark-500 px-4 py-3">
+            <div className="flex flex-col items-center justify-center space-y-1 text-center">
+              <div className="text-base font-semibold text-primary-500 dark:text-primary-400">
+                {academicYear}
+              </div>
+              <div className="text-base font-semibold text-gray-800 dark:text-dark-100">
+                {term}
+              </div>
+              <div className="text-sm font-medium text-gray-800 dark:text-dark-100">
+                {dateRange}
+              </div>
+            </div>
+          </Box>
+        )}
 
         <Toolbar table={table} />
 
@@ -164,11 +160,12 @@ export default function Term() {
               <THead>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <Tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
+                    {headerGroup.headers.map((header, index) => (
                       <Th
                         key={header.id}
                         className={clsx(
                           "dark:bg-dark-800 dark:text-dark-100 bg-gray-200 font-semibold text-gray-800 uppercase",
+                          index === 0 && "border-r border-gray-300",
                           header.column.getCanPin() && [
                             header.column.getIsPinned() === "left" &&
                               "sticky z-2 ltr:left-0 rtl:right-0",
@@ -198,11 +195,12 @@ export default function Term() {
                           "row-selected after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500 after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent"
                       )}
                     >
-                      {row.getVisibleCells().map((cell) => (
+                      {row.getVisibleCells().map((cell, index) => (
                         <Td
                           key={cell.id}
                           className={clsx(
                             "relative",
+                            index === 0 && "border-r border-gray-300",
                             cardSkin === "shadow-sm"
                               ? "dark:bg-dark-700"
                               : "dark:bg-dark-900",
@@ -230,6 +228,8 @@ export default function Term() {
           <SelectedRowsActions table={table} />
         </Card>
       </div>
+
+      {/* Optional: Remove <Roles /> if not needed */}
       <Roles />
     </div>
   );

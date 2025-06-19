@@ -31,7 +31,7 @@
 /* ---------- Card ---------- */
 .auth-card {
   display: flex;
-  flex-direction: column; /* vertical stacking on mobile */
+  flex-direction: column;
   height: auto;
   border-radius: 1rem;
   overflow: hidden;
@@ -46,7 +46,7 @@
 @media (min-width: 768px) {
   .auth-card {
     flex-direction: row;
-    height: 300px; /* ← Reduced from 520px */
+    height: 300px;
   }
 }
 
@@ -69,7 +69,7 @@
   }
 }
 
-/* ---------- Right: Login Form (Glass Effect) ---------- */
+/* ---------- Right: Login Form ---------- */
 .auth-right-form {
   flex: 1;
   display: flex;
@@ -79,14 +79,10 @@
   min-width: 300px;
   max-width: 100%;
   overflow: hidden;
-
-  /* Glassmorphism effect */
   background-color: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-left: 1px solid rgba(255, 255, 255, 0.25);
-
-  /* Text style */
   color: black;
   font-weight: bold;
   text-align: center;
@@ -116,13 +112,35 @@
 .auth-inputs {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   color: black;
 }
 
-/* Fix for input icon and text overlapping */
+/* --------- Labels to the Left --------- */
+.input-horizontal {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.input-label {
+  width: 100px;
+  text-align: right;
+  font-weight: 600;
+  color: black;
+}
+
+.input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* ---------- Input Styling ---------- */
 .auth-right-form input {
-  padding-left: 2.5rem !important; /* space for icon */
+  padding-left: 2.5rem !important;
   color: black !important;
   background-color: rgba(255, 255, 255, 0.7) !important;
   border: 1px solid rgba(0, 0, 0, 0.15) !important;
@@ -133,7 +151,7 @@
   font-size: 1rem !important;
 }
 
-/* Style for the icon prefix inside inputs */
+/* ---------- Prefix Icon Styling ---------- */
 .auth-right-form .size-5 {
   position: absolute;
   left: 0.75rem;
@@ -143,30 +161,44 @@
   color: black;
 }
 
-/* To make sure the icon and input are properly aligned */
-/* Assuming Input component uses a wrapper for input and prefix */
-.auth-right-form .input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-/* Error message */
+/* ---------- Error Message ---------- */
 .auth-error {
   margin-top: 1rem;
   color: #b91c1c;
 }
 
-/* Submit button */
+/* ---------- Submit Button ---------- */
 .auth-button {
   margin-top: 2rem;
   width: 100%;
 }
 
-/* ---------- Responsive Tweaks ---------- */
+/* ---------- Mobile Responsive Tweaks ---------- */
 @media (max-width: 768px) {
   .auth-right-form {
     padding: 2rem 1rem;
+  }
+
+  .input-horizontal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;              /* Reduced vertical gap between label and input */
+    margin-bottom: 0.75rem;    /* Reduced space between fields */
+  }
+
+  .input-label {
+    text-align: left;
+    width: 100%;
+    margin-bottom: 0.25rem;   /* Reduced from 0.5rem */
+  }
+
+  .input-wrapper {
+    width: 100%;
+  }
+
+  .auth-right-form input {
+    padding-top: 0.6rem !important;
+    padding-bottom: 0.6rem !important;
   }
 }
 

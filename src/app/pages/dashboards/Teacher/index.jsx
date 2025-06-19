@@ -13,7 +13,7 @@ import { Students } from "./Students";
 import { Calendar } from "./Calendar";
 import { WeeklyTimeTable } from "./WeeklyTimeTable";
 import { Classes } from "./Classes";
-import { AppointmentsTable } from "../Teacher/WeeklyTimeTable/Table/AppointmentsTable";
+// import { AppointmentsTable } from "../Teacher/WeeklyTimeTable/Table/AppointmentsTable";
 
 
 // ───────────────────────────────────────────────
@@ -90,7 +90,7 @@ export default function Teacher() {
           <Classes />
           <div className="mt-4">
             <WeeklyTimeTable view={selectedView} />
-                          <AppointmentsTable/>
+                          {/* <AppointmentsTable/> */}
             
           </div>
         </div>

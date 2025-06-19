@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 // Local Imports
 import { CollapsibleSearch } from "components/shared/CollapsibleSearch";
-import { MenuAction } from "./MenuActions";
+// import { MenuAction } from "./MenuActions";
 import { TableConfig } from "./TableConfig";
 
 export function Toolbar({ table }) {
@@ -27,7 +27,7 @@ export function Toolbar({ table }) {
           onChange={(e) => table.setGlobalFilter(e.target.value)}
         />
         <TableConfig table={table} />
-        <MenuAction />
+        {/* <MenuAction /> */}
       </div>
     </div>
   );

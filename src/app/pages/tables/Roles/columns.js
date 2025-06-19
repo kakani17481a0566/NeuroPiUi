@@ -1,18 +1,18 @@
 // columns.js
 
 import { createColumnHelper } from "@tanstack/react-table";
-import { SelectCell, SelectHeader } from "components/shared/table/SelectCheckbox";
+// import { SelectCell, SelectHeader } from "components/shared/table/SelectCheckbox";
 import { RowActions } from "./RowActions";
 
 const columnHelper = createColumnHelper();
 
 export const columns = [
-  columnHelper.display({
-    id: "select",
-    label: "Row Selection",
-    header: SelectHeader,
-    cell: SelectCell,
-  }),
+  // columnHelper.display({
+  //   id: "select",
+  //   label: "Row Selection",
+  //   header: SelectHeader,
+  //   cell: SelectCell,
+  // }),
   columnHelper.accessor("id", {
     id: "id",
     header: "Role ID",

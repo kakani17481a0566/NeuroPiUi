@@ -1,0 +1,38 @@
+/* ──────────────── */
+/* 🌍 Global Styles */
+/* ──────────────── */
+
+html,
+body {
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: manipulation;
+}
+
+/* Mobile scroll-friendly containers */
+.scrollable,
+.scrollable-sidebar {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Thin scrollbar styling */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 100, 100, 0.4) transparent;
+}
+
+/* Disable sticky on mobile */
+@media (max-width: 768px) {
+  .lg\:sticky {
+    position: relative !important;
+    top: auto !important;
+  }
+}
+
+
+html, body {
+  overflow-x: auto !important;
+  touch-action: pan-x pan-y;
+}

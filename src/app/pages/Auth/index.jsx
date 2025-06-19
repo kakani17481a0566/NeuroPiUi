@@ -12,8 +12,8 @@ import "./Auth.css";
 
 export default function SignIn() {
   const navigate = useNavigate();
-
   const { login, errorMessage } = useAuthContext();
+
   const {
     register,
     handleSubmit,
@@ -51,24 +51,32 @@ export default function SignIn() {
 
             {/* Right: Login Form */}
             <div className="auth-right-form">
-              {/* Form */}
               <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                 <div className="auth-inputs">
-                  <Input
-                    label="Username"
-                    prefix={<UserIcon className="size-5" strokeWidth="1" />}
-                    {...register("username")}
-                    error={errors?.username?.message}
-                    className="input-black-text"
-                  />
-                  <Input
-                    label="Password"
-                    type="password"
-                    prefix={<LockClosedIcon className="size-5" strokeWidth="1" />}
-                    {...register("password")}
-                    error={errors?.password?.message}
-                    className="input-black-text"
-                  />
+
+                  <div className="input-horizontal">
+                    <label className="input-label" htmlFor="username">Username</label>
+                    <Input
+                      id="username"
+                      prefix={<UserIcon className="size-5" strokeWidth="1" />}
+                      {...register("username")}
+                      error={errors?.username?.message}
+                      className="input-black-text"
+                    />
+                  </div>
+
+                  <div className="input-horizontal">
+                    <label className="input-label" htmlFor="password">Password</label>
+                    <Input
+                      id="password"
+                      type="password"
+                      prefix={<LockClosedIcon className="size-5" strokeWidth="1" />}
+                      {...register("password")}
+                      error={errors?.password?.message}
+                      className="input-black-text"
+                    />
+                  </div>
+
                 </div>
 
                 <div className="auth-error">
