@@ -46,6 +46,14 @@ export default function Week() {
   const [columnPinning, setColumnPinning] = useLocalStorage("column-pinning-orders-2", {});
   const cardRef = useRef();
 
+  // Horizontal scroll handling
+  const scrollRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const scrollLeft = () => scrollRef.current?.scrollBy({ left: -200, behavior: "smooth" });
+  const scrollRight = () => scrollRef.current?.scrollBy({ left: 200, behavior: "smooth" });
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -76,6 +84,20 @@ export default function Week() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const updateScroll = () => {
+      setCanScrollLeft(el.scrollLeft > 10);
+      setCanScrollRight(el.scrollWidth - el.clientWidth - el.scrollLeft > 10);
+    };
+
+    el.addEventListener("scroll", updateScroll);
+    updateScroll();
+    return () => el.removeEventListener("scroll", updateScroll);
+  }, [columns, orders]);
 
   const table = useReactTable({
     data: orders,
@@ -116,10 +138,7 @@ export default function Week() {
         <Toolbar table={table} />
 
         <Card
-          className={clsx(
-            "relative mt-3 flex grow flex-col",
-            tableSettings.enableFullScreen && "overflow-hidden"
-          )}
+          className={clsx("relative mt-3 flex grow flex-col", tableSettings.enableFullScreen && "overflow-hidden")}
           ref={cardRef}
         >
           {isLoading ? (
@@ -130,7 +149,6 @@ export default function Week() {
             <div className="text-red-600 text-center mt-6">{error}</div>
           ) : (
             <>
-              {/* Header Info */}
               <Box className="w-full rounded-lg bg-gray-200 dark:bg-dark-500 p-4">
                 <div className="flex flex-col gap-2 text-center sm:flex-row sm:justify-between sm:text-left">
                   <div className="font-medium text-gray-800 dark:text-dark-100">
@@ -153,64 +171,90 @@ export default function Week() {
                 )}
               </Box>
 
-              <div className="text-xs text-gray-400 italic mt-2 text-center sm:hidden">
-                Swipe to scroll table →
+              <div className="text-xs text-gray-400 italic mt-2 text-center sm:hidden animate-pulse">
+                📱 Swipe left/right to scroll →
               </div>
 
               {columns.length > 0 && orders.length > 0 ? (
-                <div
-                  className="overflow-x-auto mt-2 rounded"
-                  style={{ WebkitOverflowScrolling: "touch" }}
-                >
-                  <div className="w-max min-w-full">
-                    <Table className="table-auto w-full">
-                      <THead className="sticky top-0 z-10 bg-gray-100 dark:bg-dark-800 shadow-sm">
-                        {table.getHeaderGroups().map((headerGroup) => (
-                          <Tr key={headerGroup.id}>
-                            {headerGroup.headers.map((header, index) => (
-                              <Th
-                                key={header.id}
-                                className={clsx(
-                                  "text-center font-semibold text-gray-800 uppercase dark:text-dark-100",
-                                  index === 0 && "border-r border-gray-300"
-                                )}
-                              >
-                                {header.isPlaceholder
-                                  ? null
-                                  : flexRender(header.column.columnDef.header, header.getContext())}
-                              </Th>
-                            ))}
-                          </Tr>
-                        ))}
-                      </THead>
+                <div className="relative mt-2">
+                  {/* Scroll Arrows */}
+                  {canScrollLeft && (
+                    <button
+                      onClick={scrollLeft}
+                      className="absolute left-0 top-1/2 z-20 -translate-y-1/2 bg-white dark:bg-dark-800 p-1 rounded-full shadow-md animate-pulse"
+                    >
+                      <span className="text-xl font-bold">{`<`}</span>
+                    </button>
+                  )}
+                  {canScrollRight && (
+                    <button
+                      onClick={scrollRight}
+                      className="absolute right-0 top-1/2 z-20 -translate-y-1/2 bg-white dark:bg-dark-800 p-1 rounded-full shadow-md animate-pulse"
+                    >
+                      <span className="text-xl font-bold">{`>`}</span>
+                    </button>
+                  )}
 
-                      <TBody>
-                        {table.getRowModel().rows.map((row) => (
-                          <Tr
-                            key={row.id}
-                            className={clsx(
-                              "border-b text-center dark:border-dark-700",
-                              row.getIsExpanded() && "is-expanded",
-                              row.getIsSelected() && !isSafari && "row-selected"
-                            )}
-                          >
-                            {row.getVisibleCells().map((cell, index) => (
-                              <Td
-                                key={cell.id}
-                                className={clsx(
-                                  "text-center px-2 py-3",
-                                  cardSkin === "shadow-sm" ? "skin-shadow-sm" : "skin-shadow",
-                                  index === 0 && "border-r border-gray-300",
-                                  cell.column.columnDef.meta?.columnClassName
-                                )}
-                              >
-                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                              </Td>
-                            ))}
-                          </Tr>
-                        ))}
-                      </TBody>
-                    </Table>
+                  <div
+                    ref={scrollRef}
+                    className="overflow-x-auto rounded scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
+                    style={{
+                      WebkitOverflowScrolling: "touch",
+                      scrollBehavior: "smooth",
+                      touchAction: "pan-x",
+                    }}
+                  >
+                    <div className="w-max min-w-full">
+                      <Table className="table-auto w-full">
+                        <THead className="sticky top-0 z-10 bg-gray-100 dark:bg-dark-800 shadow-sm">
+                          {table.getHeaderGroups().map((headerGroup) => (
+                            <Tr key={headerGroup.id}>
+                              {headerGroup.headers.map((header, index) => (
+                                <Th
+                                  key={header.id}
+                                  className={clsx(
+                                    "text-center font-semibold text-gray-800 uppercase dark:text-dark-100 whitespace-nowrap",
+                                    index === 0 &&
+                                      "sticky left-0 z-20 bg-gray-100 dark:bg-dark-800 border-r border-gray-300"
+                                  )}
+                                >
+                                  {header.isPlaceholder
+                                    ? null
+                                    : flexRender(header.column.columnDef.header, header.getContext())}
+                                </Th>
+                              ))}
+                            </Tr>
+                          ))}
+                        </THead>
+                        <TBody>
+                          {table.getRowModel().rows.map((row) => (
+                            <Tr
+                              key={row.id}
+                              className={clsx(
+                                "border-b text-center dark:border-dark-700",
+                                row.getIsExpanded() && "is-expanded",
+                                row.getIsSelected() && !isSafari && "row-selected"
+                              )}
+                            >
+                              {row.getVisibleCells().map((cell, index) => (
+                                <Td
+                                  key={cell.id}
+                                  className={clsx(
+                                    "text-center px-2 py-3 whitespace-nowrap",
+                                    cardSkin === "shadow-sm" ? "skin-shadow-sm" : "skin-shadow",
+                                    index === 0 &&
+                                      "sticky left-0 z-10 bg-white dark:bg-dark-700 border-r border-gray-300",
+                                    cell.column.columnDef.meta?.columnClassName
+                                  )}
+                                >
+                                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                </Td>
+                              ))}
+                            </Tr>
+                          ))}
+                        </TBody>
+                      </Table>
+                    </div>
                   </div>
                 </div>
               ) : (

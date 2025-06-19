@@ -20,7 +20,7 @@ import { useSkipper } from "utils/react-table/useSkipper";
 import { fetchWeeklyMatrixData } from "./data";
 import { generateTermColumns } from "./columns";
 import { useThemeContext } from "app/contexts/theme/context";
-import Roles from "app/pages/tables/Roles";
+
 
 const isSafari = getUserAgentBrowser() === "Safari";
 
@@ -230,7 +230,7 @@ export default function Term() {
       </div>
 
       {/* Optional: Remove <Roles /> if not needed */}
-      <Roles />
+   
     </div>
   );
 }

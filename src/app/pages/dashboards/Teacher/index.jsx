@@ -13,8 +13,6 @@ import { Students } from "./Students";
 import { Calendar } from "./Calendar";
 import { WeeklyTimeTable } from "./WeeklyTimeTable";
 import { Classes } from "./Classes";
-// import { AppointmentsTable } from "../Teacher/WeeklyTimeTable/Table/AppointmentsTable";
-
 
 // ───────────────────────────────────────────────
 // ✅ Main Component: Teacher Dashboard
@@ -41,7 +39,7 @@ export default function Teacher() {
           Timetable View
         </h1>
 
-        <Menu as="div" className="relative inline-block text-left">
+        <Menu as="div" className="relative inline-block text-left z-[1000]">
           <MenuButton
             aria-label="Select timetable view"
             className="inline-flex min-w-[6rem] items-center gap-2 rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
@@ -59,7 +57,7 @@ export default function Teacher() {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <MenuItems className="absolute left-0 z-10 mt-2 w-32 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-dark-700">
+            <MenuItems className="absolute left-0 z-[1000] mt-2 w-32 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-dark-700">
               {["Week", "Term"].map((view) => (
                 <MenuItem key={view} as={Fragment}>
                   {({ active, close }) => (
@@ -89,15 +87,13 @@ export default function Teacher() {
         <div className="col-span-12 xl:col-span-10 lg:col-span-9">
           <Classes />
           <div className="mt-4">
-            <WeeklyTimeTable view={selectedView} />
-                          {/* <AppointmentsTable/> */}
-            
+            <WeeklyTimeTable key={selectedView} view={selectedView} />
           </div>
         </div>
 
-        {/* Sidebar with scroll */}
+        {/* Sidebar with fixed positioning */}
         <div className="col-span-12 lg:col-span-3 xl:col-span-2">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-1 lg:gap-6 lg:sticky lg:top-20 lg:self-start max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-dark-500">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-1 lg:gap-6 lg:sticky lg:top-20 lg:self-start max-h-[80vh] overflow-visible scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-dark-500">
             <WorkingHours />
             <Students />
             <Calendar />
