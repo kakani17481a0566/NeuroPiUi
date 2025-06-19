@@ -48,11 +48,11 @@ const protectedRoutes = {
           ],
         },
         {
-          path:"academics",
-          children:[
+          path: "academics",
+          children: [
             {
-              index:true,
-              element:<Navigate to="/academics/termplan"/>
+              index: true,
+              element: <Navigate to="/academics/termplan" />
             },
             {
               path: "termplan",
@@ -67,6 +67,22 @@ const protectedRoutes = {
                 Component: (await import("app/pages/academics/weeklyplan")).default,
               }),
 
+            },
+            {
+
+              path: "students",
+              lazy: async () => ({
+                Component: (await import("app/pages/academics/Students")).default,
+              }),
+
+
+            },
+            {
+              
+              path: "grades",
+              lazy: async () => ({
+                Component: (await import("app/pages/academics/Grades")).default,
+              }),
             }
           ]
         }

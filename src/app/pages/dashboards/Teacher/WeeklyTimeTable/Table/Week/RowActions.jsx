@@ -18,6 +18,7 @@ import Vimeo from "@u-wave/react-vimeo";
 
 import { Button } from "components/ui";
 import { fetchWeeklyTimeTableData } from "./data";
+import { AppointmentsTable } from "../AppointmentsTable";
 
 export function RowActions({ row }) {
   const [showPdfViewerModal, setShowPdfViewerModal] = useState(false);
@@ -30,6 +31,7 @@ export function RowActions({ row }) {
   // const [videoId, setVideoId] = useState(null); // Vimeo video ID should be number/string
   const [openedFromResources, setOpenedFromResources] = useState(false);
   const [openedFromAssignments, setOpenedFromAssignments] = useState(false);
+  const [studentAttendancePopUp, setStudentAttendancePopUp] = useState(false);
 
   const [showAssignmentsPopup, setShowAssignmentsPopup] = useState(false);
   const [assignments, setAssignments] = useState([]);
@@ -82,7 +84,10 @@ export function RowActions({ row }) {
     setlinkId(res.link);
     setShowVideoPlayer(true);
   };
+  const handleViewAttendancePopup = () => {
+    setStudentAttendancePopUp(true);
 
+  }
   const handlePdfPopUpClose = () => {
     setShowPdfViewerModal(false);
     if (openedFromResources) {
@@ -235,6 +240,20 @@ export function RowActions({ row }) {
                 >
                   <LinkIcon className="size-4.5 stroke-1" />
                   <span>Assignments</span>
+                </button>
+              )}
+            </MenuItem>
+            <MenuItem>
+              {({ active }) => (
+                <button
+                  onClick={handleViewAttendancePopup}
+                  className={clsx(
+                    "flex h-9 w-full items-center space-x-3 px-3",
+                    active && "dark:bg-dark-600 bg-gray-100",
+                  )}
+                >
+                  <LinkIcon className="size-4.5 stroke-1" />
+                  <span> Attendance</span>
                 </button>
               )}
             </MenuItem>
@@ -423,6 +442,26 @@ export function RowActions({ row }) {
           </div>
         </div>
       )}
+      {studentAttendancePopUp && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
+          <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white p-4 shadow-lg">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Video Player</h2>
+              <button
+                onClick={() => setStudentAttendancePopUp(false)}
+                className="text-xl font-bold text-red-500"
+                aria-label="Close video player"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="max-h-[70vh] overflow-y-auto rounded border">
+              <AppointmentsTable />
+            </div>
+          </div>
+        </div>
+      )}
+
     </>
   );
 }

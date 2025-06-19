@@ -7,7 +7,9 @@
     "academics": {
       "academics": "Academics",
       "termplan": "Term Plan",
-      "weeklyplan":"Weekly Plan"
+      "weeklyplan":"Weekly Plan",
+      "Students":"Students",
+      "Grades":"Grades"
     },
     "settings": {
       "settings": "Settings",

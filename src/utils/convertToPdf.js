@@ -3,6 +3,11 @@ import {jsPDF} from 'jspdf';
 import {autoTable} from 'jspdf-autotable';
 
 export function conversionToPdf(columns, data, filename) {
+    if (!Array.isArray(data)) {
+    console.error("Data must be an array");
+    return;
+  }
+  console.log(data);
   const doc = new jsPDF();
 
   // Convert columns to header format expected by autoTable

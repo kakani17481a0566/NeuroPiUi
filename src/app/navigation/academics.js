@@ -31,6 +31,24 @@ export const academics = {
             Icon: AcademicsIcon,
 
         },
+        {
+            id: 'academics.students',
+            path: path(ROOT_ACADEMICS, '/students'),
+            type: NAV_TYPE_ITEM,
+            title: 'students',
+            transKey: 'nav.academics.Students',
+            Icon: AcademicsIcon,
+
+        },
+        {
+            id: 'academics.grades',
+            path: path(ROOT_ACADEMICS, '/grades'),
+            type: NAV_TYPE_ITEM,
+            title: 'Grades',
+            transKey: 'nav.academics.Grades',
+            Icon: AcademicsIcon,
+
+        },
         
 
     ]
