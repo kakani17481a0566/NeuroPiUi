@@ -28,23 +28,17 @@ export function RowActions({ row }) {
   const [pdfPath, setPdfPath] = useState("");
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [linkId, setlinkId] = useState("");
-  // const [videoId, setVideoId] = useState(null); // Vimeo video ID should be number/string
   const [openedFromResources, setOpenedFromResources] = useState(false);
   const [openedFromAssignments, setOpenedFromAssignments] = useState(false);
   const [studentAttendancePopUp, setStudentAttendancePopUp] = useState(false);
-
   const [showAssignmentsPopup, setShowAssignmentsPopup] = useState(false);
   const [assignments, setAssignments] = useState([]);
 
-  // Normalize URL helper
   const normalizeUrl = (url) => {
     if (!url) return "";
     return /^https?:\/\//i.test(url) ? url : `https://${url}`;
   };
 
-  // Extract Vimeo video ID from URL if possible
-
-  // Show PDF from column8
   const handleViewPdfPopup = useCallback(() => {
     setShowPdfViewerModal(true);
     setOpenedFromResources(false);
@@ -62,7 +56,6 @@ export function RowActions({ row }) {
     setShowResourcePopup(false);
   };
 
-  // Load resources async
   const handleViewResourcePopup = async () => {
     setOpenedFromResources(true);
     setShowResourcePopup(true);
@@ -79,30 +72,27 @@ export function RowActions({ row }) {
     }
   };
 
-  // On clicking a video resource, extract Vimeo ID and open player
   const handleResourceClick = (res) => {
     setlinkId(res.link);
     setShowVideoPlayer(true);
   };
+
   const handleViewAttendancePopup = () => {
     setStudentAttendancePopUp(true);
+  };
 
-  }
   const handlePdfPopUpClose = () => {
     setShowPdfViewerModal(false);
-    if (openedFromResources) {
-      setShowResourcePopup(true);
-    }
-    if (openedFromAssignments) {
-      setShowAssignmentsPopup(true);
-    }
+    if (openedFromResources) setShowResourcePopup(true);
+    if (openedFromAssignments) setShowAssignmentsPopup(true);
   };
+
   const handleAssignmentView = (link) => {
     setPdfPath(normalizeUrl(link));
     setShowAssignmentsPopup(false);
-
     setShowPdfViewerModal(true);
   };
+
   const handleViewAssignmentsPopup = () => {
     if (!row.original.column9) {
       setAssignments([]);
@@ -112,43 +102,19 @@ export function RowActions({ row }) {
       return;
     }
 
-    // const parsedAssignments = row.original.column9
-    //   .split("\n")
-    //   .map((line) => {
-    //     // Split into parts by colon
-    //     // e.g. ["Wk01 WS", " 01", " https://..."]
-    //     const parts = line.split(":").map((p) => p.trim());
-
-    //     if (parts.length < 3) return null;
-
-    //     // Join first two parts as name: "Wk01 WS: 01"
-    //     const name = parts.slice(0, 2).join(":");
-    //     const link = parts.slice(2).join(":");
-
-    //     const isUrl = /^https?:\/\//i.test(link);
-
-    //     return {
-    //       name,
-    //       link: isUrl ? link : null,
-    //       rawText: line,
-    //     };
-    //   })
-    //   .filter(Boolean);
-
     const parsedAssignments = row.original.column9
-  .split("\n")
-  .map((link, index) => {
-    const cleanLink = link.trim();
-    if (!cleanLink || !/^https?:\/\//i.test(cleanLink)) return null;
+      .split("\n")
+      .map((link, index) => {
+        const cleanLink = link.trim();
+        if (!cleanLink || !/^https?:\/\//i.test(cleanLink)) return null;
 
-    return {
-      name: `Worksheet ${index + 1}`,
-      link: cleanLink,
-      rawText: cleanLink,
-    };
-  })
-  .filter(Boolean);
-
+        return {
+          name: `Worksheet ${index + 1}`,
+          link: cleanLink,
+          rawText: cleanLink,
+        };
+      })
+      .filter(Boolean);
 
     setAssignments(parsedAssignments);
     setShowAssignmentsPopup(true);
@@ -157,7 +123,6 @@ export function RowActions({ row }) {
 
   return (
     <>
-      {/* Expand Button */}
       <div className="flex justify-center">
         {row.getCanExpand() && (
           <Button
@@ -169,19 +134,21 @@ export function RowActions({ row }) {
             <ChevronUpIcon
               className={clsx(
                 "size-4.5 transition-transform",
-                row.getIsExpanded() && "rotate-180",
+                row.getIsExpanded() && "rotate-180"
               )}
             />
           </Button>
         )}
 
-        {/* Actions Menu */}
-        <Menu as="div" className="relative inline-block text-left">
+        <Menu as="div" className="relative inline-block text-left z-20">
           <MenuButton
             as={Button}
             variant="flat"
             isIcon
-            className="size-7 rounded-full"
+            className="size-7 rounded-full touch-manipulation"
+            onMouseDown={(e) => e.preventDefault()}
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
           >
             <EllipsisHorizontalIcon className="size-4.5" />
           </MenuButton>
@@ -196,14 +163,13 @@ export function RowActions({ row }) {
             leaveTo="opacity-0 translate-y-2"
             className="dark:border-dark-500 dark:bg-dark-750 absolute z-100 mt-1.5 min-w-[10rem] rounded-lg border border-gray-300 bg-white py-1 shadow-lg ltr:right-0 rtl:left-0"
           >
-            {/* Lesson Plan */}
             <MenuItem>
               {({ active }) => (
                 <button
                   onClick={handleViewPdfPopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100",
+                    active && "dark:bg-dark-600 bg-gray-100"
                   )}
                 >
                   <EyeIcon className="size-4.5 stroke-1" />
@@ -211,15 +177,13 @@ export function RowActions({ row }) {
                 </button>
               )}
             </MenuItem>
-
-            {/* Resources */}
             <MenuItem>
               {({ active }) => (
                 <button
                   onClick={handleViewResourcePopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100",
+                    active && "dark:bg-dark-600 bg-gray-100"
                   )}
                 >
                   <LinkIcon className="size-4.5 stroke-1" />
@@ -227,15 +191,13 @@ export function RowActions({ row }) {
                 </button>
               )}
             </MenuItem>
-
-            {/* Assignments */}
             <MenuItem>
               {({ active }) => (
                 <button
                   onClick={handleViewAssignmentsPopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100",
+                    active && "dark:bg-dark-600 bg-gray-100"
                   )}
                 >
                   <LinkIcon className="size-4.5 stroke-1" />
@@ -249,11 +211,11 @@ export function RowActions({ row }) {
                   onClick={handleViewAttendancePopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100",
+                    active && "dark:bg-dark-600 bg-gray-100"
                   )}
                 >
                   <LinkIcon className="size-4.5 stroke-1" />
-                  <span> Attendance</span>
+                  <span>Attendance</span>
                 </button>
               )}
             </MenuItem>
@@ -261,16 +223,16 @@ export function RowActions({ row }) {
         </Menu>
       </div>
 
-      {/* PDF Viewer Modal */}
+      {/* Modals: PDF Viewer, Resources, Assignments, Video, Attendance */}
       {showPdfViewerModal && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="relative w-full max-w-3xl rounded-lg bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold">PDF View</h2>
               <button
                 onClick={handlePdfPopUpClose}
                 className="text-xl font-bold text-red-500"
-                aria-label="Close PDF viewer"
+                aria-label="Close"
               >
                 &times;
               </button>
@@ -288,75 +250,56 @@ export function RowActions({ row }) {
         </div>
       )}
 
-      {/* Resources Modal */}
       {showResourcePopup && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black backdrop-blur-sm">
-          <div className="relative w-full max-w-4xl overflow-hidden rounded-lg bg-white p-6 shadow-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="relative w-full max-w-4xl rounded-lg bg-white p-6 shadow-lg overflow-auto">
             <h2 className="mb-4 text-lg font-semibold">Resources</h2>
-
             {loadingResources ? (
               <p>Loading...</p>
-            ) : resources ? (
+            ) : (
               <table className="w-full table-fixed border">
                 <thead>
                   <tr className="bg-gray-100">
-                    <th className="w-1/2 border-b p-2 text-center align-middle">
-                      PDF Resources
-                    </th>
-                    <th className="w-1/2 border-b p-2 text-center align-middle">
-                      Video Resources
-                    </th>
+                    <th className="w-1/2 border-b p-2">PDF</th>
+                    <th className="w-1/2 border-b p-2">Video</th>
                   </tr>
                 </thead>
                 <tbody>
                   {(() => {
-                    const pdfResources = resources.anx || [];
-                    const mp4Resources = resources.mp4 || [];
-                    const maxLength = Math.max(
-                      pdfResources.length,
-                      mp4Resources.length,
-                    );
-
-                    return Array.from({ length: maxLength }).map((_, index) => {
-                      const pdf = pdfResources[index];
-                      const video = mp4Resources[index];
-
-                      return (
-                        <tr key={index} className="hover:bg-gray-50">
-                          <td className="border-b p-2 text-center align-middle break-words">
-                            {pdf ? (
-                              <button
-                                onClick={() => handlepdfResource(pdf)}
-                                className="block max-w-full truncate text-blue-600 underline"
-                                title={pdf.name}
-                              >
-                                {pdf.name}
-                              </button>
-                            ) : (
-                              "-"
-                            )}
-                          </td>
-                          <td className="border-b p-2 text-center align-middle break-words">
-                            {video ? (
-                              <button
-                                onClick={() => handleResourceClick(video)}
-                                className="block max-w-full truncate text-blue-600 underline"
-                                title={video.name}
-                              >
-                                {video.name}
-                              </button>
-                            ) : (
-                              "-"
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    });
+                    const pdf = resources.anx || [];
+                    const mp4 = resources.mp4 || [];
+                    const len = Math.max(pdf.length, mp4.length);
+                    return Array.from({ length: len }).map((_, i) => (
+                      <tr key={i} className="hover:bg-gray-50">
+                        <td className="border-b p-2 text-center">
+                          {pdf[i] ? (
+                            <button
+                              onClick={() => handlepdfResource(pdf[i])}
+                              className="text-blue-600 underline"
+                            >
+                              {pdf[i].name}
+                            </button>
+                          ) : (
+                            "-"
+                          )}
+                        </td>
+                        <td className="border-b p-2 text-center">
+                          {mp4[i] ? (
+                            <button
+                              onClick={() => handleResourceClick(mp4[i])}
+                              className="text-blue-600 underline"
+                            >
+                              {mp4[i].name}
+                            </button>
+                          ) : (
+                            "-"
+                          )}
+                        </td>
+                      </tr>
+                    ));
                   })()}
                 </tbody>
               </table>
-            ) : (
-              <p>No resources found.</p>
             )}
             <button
               className="mt-4 rounded bg-blue-600 px-4 py-2 text-white"
@@ -368,36 +311,34 @@ export function RowActions({ row }) {
         </div>
       )}
 
-      {/* Assignments Modal */}
       {showAssignmentsPopup && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="relative max-h-[80vh] w-full max-w-4xl overflow-auto rounded-lg bg-white p-6 shadow-lg">
             <h2 className="mb-4 text-lg font-semibold">Assignments</h2>
-
             {assignments.length === 0 ? (
               <p>No assignments found.</p>
             ) : (
               <table className="w-full table-fixed border">
                 <thead>
                   <tr className="bg-gray-100">
-                    <th className="border p-2 text-left">Worksheet Name</th>
+                    <th className="border p-2">Name</th>
                     <th className="border p-2 text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {assignments.map(({ name, link, rawText }, index) => (
                     <tr key={index} className="hover:bg-gray-50">
-                      <td className="border p-2 break-words">{name}</td>
+                      <td className="border p-2">{name}</td>
                       <td className="border p-2 text-center">
                         {link ? (
                           <button
-                            className="text-blue-600 underline"
                             onClick={() => handleAssignmentView(link)}
+                            className="text-blue-600 underline"
                           >
                             View
                           </button>
                         ) : (
-                          <span>{rawText}</span>
+                          rawText
                         )}
                       </td>
                     </tr>
@@ -405,7 +346,6 @@ export function RowActions({ row }) {
                 </tbody>
               </table>
             )}
-
             <button
               className="mt-4 rounded bg-blue-600 px-4 py-2 text-white"
               onClick={() => setShowAssignmentsPopup(false)}
@@ -416,16 +356,14 @@ export function RowActions({ row }) {
         </div>
       )}
 
-      {/* Vimeo Video Player */}
       {showVideoPlayer && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="relative w-full max-w-3xl rounded-lg bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Video Player</h2>
+              <h2 className="text-lg font-semibold">Video</h2>
               <button
                 onClick={() => setShowVideoPlayer(false)}
                 className="text-xl font-bold text-red-500"
-                aria-label="Close video player"
               >
                 &times;
               </button>
@@ -442,15 +380,15 @@ export function RowActions({ row }) {
           </div>
         </div>
       )}
+
       {studentAttendancePopUp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
           <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Video Player</h2>
+              <h2 className="text-lg font-semibold">Attendance</h2>
               <button
                 onClick={() => setStudentAttendancePopUp(false)}
                 className="text-xl font-bold text-red-500"
-                aria-label="Close video player"
               >
                 &times;
               </button>
@@ -461,7 +399,6 @@ export function RowActions({ row }) {
           </div>
         </div>
       )}
-
     </>
   );
 }

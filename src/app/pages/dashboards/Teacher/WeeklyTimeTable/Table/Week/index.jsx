@@ -1,7 +1,6 @@
 import {
   flexRender,
   getCoreRowModel,
-  getExpandedRowModel,
   getFacetedMinMaxValues,
   getFacetedUniqueValues,
   getFilteredRowModel,
@@ -10,12 +9,16 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import clsx from "clsx";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useLayoutEffect } from "react";
 import { fetchWeeklyTimeTableData } from "./data";
 import { generateWeeklyTimeTableColumns } from "./columns";
 
-import { Card, Table, THead, TBody, Th, Tr, Td, Spinner, Box } from "components/ui";
-import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
+import { Card, Table, THead, TBody, Th, Tr, Td, Spinner } from "components/ui";
+import {
+  useLockScrollbar,
+  useLocalStorage,
+  useDidUpdate,
+} from "hooks";
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
 import { useSkipper } from "utils/react-table/useSkipper";
 import { SelectedRowsActions } from "./SelectedRowsActions";
@@ -30,10 +33,6 @@ export default function Week() {
   const [autoResetPageIndex] = useSkipper();
   const [orders, setOrders] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [timeTableMeta, setTimeTableMeta] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const [tableSettings, setTableSettings] = useState({
     enableSorting: true,
     enableColumnFilters: true,
@@ -45,78 +44,61 @@ export default function Week() {
   const [columnVisibility, setColumnVisibility] = useLocalStorage("column-visibility-orders-2", {});
   const [columnPinning, setColumnPinning] = useLocalStorage("column-pinning-orders-2", {});
   const cardRef = useRef();
+  const wrapperRef = useRef(); // ✅ New ref for scroll container
+  const [loading, setLoading] = useState(true);
 
-  // Horizontal scroll handling
-  const scrollRef = useRef(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  const scrollLeft = () => scrollRef.current?.scrollBy({ left: -200, behavior: "smooth" });
-  const scrollRight = () => scrollRef.current?.scrollBy({ left: 200, behavior: "smooth" });
-
+  // ✅ Fetch headers + data
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(true);
-        const data = await fetchWeeklyTimeTableData();
-
-        if (data.headers?.length) {
-          setColumns(generateWeeklyTimeTableColumns(data.headers));
-        } else {
-          setColumns([]);
-        }
-
-        setOrders(data.timeTableData || []);
-        setTimeTableMeta({
-          month: data.month || "",
-          weekName: data.weekName || "",
-          course: data.course || "",
-          events: data.events || [],
-          resources: data.resources || {},
-        });
+        setLoading(true);
+        const { headers, timeTableData } = await fetchWeeklyTimeTableData();
+        const generatedColumns = generateWeeklyTimeTableColumns(headers);
+        setColumns(generatedColumns);
+        setOrders(timeTableData);
       } catch (err) {
         console.error("Failed to fetch timetable data:", err);
-        setError("Unable to load timetable. Please try again.");
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const updateScroll = () => {
-      setCanScrollLeft(el.scrollLeft > 10);
-      setCanScrollRight(el.scrollWidth - el.clientWidth - el.scrollLeft > 10);
-    };
-
-    el.addEventListener("scroll", updateScroll);
-    updateScroll();
-    return () => el.removeEventListener("scroll", updateScroll);
+  // ✅ User-friendly scroll reset when columns & data are ready
+  useLayoutEffect(() => {
+    if (columns.length > 0 && orders.length > 0 && wrapperRef.current) {
+      wrapperRef.current.scrollLeft = 1;
+      wrapperRef.current.scrollLeft = 0;
+    }
   }, [columns, orders]);
 
   const table = useReactTable({
     data: orders,
     columns,
-    state: { globalFilter, sorting, columnVisibility, columnPinning, tableSettings },
-    meta: { setTableSettings },
+    state: {
+      globalFilter,
+      sorting,
+      columnVisibility,
+      columnPinning,
+      tableSettings,
+    },
+    meta: {
+      setTableSettings,
+      deleteRow: () => {},
+      deleteRows: () => {},
+    },
     filterFns: { fuzzy: fuzzyFilter },
-    globalFilterFn: fuzzyFilter,
     enableSorting: tableSettings.enableSorting,
     enableColumnFilters: tableSettings.enableColumnFilters,
-    onGlobalFilterChange: setGlobalFilter,
-    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
+    globalFilterFn: fuzzyFilter,
+    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    getRowCanExpand: () => false,
     getPaginationRowModel: getPaginationRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onColumnPinningChange: setColumnPinning,
@@ -128,144 +110,92 @@ export default function Week() {
 
   return (
     <div className="grid grid-cols-1 grid-rows-[auto_auto_1fr] px-4 py-4">
-      <div
-        className={clsx(
-          "flex flex-col pt-4",
-          tableSettings.enableFullScreen &&
-            "dark:bg-dark-900 fixed inset-0 z-61 h-full w-full bg-white pt-3"
-        )}
-      >
+      <div className={clsx("flex flex-col pt-4", tableSettings.enableFullScreen && "fixed inset-0 z-61 h-full w-full bg-white pt-3 dark:bg-dark-900")}> 
         <Toolbar table={table} />
-
-        <Card
-          className={clsx("relative mt-3 flex grow flex-col", tableSettings.enableFullScreen && "overflow-hidden")}
-          ref={cardRef}
-        >
-          {isLoading ? (
-            <div className="flex grow items-center justify-center py-12">
-              <Spinner color="primary" className="size-12 sm:size-16 border-4" />
-            </div>
-          ) : error ? (
-            <div className="text-red-600 text-center mt-6">{error}</div>
-          ) : (
-            <>
-              <Box className="w-full rounded-lg bg-gray-200 dark:bg-dark-500 p-4">
-                <div className="flex flex-col gap-2 text-center sm:flex-row sm:justify-between sm:text-left">
-                  <div className="font-medium text-gray-800 dark:text-dark-100">
-                    {timeTableMeta.month || "—"}
-                  </div>
-                  <div className="font-semibold text-xl text-primary-600 dark:text-primary-400">
-                    {timeTableMeta.weekName || "—"}
-                  </div>
-                  <div className="font-medium text-gray-800 dark:text-dark-100">
-                    {timeTableMeta.course || "—"}
-                  </div>
-                </div>
-
-                {timeTableMeta.events?.length > 0 && (
-                  <div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-center text-sm text-gray-700 dark:text-dark-200">
-                    <span className="font-semibold">{timeTableMeta.events[0].name}</span>
-                    <span className="mx-2 hidden sm:inline">|</span>
-                    <span>{new Date(timeTableMeta.events[0].date).toDateString()}</span>
-                  </div>
-                )}
-              </Box>
-
-              <div className="text-xs text-gray-400 italic mt-2 text-center sm:hidden animate-pulse">
-                📱 Swipe left/right to scroll →
+        <Card className={clsx("relative mt-3 flex grow flex-col", tableSettings.enableFullScreen && "overflow-hidden")} ref={cardRef}>
+          <div ref={wrapperRef} className="table-wrapper min-w-full grow overflow-x-auto">
+            {loading ? (
+              <div className="flex justify-center items-center h-64">
+                <Spinner color="primary" className="size-10" />
               </div>
-
-              {columns.length > 0 && orders.length > 0 ? (
-                <div className="relative mt-2">
-                  {/* Scroll Arrows */}
-                  {canScrollLeft && (
-                    <button
-                      onClick={scrollLeft}
-                      className="absolute left-0 top-1/2 z-20 -translate-y-1/2 bg-white dark:bg-dark-800 p-1 rounded-full shadow-md animate-pulse"
-                    >
-                      <span className="text-xl font-bold">{`<`}</span>
-                    </button>
-                  )}
-                  {canScrollRight && (
-                    <button
-                      onClick={scrollRight}
-                      className="absolute right-0 top-1/2 z-20 -translate-y-1/2 bg-white dark:bg-dark-800 p-1 rounded-full shadow-md animate-pulse"
-                    >
-                      <span className="text-xl font-bold">{`>`}</span>
-                    </button>
-                  )}
-
-                  <div
-                    ref={scrollRef}
-                    className="overflow-x-auto rounded scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
-                    style={{
-                      WebkitOverflowScrolling: "touch",
-                      scrollBehavior: "smooth",
-                      touchAction: "pan-x",
-                    }}
-                  >
-                    <div className="w-max min-w-full">
-                      <Table className="table-auto w-full">
-                        <THead className="sticky top-0 z-10 bg-gray-100 dark:bg-dark-800 shadow-sm">
-                          {table.getHeaderGroups().map((headerGroup) => (
-                            <Tr key={headerGroup.id}>
-                              {headerGroup.headers.map((header, index) => (
-                                <Th
-                                  key={header.id}
-                                  className={clsx(
-                                    "text-center font-semibold text-gray-800 uppercase dark:text-dark-100 whitespace-nowrap",
-                                    index === 0 &&
-                                      "sticky left-0 z-20 bg-gray-100 dark:bg-dark-800 border-r border-gray-300"
-                                  )}
-                                >
-                                  {header.isPlaceholder
-                                    ? null
-                                    : flexRender(header.column.columnDef.header, header.getContext())}
-                                </Th>
-                              ))}
-                            </Tr>
-                          ))}
-                        </THead>
-                        <TBody>
-                          {table.getRowModel().rows.map((row) => (
-                            <Tr
-                              key={row.id}
-                              className={clsx(
-                                "border-b text-center dark:border-dark-700",
-                                row.getIsExpanded() && "is-expanded",
-                                row.getIsSelected() && !isSafari && "row-selected"
-                              )}
+            ) : (
+              <Table
+                hoverable
+                dense={tableSettings.enableRowDense}
+                sticky={tableSettings.enableFullScreen}
+                className="table"
+              >
+                <THead className="table-thead">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <Tr key={headerGroup.id} className="table-tr">
+                      {headerGroup.headers.map((header) => (
+                        <Th
+                          key={header.id}
+                          className={clsx(
+                            "table-th border-b border-gray-300 dark:border-dark-500",
+                            header.column.columnDef.meta?.columnClassName,
+                            header.column.getIsPinned() === "left" && "is-pinned-left",
+                            header.column.getIsPinned() === "right" && "is-pinned-right"
+                          )}
+                        >
+                          {header.column.getCanSort() ? (
+                            <div
+                              className="flex cursor-pointer select-none items-center space-x-3"
+                              onClick={header.column.getToggleSortingHandler()}
                             >
-                              {row.getVisibleCells().map((cell, index) => (
-                                <Td
-                                  key={cell.id}
-                                  className={clsx(
-                                    "text-center px-2 py-3 whitespace-nowrap",
-                                    cardSkin === "shadow-sm" ? "skin-shadow-sm" : "skin-shadow",
-                                    index === 0 &&
-                                      "sticky left-0 z-10 bg-white dark:bg-dark-700 border-r border-gray-300",
-                                    cell.column.columnDef.meta?.columnClassName
-                                  )}
-                                >
-                                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                </Td>
-                              ))}
-                            </Tr>
-                          ))}
-                        </TBody>
-                      </Table>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex justify-center py-12 text-gray-500 dark:text-dark-300">
-                  No data available to display.
-                </div>
-              )}
-
-              <SelectedRowsActions table={table} />
-            </>
-          )}
+                              <span className="flex-1">
+                                {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                              </span>
+                            </div>
+                          ) : header.isPlaceholder ? null : (
+                            flexRender(header.column.columnDef.header, header.getContext())
+                          )}
+                        </Th>
+                      ))}
+                    </Tr>
+                  ))}
+                </THead>
+                <TBody className="table-tbody">
+                  {table.getRowModel().rows.map((row) => (
+                    <Tr
+                      key={row.id}
+                      className={clsx(
+                        "table-tr",
+                        row.getIsSelected() && !isSafari && "row-selected"
+                      )}
+                    >
+                      {row.getVisibleCells().map((cell, index) => (
+                        <Td
+                          key={cell.id}
+                          className={clsx(
+                            "table-td",
+                            cardSkin === "shadow-sm" ? "skin-shadow-sm" : "skin-shadow",
+                            cell.column.columnDef.meta?.columnClassName,
+                            index === 0 && "border-r border-gray-300 dark:border-dark-500",
+                            cell.column.getIsPinned() === "left" && "is-pinned-left",
+                            cell.column.getIsPinned() === "right" && "is-pinned-right"
+                          )}
+                        >
+                          {cell.column.getIsPinned() && (
+                            <div
+                              className={clsx(
+                                "pointer-events-none absolute inset-0 border-gray-200 dark:border-dark-500",
+                                cell.column.getIsPinned() === "left"
+                                  ? "ltr:border-r rtl:border-l"
+                                  : "ltr:border-l rtl:border-r"
+                              )}
+                            />
+                          )}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </Td>
+                      ))}
+                    </Tr>
+                  ))}
+                </TBody>
+              </Table>
+            )}
+          </div>
+          <SelectedRowsActions table={table} />
         </Card>
       </div>
     </div>

@@ -1,8 +1,4 @@
-// src/app/pages/dashboards/Teacher/WeeklyMatrixTable/Table/Week/data.js
-
 import axios from "utils/axios";
-
-
 
 /**
  * Fetches weekly matrix data from the API.
@@ -14,8 +10,7 @@ import axios from "utils/axios";
 export async function fetchWeeklyMatrixData(tenantId, courseId, termId) {
   try {
     const response = await axios.get(
-    //   `https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/VTermTable/get-week-matrix`,
-    'https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/VTermTable/get-week-matrix?tenantId=1&courseId=1&termId=1',
+      "https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/VTermTable/get-week-matrix",
       {
         params: { tenantId, courseId, termId },
       }

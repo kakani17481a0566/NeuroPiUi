@@ -16,7 +16,7 @@ import { PlusIcon } from "@heroicons/react/20/solid";
 import { TableSortIcon } from "components/shared/table/TableSortIcon";
 import { ColumnFilter } from "components/shared/table/ColumnFilter";
 import { PaginationSection } from "components/shared/table/PaginationSection";
-import { Button, Card, Table, THead, TBody, Th, Tr, Td, Spinner } from "components/ui";
+import { Button, Card, Table, THead, TBody, Th, Tr, Td } from "components/ui";
 import { useBoxSize, useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
 import { useSkipper } from "utils/react-table/useSkipper";
@@ -36,21 +36,17 @@ export default function Roles() {
   const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
 
   const [roles, setRoles] = useState([]);
-  const [loading, setLoading] = useState(true);
-
   const [selectedRole, setSelectedRole] = useState(null);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
 
   const refetchData = async () => {
-    setLoading(true);
     const data = await fetchRoles(1);
     setRoles(data);
-    setLoading(false);
   };
 
   const handleCreateRole = () => {
-    setSelectedRole(null); 
+    setSelectedRole(null);
     setEditMode(false);
     setDrawerOpen(true);
   };
@@ -122,8 +118,7 @@ export default function Roles() {
   useLockScrollbar(tableSettings.enableFullScreen);
 
   return (
-    <div className="transition-content grid grid-cols-1 grid-rows-[auto_auto_1fr] px-(--margin-x) py-4">
-      {/* Header */}
+    <div className="transition-content grid grid-cols-1 grid-rows-[auto_auto_1fr] px-4 py-4">
       <div className="flex items-center justify-between space-x-4">
         <h2 className="truncate text-xl font-medium tracking-wide text-gray-800 dark:text-dark-50">
           Roles
@@ -134,27 +129,36 @@ export default function Roles() {
         </Button>
       </div>
 
-      {/* Table */}
       <div className={clsx("flex flex-col pt-4", tableSettings.enableFullScreen && "fixed inset-0 z-61 h-full w-full bg-white pt-3 dark:bg-dark-900")}>
         <Toolbar table={table} />
-
         <Card
-          className={clsx("relative mt-3 flex grow flex-col max-h-[calc(100vh-10rem)] overflow-auto", tableSettings.enableFullScreen && "overflow-hidden")}
+          className={clsx("relative mt-3 flex grow flex-col", tableSettings.enableFullScreen && "overflow-hidden")}
           ref={cardRef}
         >
-          <div className="table-wrapper w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-dark-600">
-            <Table hoverable dense={tableSettings.enableRowDense} sticky={tableSettings.enableFullScreen} className="w-full text-left rtl:text-right">
+          <div
+            className="table-wrapper min-w-full grow overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-dark-500 scroll-smooth"
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
+            <Table
+              hoverable
+              dense={tableSettings.enableRowDense}
+              sticky={tableSettings.enableFullScreen}
+              className="w-full text-left rtl:text-right"
+            >
               <THead>
                 {table.getHeaderGroups().map((group) => (
                   <Tr key={group.id}>
                     {group.headers.map((header) => (
-                      <Th key={header.id} className={clsx(
-                        "bg-gray-200 font-semibold uppercase text-gray-800 dark:bg-dark-800 dark:text-dark-100",
-                        header.column.getCanPin() && [
-                          header.column.getIsPinned() === "left" && "sticky z-2 ltr:left-0 rtl:right-0",
-                          header.column.getIsPinned() === "right" && "sticky z-2 ltr:right-0 rtl:left-0",
-                        ]
-                      )}>
+                      <Th
+                        key={header.id}
+                        className={clsx(
+                          "border-b border-gray-300 dark:border-dark-500 bg-gray-200 font-semibold uppercase text-gray-800 dark:bg-dark-800 dark:text-dark-100",
+                          header.column.getCanPin() && [
+                            header.column.getIsPinned() === "left" && "sticky z-2 ltr:left-0 rtl:right-0",
+                            header.column.getIsPinned() === "right" && "sticky z-2 ltr:right-0 rtl:left-0",
+                          ]
+                        )}
+                      >
                         {header.column.getCanSort() ? (
                           <div
                             className="flex cursor-pointer select-none items-center space-x-3"
@@ -176,63 +180,61 @@ export default function Roles() {
               </THead>
 
               <TBody>
-                {loading ? (
-                  <Tr>
-                    <Td colSpan={columns.length}>
-                      <div className="flex justify-center py-10">
-                        <Spinner color="primary" className="size-10 border-4" />
-                      </div>
-                    </Td>
-                  </Tr>
-                ) : (
-                  table.getRowModel().rows.map((row) => (
-                    <Fragment key={row.id}>
-                      <Tr className={clsx(
+                {table.getRowModel().rows.map((row) => (
+                  <Fragment key={row.id}>
+                    <Tr
+                      className={clsx(
                         "relative border-y border-transparent border-b-gray-200 dark:border-b-dark-500",
                         row.getIsExpanded() && "border-dashed",
-                        row.getIsSelected() && !isSafari && "row-selected after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500"
-                      )}>
-                        {row.getVisibleCells().map((cell) => (
-                          <Td key={cell.id} className={clsx(
-                            "relative",
+                        row.getIsSelected() && !isSafari &&
+                          "row-selected after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500"
+                      )}
+                    >
+                      {row.getVisibleCells().map((cell, index) => (
+                        <Td
+                          key={cell.id}
+                          className={clsx(
+                            "table-td",
                             cardSkin === "shadow-sm" ? "dark:bg-dark-700" : "dark:bg-dark-900",
+                            index === 0 && "border-r border-gray-300 dark:border-dark-500",
                             cell.column.getCanPin() && [
                               cell.column.getIsPinned() === "left" && "sticky z-2 ltr:left-0 rtl:right-0",
                               cell.column.getIsPinned() === "right" && "sticky z-2 ltr:right-0 rtl:left-0",
                             ]
-                          )}>
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </Td>
-                        ))}
-                      </Tr>
-                      {row.getIsExpanded() && (
-                        <tr>
-                          <td colSpan={row.getVisibleCells().length} className="p-0">
-                            <SubRowComponent row={row} cardWidth={cardWidth} />
-                          </td>
-                        </tr>
-                      )}
-                    </Fragment>
-                  ))
-                )}
+                          )}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </Td>
+                      ))}
+                    </Tr>
+                    {row.getIsExpanded() && (
+                      <tr>
+                        <td colSpan={row.getVisibleCells().length} className="p-0">
+                          <SubRowComponent row={row} cardWidth={cardWidth} />
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                ))}
               </TBody>
             </Table>
           </div>
 
           <SelectedRowsActions table={table} />
           {table.getCoreRowModel().rows.length > 0 && (
-            <div className={clsx(
-              "px-4 pb-4 sm:px-5 sm:pt-4",
-              tableSettings.enableFullScreen && "bg-gray-50 dark:bg-dark-800",
-              !(table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && "pt-4"
-            )}>
+            <div
+              className={clsx(
+                "px-4 pb-4 sm:px-5 sm:pt-4",
+                tableSettings.enableFullScreen && "bg-gray-50 dark:bg-dark-800",
+                !(table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && "pt-4"
+              )}
+            >
               <PaginationSection table={table} />
             </div>
           )}
         </Card>
       </div>
 
-      {/* Drawer */}
       <Right
         isOpen={isDrawerOpen}
         onClose={() => setDrawerOpen(false)}

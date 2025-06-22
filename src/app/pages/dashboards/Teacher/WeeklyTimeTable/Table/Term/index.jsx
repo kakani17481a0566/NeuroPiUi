@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import clsx from "clsx";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Box, Card, Table, THead, TBody, Th, Tr, Td } from "components/ui";
 import { useLocalStorage, useLockScrollbar, useDidUpdate } from "hooks";
 import { Toolbar } from "./Toolbar";
@@ -16,11 +16,9 @@ import { SelectedRowsActions } from "./SelectedRowsActions";
 import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
 import { useSkipper } from "utils/react-table/useSkipper";
-
 import { fetchWeeklyMatrixData } from "./data";
 import { generateTermColumns } from "./columns";
 import { useThemeContext } from "app/contexts/theme/context";
-
 
 const isSafari = getUserAgentBrowser() === "Safari";
 
@@ -31,11 +29,9 @@ export default function Term() {
   const [orders, setOrders] = useState([]);
   const [columns, setColumns] = useState([]);
   const [month, setMonth] = useState("");
-
   const [academicYear, setAcademicYear] = useState("");
   const [term, setTerm] = useState("");
   const [dateRange, setDateRange] = useState("");
-
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
 
@@ -46,15 +42,8 @@ export default function Term() {
     enableRowDense: true,
   });
 
-  const [columnVisibility, setColumnVisibility] = useLocalStorage(
-    "term-column-visibility",
-    {}
-  );
-  const [columnPinning, setColumnPinning] = useLocalStorage(
-    "term-column-pinning",
-    {}
-  );
-
+  const [columnVisibility, setColumnVisibility] = useLocalStorage("term-column-visibility", {});
+  const [columnPinning, setColumnPinning] = useLocalStorage("term-column-pinning", {});
   const cardRef = useRef();
 
   useEffect(() => {
@@ -67,13 +56,16 @@ export default function Term() {
         setOrders(dataTerm);
         setMonth(month);
 
-        if (month) {
-          const parts = month.split(" ");
-          if (parts.length >= 6) {
-            setAcademicYear(`${parts[0]} ${parts[1]} ${parts[2]}`);
-            setTerm(`${parts[3]} ${parts[4]}`);
-            setDateRange(parts.slice(5).join(" "));
-          }
+        const match = month.match(/^(\w+\s+\d{4})\s+(Week\s+\d+)\s+(.*)$/);
+        if (match) {
+          setAcademicYear(match[1]); // June 2025
+          setTerm(match[2]);         // Week 1
+          setDateRange(match[3]);    // 03 - 07
+        } else {
+          console.warn("Month string format unexpected:", month);
+          setAcademicYear("");
+          setTerm("");
+          setDateRange("");
         }
       } catch (err) {
         console.error("Failed to load term data:", err);
@@ -118,36 +110,26 @@ export default function Term() {
 
   return (
     <div className="grid grid-cols-1 grid-rows-[auto_auto_1fr] px-4 py-4">
-      <div
-        className={clsx(
-          "flex flex-col pt-4",
-          tableSettings.enableFullScreen &&
-            "dark:bg-dark-900 fixed inset-0 z-61 h-full w-full bg-white pt-3"
-        )}
-      >
-        {month && (
-          <Box className="w-full mb-4 rounded-lg bg-gray-200 dark:bg-dark-500 px-4 py-3">
-            <div className="flex flex-col items-center justify-center space-y-1 text-center">
-              <div className="text-base font-semibold text-primary-500 dark:text-primary-400">
-                {academicYear}
-              </div>
-              <div className="text-base font-semibold text-gray-800 dark:text-dark-100">
-                {term}
-              </div>
-              <div className="text-sm font-medium text-gray-800 dark:text-dark-100">
-                {dateRange}
-              </div>
+      {month && (
+        <Box className="dark:bg-dark-500 mb-4 w-full rounded-lg bg-gray-200 px-4 py-3">
+          <div className="flex flex-col items-center justify-center space-y-1 text-center">
+            <div className="text-primary-500 dark:text-primary-400 text-base font-semibold">
+              {academicYear}
             </div>
-          </Box>
-        )}
+            <div className="dark:text-dark-100 text-base font-semibold text-gray-800">
+              {term}
+            </div>
+            <div className="dark:text-dark-100 text-sm font-medium text-gray-800">
+              {dateRange}
+            </div>
+          </div>
+        </Box>
+      )}
 
+      <div className={clsx("flex flex-col pt-4", tableSettings.enableFullScreen && "fixed inset-0 z-61 h-full w-full bg-white pt-3 dark:bg-dark-900")}>
         <Toolbar table={table} />
-
         <Card
-          className={clsx(
-            "relative mt-3 flex grow flex-col",
-            tableSettings.enableFullScreen && "overflow-hidden"
-          )}
+          className={clsx("relative mt-3 flex grow flex-col", tableSettings.enableFullScreen && "overflow-hidden")}
           ref={cardRef}
         >
           <div className="table-wrapper min-w-full grow overflow-x-auto">
@@ -155,82 +137,80 @@ export default function Term() {
               hoverable
               dense={tableSettings.enableRowDense}
               sticky={tableSettings.enableFullScreen}
-              className="w-full text-left rtl:text-right"
+              className="table"
             >
-              <THead>
+              <THead className="table-thead">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <Tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header, index) => (
+                  <Tr key={headerGroup.id} className="table-tr">
+                    {headerGroup.headers.map((header) => (
                       <Th
                         key={header.id}
                         className={clsx(
-                          "dark:bg-dark-800 dark:text-dark-100 bg-gray-200 font-semibold text-gray-800 uppercase",
-                          index === 0 && "border-r border-gray-300",
-                          header.column.getCanPin() && [
-                            header.column.getIsPinned() === "left" &&
-                              "sticky z-2 ltr:left-0 rtl:right-0",
-                            header.column.getIsPinned() === "right" &&
-                              "sticky z-2 ltr:right-0 rtl:left-0",
-                          ]
+                          "table-th border-b border-gray-300 dark:border-dark-500",
+                          header.column.columnDef.meta?.columnClassName,
+                          header.column.getIsPinned() === "left" && "is-pinned-left",
+                          header.column.getIsPinned() === "right" && "is-pinned-right"
                         )}
                       >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
+                        {header.column.getCanSort() ? (
+                          <div
+                            className="flex cursor-pointer select-none items-center space-x-3"
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            <span className="flex-1">
+                              {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                            </span>
+                          </div>
+                        ) : header.isPlaceholder ? null : (
+                          flexRender(header.column.columnDef.header, header.getContext())
                         )}
                       </Th>
                     ))}
                   </Tr>
                 ))}
               </THead>
-              <TBody>
+              <TBody className="table-tbody">
                 {table.getRowModel().rows.map((row) => (
-                  <Fragment key={row.id}>
-                    <Tr
-                      className={clsx(
-                        "dark:border-b-dark-500 relative border-y border-transparent border-b-gray-200",
-                        row.getIsExpanded() && "border-dashed",
-                        row.getIsSelected() &&
-                          !isSafari &&
-                          "row-selected after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500 after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent"
-                      )}
-                    >
-                      {row.getVisibleCells().map((cell, index) => (
-                        <Td
-                          key={cell.id}
-                          className={clsx(
-                            "relative",
-                            index === 0 && "border-r border-gray-300",
-                            cardSkin === "shadow-sm"
-                              ? "dark:bg-dark-700"
-                              : "dark:bg-dark-900",
-                            cell.column.getCanPin() && [
-                              cell.column.getIsPinned() === "left" &&
-                                "sticky z-2 ltr:left-0 rtl:right-0",
-                              cell.column.getIsPinned() === "right" &&
-                                "sticky z-2 ltr:right-0 rtl:left-0",
-                            ]
-                          )}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </Td>
-                      ))}
-                    </Tr>
-                  </Fragment>
+                  <Tr
+                    key={row.id}
+                    className={clsx(
+                      "table-tr",
+                      row.getIsSelected() && !isSafari && "row-selected"
+                    )}
+                  >
+                    {row.getVisibleCells().map((cell, index) => (
+                      <Td
+                        key={cell.id}
+                        className={clsx(
+                          "table-td",
+                          cardSkin === "shadow-sm" ? "skin-shadow-sm" : "skin-shadow",
+                          cell.column.columnDef.meta?.columnClassName,
+                          index === 0 && "border-r border-gray-300 dark:border-dark-500",
+                          cell.column.getIsPinned() === "left" && "is-pinned-left",
+                          cell.column.getIsPinned() === "right" && "is-pinned-right"
+                        )}
+                      >
+                        {cell.column.getIsPinned() && (
+                          <div
+                            className={clsx(
+                              "pointer-events-none absolute inset-0 border-gray-200 dark:border-dark-500",
+                              cell.column.getIsPinned() === "left"
+                                ? "ltr:border-r rtl:border-l"
+                                : "ltr:border-l rtl:border-r"
+                            )}
+                          />
+                        )}
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </Td>
+                    ))}
+                  </Tr>
                 ))}
               </TBody>
             </Table>
           </div>
-
           <SelectedRowsActions table={table} />
         </Card>
       </div>
-
-      {/* Optional: Remove <Roles /> if not needed */}
-   
     </div>
   );
 }

@@ -1,9 +1,11 @@
-// ───────────────────────────────────────────────
-// ✅ Component Imports
-// ───────────────────────────────────────────────
-
 import { Fragment, useEffect, useState } from "react";
-import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react";
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 
@@ -13,10 +15,6 @@ import { Students } from "./Students";
 import { Calendar } from "./Calendar";
 import { WeeklyTimeTable } from "./WeeklyTimeTable";
 import { Classes } from "./Classes";
-
-// ───────────────────────────────────────────────
-// ✅ Main Component: Teacher Dashboard
-// ───────────────────────────────────────────────
 
 export default function Teacher() {
   const [selectedView, setSelectedView] = useState("Week");
@@ -33,13 +31,13 @@ export default function Teacher() {
 
   return (
     <Page title="Teacher Dashboard">
-      {/* Dropdown: Week / Term Switch */}
-      <div className="flex flex-wrap items-center gap-4 px-4 pt-4 sm:px-5 lg:px-6">
+      {/* Sticky Header with Dropdown */}
+      <div className="sticky top-0 z-40 flex flex-wrap items-center gap-4 px-4 pt-4 pb-2 sm:px-5 lg:px-6 bg-white dark:bg-dark-800">
         <h1 className="text-lg font-semibold text-gray-800 dark:text-dark-100">
           Timetable View
         </h1>
 
-        <Menu as="div" className="relative inline-block text-left z-[1000]">
+        <Menu as="div" className="relative inline-block text-left">
           <MenuButton
             aria-label="Select timetable view"
             className="inline-flex min-w-[6rem] items-center gap-2 rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
@@ -57,7 +55,7 @@ export default function Teacher() {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <MenuItems className="absolute left-0 z-[1000] mt-2 w-32 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-dark-700">
+            <MenuItems className="absolute left-0 z-50 mt-2 w-32 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-dark-700">
               {["Week", "Term"].map((view) => (
                 <MenuItem key={view} as={Fragment}>
                   {({ active, close }) => (
@@ -81,23 +79,19 @@ export default function Teacher() {
         </Menu>
       </div>
 
-      {/* Grid Layout */}
-      <div className="grid grid-cols-12 gap-4 px-4 pb-8 pt-4 sm:gap-5 sm:px-5 lg:gap-6 lg:px-6">
-        {/* Main Section */}
-        <div className="col-span-12 xl:col-span-10 lg:col-span-9">
+      {/* Main Grid Layout */}
+      <div className="transition-content mt-4 grid w-full grid-cols-12 gap-4 px-4 pb-8 sm:mt-5 sm:gap-5 lg:mt-6 lg:gap-6">
+        <div className="col-span-12 lg:col-span-8 xl:col-span-9">
           <Classes />
           <div className="mt-4">
             <WeeklyTimeTable key={selectedView} view={selectedView} />
           </div>
         </div>
 
-        {/* Sidebar with fixed positioning */}
-        <div className="col-span-12 lg:col-span-3 xl:col-span-2">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-1 lg:gap-6 lg:sticky lg:top-20 lg:self-start max-h-[80vh] overflow-visible scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-dark-500">
-            <WorkingHours />
-            <Students />
-            <Calendar />
-          </div>
+        <div className="col-span-12 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:sticky lg:top-20 lg:col-span-4 lg:grid-cols-1 lg:gap-6 lg:self-start xl:col-span-3">
+          <WorkingHours />
+          <Students />
+          <Calendar />
         </div>
       </div>
     </Page>
