@@ -38,44 +38,49 @@ export default function Teacher() {
         </h1>
 
         <Menu as="div" className="relative inline-block text-left">
-          <MenuButton
-            aria-label="Select timetable view"
-            className="inline-flex min-w-[6rem] items-center gap-2 rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
-          >
-            {selectedView}
-            <ChevronDownIcon className="h-4 w-4" />
-          </MenuButton>
-
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <MenuItems className="absolute left-0 z-50 mt-2 w-32 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-dark-700">
-              {["Week", "Term"].map((view) => (
-                <MenuItem key={view} as={Fragment}>
-                  {({ active, close }) => (
-                    <button
-                      onClick={() => {
-                        handleViewChange(view);
-                        close();
-                      }}
-                      className={clsx(
-                        active ? "bg-gray-100 dark:bg-dark-600" : "",
-                        "w-full px-4 py-2 text-sm text-left text-gray-700 dark:text-white"
-                      )}
-                    >
-                      {view}
-                    </button>
+          {({ open }) => (
+            <>
+              <MenuButton className="inline-flex min-w-[6rem] items-center gap-2 rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700">
+                {selectedView}
+                <ChevronDownIcon
+                  className={clsx(
+                    "h-4 w-4 transition-transform",
+                    open && "rotate-180"
                   )}
-                </MenuItem>
-              ))}
-            </MenuItems>
-          </Transition>
+                />
+              </MenuButton>
+
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="opacity-0 translate-y-1"
+                enterTo="opacity-100 translate-y-0"
+                leave="transition ease-in duration-75"
+                leaveFrom="opacity-100 translate-y-0"
+                leaveTo="opacity-0 translate-y-1"
+              >
+                <MenuItems className="absolute left-0 z-50 mt-2 w-32 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-dark-700">
+                  {["Week", "Term"].map((view) => (
+                    <MenuItem key={view}>
+                      {({ active }) => (
+                        <button
+                          onClick={() => handleViewChange(view)}
+                          className={clsx(
+                            active
+                              ? "bg-gray-100 dark:bg-dark-600"
+                              : "bg-white dark:bg-dark-700",
+                            "w-full px-4 py-2 text-sm text-left text-gray-700 dark:text-white"
+                          )}
+                        >
+                          {view}
+                        </button>
+                      )}
+                    </MenuItem>
+                  ))}
+                </MenuItems>
+              </Transition>
+            </>
+          )}
         </Menu>
       </div>
 
