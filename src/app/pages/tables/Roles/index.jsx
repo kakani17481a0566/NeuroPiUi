@@ -1,3 +1,4 @@
+// --- [IMPORTS] ---
 import {
   flexRender,
   getCoreRowModel,
@@ -39,6 +40,7 @@ export default function Roles() {
   const [selectedRole, setSelectedRole] = useState(null);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
+  const [viewMode, setViewMode] = useState(false);
 
   const refetchData = async () => {
     const data = await fetchRoles(1);
@@ -48,6 +50,7 @@ export default function Roles() {
   const handleCreateRole = () => {
     setSelectedRole(null);
     setEditMode(false);
+    setViewMode(false);
     setDrawerOpen(true);
   };
 
@@ -94,6 +97,7 @@ export default function Roles() {
       setDrawerOpen,
       setSelectedRole,
       setEditMode: (flag) => setEditMode(flag),
+      setViewMode,
     },
     filterFns: { fuzzy: fuzzyFilter },
     enableSorting: tableSettings.enableSorting,
@@ -237,12 +241,19 @@ export default function Roles() {
 
       <Right
         isOpen={isDrawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={() => {
+          setDrawerOpen(false);
+          setEditMode(false);
+          setViewMode(false);
+        }}
         role={selectedRole}
         isEditMode={isEditMode}
+        viewMode={viewMode}
         onSave={() => {
           refetchData();
           setDrawerOpen(false);
+          setEditMode(false);
+          setViewMode(false);
         }}
       />
     </div>

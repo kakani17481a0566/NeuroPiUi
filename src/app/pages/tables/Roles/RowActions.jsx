@@ -16,10 +16,9 @@ import {
   useDismiss,
   useInteractions,
 } from "@floating-ui/react";
-
+import { toast } from "sonner";
 import { Button } from "components/ui";
 import { ConfirmModal } from "components/shared/ConfirmModal";
-// import clsx from "clsx";
 
 // ----------------------------------------------------------------------
 
@@ -55,19 +54,51 @@ export function RowActions({ row, table }) {
   const dismiss = useDismiss(context);
   const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss]);
 
-  const handleDeleteRows = useCallback(() => {
+  const handleDeleteRows = useCallback(async () => {
+    const tenantId = localStorage.getItem("tenantId");
+    const roleId = row.original.id;
+
+    if (!tenantId || !roleId) {
+      toast.error("Missing tenant or role ID");
+      return;
+    }
+
     setConfirmDeleteLoading(true);
-    setTimeout(() => {
-      table.options.meta?.deleteRow(row);
-      setDeleteSuccess(true);
+
+    try {
+      const res = await fetch(
+        `https://localhost:7202/api/Role/tenant/${tenantId}/id/${roleId}`,
+        {
+          method: "DELETE",
+          headers: { Accept: "*/*" },
+        }
+      );
+
+      const result = await res.json();
+
+      if (res.ok && result.statusCode === 200) {
+        table.options.meta?.deleteRow(row);
+        setDeleteSuccess(true);
+        toast.success("Role deleted successfully");
+      } else {
+        console.error("Delete error:", result);
+        toast.error(result.message || "Failed to delete role");
+        setDeleteError(true);
+      }
+    } catch (error) {
+      console.error("Network error while deleting:", error);
+      toast.error("Network error");
+      setDeleteError(true);
+    } finally {
       setConfirmDeleteLoading(false);
-    }, 1000);
+    }
   }, [row, table]);
 
   const handleView = () => {
     table.options.meta?.setSelectedRole(row.original);
     table.options.meta?.setDrawerOpen(true);
     table.options.meta?.setEditMode(false);
+    table.options.meta?.setViewMode?.(true); // ✅ Enable view mode
     setOpen(false);
   };
 

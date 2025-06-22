@@ -10,8 +10,9 @@ import { Fragment, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "components/ui";
 
-export function Right({ isOpen, onClose, role, onSave }) {
+export function Right({ isOpen, onClose, role, onSave, viewMode = false }) {
   const [formData, setFormData] = useState({ name: "" });
+  const isCreating = !role;
 
   useEffect(() => {
     setFormData({ name: role?.name || "" });
@@ -30,6 +31,12 @@ export function Right({ isOpen, onClose, role, onSave }) {
       return;
     }
 
+    if (!userId || !tenantId) {
+      console.error("Missing userId or tenantId:", { userId, tenantId });
+      toast.error("Session error: user or tenant info missing");
+      return;
+    }
+
     const payload = {
       name: formData.name.trim(),
       ...(role ? { updatedBy: userId } : { createdBy: userId, tenantId }),
@@ -42,6 +49,9 @@ export function Right({ isOpen, onClose, role, onSave }) {
     const method = role ? "PUT" : "POST";
 
     try {
+      console.log(`[${method}] URL:`, url);
+      console.log("Payload:", payload);
+
       const res = await fetch(url, {
         method,
         headers: {
@@ -52,33 +62,34 @@ export function Right({ isOpen, onClose, role, onSave }) {
       });
 
       const text = await res.text();
-      let result;
+      console.log("Raw Response:", text);
 
+      let result;
       try {
         result = JSON.parse(text);
       } catch {
-        if (import.meta.env.DEV) console.error("Invalid JSON response:", text);
+        console.error("Failed to parse JSON:", text);
         toast.error("Unexpected response from server");
         return;
       }
 
+      console.log("Parsed Result:", result);
+
       if (res.ok && result.statusCode === 200) {
-        toast.success(role ? "Role updated successfully" : "Role created successfully");
+        toast.success(isCreating ? "Role created successfully" : "Role updated successfully");
         onSave?.();
         onClose();
       } else {
-        if (import.meta.env.DEV) console.error("API Error:", result);
-        toast.error(result.message || "Failed to save role");
+        console.error("API Error:", result);
+        toast.error(result.message || result.error || "Failed to save role");
       }
     } catch (err) {
-      if (import.meta.env.DEV) console.error("Network error:", err);
-      toast.error("Something went wrong");
+      console.error("Network error:", err);
+      toast.error("Something went wrong while saving");
     }
   };
 
   if (!isOpen) return null;
-
-  const isCreating = !role;
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -110,11 +121,15 @@ export function Right({ isOpen, onClose, role, onSave }) {
                 <div className="flex justify-between items-start">
                   <div>
                     <h4 className="truncate text-base font-medium text-gray-800 dark:text-dark-50">
-                      {isCreating ? "Create Role" : "Roles"}
+                      {isCreating
+                        ? "Create Role"
+                        : viewMode
+                        ? "View Role"
+                        : "Edit Role"}
                     </h4>
                     {!isCreating && (
                       <span className="text-xs-plus text-primary-600 dark:text-primary-400">
-                        Tenant: {role.tenantName}
+                        Tenant: {role?.tenantName || "N/A"}
                       </span>
                     )}
                   </div>
@@ -138,13 +153,21 @@ export function Right({ isOpen, onClose, role, onSave }) {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
+                    disabled={viewMode}
                     placeholder="Enter role name"
-                    className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:border-dark-500 dark:bg-dark-600 dark:text-dark-50 dark:placeholder-dark-400"
+                    className={`w-full rounded-md border px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:outline-none ${
+                      viewMode
+                        ? "bg-gray-100 text-gray-500 cursor-not-allowed dark:bg-dark-600"
+                        : "bg-white dark:bg-dark-600 dark:text-dark-50"
+                    } border-gray-300 dark:border-dark-500 focus:border-primary-500 focus:ring-1 focus:ring-primary-500`}
                   />
                 </div>
-                <Button onClick={handleSubmit} color="primary" className="w-full">
-                  {isCreating ? "Create Role" : "Save Changes"}
-                </Button>
+
+                {!viewMode && (
+                  <Button onClick={handleSubmit} color="primary" className="w-full">
+                    {isCreating ? "Create Role" : "Save Changes"}
+                  </Button>
+                )}
               </div>
             </div>
           </DialogPanel>
@@ -155,8 +178,9 @@ export function Right({ isOpen, onClose, role, onSave }) {
 }
 
 Right.propTypes = {
-  isOpen: PropTypes.bool,
-  onClose: PropTypes.func,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
   role: PropTypes.object,
   onSave: PropTypes.func,
+  viewMode: PropTypes.bool,
 };
