@@ -28,7 +28,7 @@ export default function Grades() {
   const [StudentsList, setStudentsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [gradesList, setGradesList] = useState([]);
-  const [buttons,setButtons]=useState([]);
+  const [buttons, setButtons] = useState([]);
 
 
   const [tableSettings] = useState({
@@ -47,11 +47,17 @@ export default function Grades() {
         );
         const fetchedHeaders = response.data?.data?.headers || [];
         const fetchedRows = response.data?.data?.rows || [];
-        const fetchAssessmentStatusCode=response.data?.assessmentStatusCode ||[];
+        const fetchAssessmentStatusCode = response.data?.data?.assessmentStatusCode || [];
         setColumns(fetchedHeaders);
-        setButtons(fetchAssessmentStatusCode)
+        const styledButtons = fetchAssessmentStatusCode.map((status) => ({
+          id: status.id,
+          name: status.name,
+          style: getStatusStyle(status.name),
+          onClick: () => alert(`Clicked: ${status.name}`) // Replace with real logic
+        }));
+        setButtons(styledButtons)
         setStudentsList(fetchedRows);
-        const grades= await fetchGradesList();
+        const grades = await fetchGradesList();
         setGradesList(grades);
 
       } catch (err) {
@@ -65,40 +71,62 @@ export default function Grades() {
     fetchGradesList();
   }, []);
 
- const renderCell = (row, header) => {
-  // if (header === "S.NO.") return row.sNo;
-  // if (header === "S.NO.") return row.serialNumber;
+  const renderCell = (row, header) => {
+    // if (header === "S.NO.") return row.sNo;
+    // if (header === "S.NO.") return row.serialNumber;
 
-  if (header === "Student Name") return row.studentName;
-  
+    if (header === "Student Name") return row.studentName;
 
-  const assessmentGradeObj = row.assessmentGrades?.[header];
 
-  const grade = assessmentGradeObj?.gradeName || "";
+    const assessmentGradeObj = row.assessmentGrades?.[header];
 
-  return (
-    <select
-      value={grade}
-      className={`w-full border px-2 py-1 rounded text-sm cursor-not-allowed ${
-        grade.name === "A+" ? "bg-green-200" :
-        grade === "A" ? "bg-yellow-200" :
-        grade === "B" ? "bg-red-200" :
-        grade === "Fair" ? "bg-orange-200" :
-        grade === "Poor" ? "bg-pink-300" :
-        "bg-gray-100" 
-      }`}
-    >
-     
-      <option value="">{grade ? grade : "N/A"}</option> 
-      
-      {gradesList.map((g) => (
-        <option key={g.id} value={g.name}>
-          {g.name}
-        </option>
-      ))}
-    </select>
-  );
-};
+    const grade = assessmentGradeObj?.gradeName || "";
+
+    return (
+     <div className={`rounded px-1 py-1 ${bgColorFromGrade(grade)}`}>
+  <select
+    value={grade}
+    
+    className="w-full bg-transparent text-sm text-gray-700 cursor-not-allowed"
+  >
+    <option value="">{grade || "N/A"}</option>
+    {gradesList.map((g) => (
+      <option key={g.id} value={g.name}>
+        {g.name}
+      </option>
+    ))}
+  </select>
+</div>
+
+    );
+  };
+  function bgColorFromGrade(grade) {
+  switch (grade) {
+    case "A+": return "bg-green-200";
+    case "A": return "bg-yellow-200";
+    case "B": return "bg-red-200";
+    case "Fair": return "bg-orange-200";
+    case "Poor": return "bg-pink-300";
+    default: return "bg-gray-100";
+  }
+}
+
+
+  function getStatusStyle(status) {
+    switch (status.toUpperCase()) {
+      case "NOT STARTED":
+        return "bg-gray-500 hover:bg-gray-600";
+      case "IN-PROGRESS":
+        return "bg-yellow-500 hover:bg-yellow-600";
+      case "PENDING":
+        return "bg-orange-500 hover:bg-orange-600";
+      case "COMPLETED":
+        return "bg-green-600 hover:bg-green-700";
+      default:
+        return "bg-blue-500 hover:bg-blue-600";
+    }
+  }
+
 
 
   const [pagination, setPagination] = useState({
@@ -151,8 +179,6 @@ export default function Grades() {
 
   useDidUpdate(() => table.resetRowSelection(), [StudentsList]);
   useLockScrollbar(tableSettings.enableFullScreen);
-  console.log(gradesList);
-
   return (
     <div className="overflow-auto">
       {isLoading ? (
@@ -214,14 +240,20 @@ export default function Grades() {
               >
                 Next
               </button>
-              {buttons.map((button)=>(
-              <button 
-              key={button.id}
-              onClick={button.onClick}
-              className={`px-4 py-2 text-white rounded focus:outline-none focus:ring-2 focus:ring-opacity-50 ${button.style}`}
-              >{button.label}</button>
-             ))
-             }
+              {buttons.map((button) => (
+                <button
+                  key={button.id}
+                  // onClick={button.onClick}
+                  className={`px-4 py-2 text-white rounded ${button.style}`}
+                >
+                  {button.name}
+                </button>
+              ))}
+              <button className="px-4 py-2 text-white rounded bg-green-500 hover:bg-red-600"
+              > 
+                Save
+              </button>
+
             </div>
           </div>
         </>
