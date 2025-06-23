@@ -18,7 +18,8 @@ import {
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
 import { useSkipper } from "utils/react-table/useSkipper";
 import axios from "axios";
-import RowActions from "./RowActions";
+import { fetchGradesList } from "./GradesList";
+// import RowActions from "./RowActions";
 import { Spinner } from "components/ui";
 
 export default function Grades() {
@@ -26,6 +27,9 @@ export default function Grades() {
   const [columns, setColumns] = useState([]);
   const [StudentsList, setStudentsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [gradesList, setGradesList] = useState([]);
+  const [buttons,setButtons]=useState([]);
+
 
   const [tableSettings] = useState({
     enableSorting: true,
@@ -39,12 +43,17 @@ export default function Grades() {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          "https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/DailyAssessment/get-matrix?tenantId=1&courseId=1&branchId=1&timeTableId=2"
+          "https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/AssessmentMatrix/timetable/2/tenant/1/course/1/branch/1"
         );
         const fetchedHeaders = response.data?.data?.headers || [];
         const fetchedRows = response.data?.data?.rows || [];
-        setColumns([...fetchedHeaders, "Actions"]);
+        const fetchAssessmentStatusCode=response.data?.assessmentStatusCode ||[];
+        setColumns(fetchedHeaders);
+        setButtons(fetchAssessmentStatusCode)
         setStudentsList(fetchedRows);
+        const grades= await fetchGradesList();
+        setGradesList(grades);
+
       } catch (err) {
         console.error("Failed to fetch:", err);
       } finally {
@@ -53,16 +62,44 @@ export default function Grades() {
     };
 
     fetchGrades();
+    fetchGradesList();
   }, []);
 
-  const renderCell = (row, header) => {
-    if (header === "S.NO.") return row.sNo;
-    if (header === "NAME OF THE STUDENT") return row.name;
-    if (header === "Actions") return <RowActions row={row} />;
+ const renderCell = (row, header) => {
+  // if (header === "S.NO.") return row.sNo;
+  // if (header === "S.NO.") return row.serialNumber;
 
-    const gradeObj = row.grades?.[header];
-    return typeof gradeObj === "object" && gradeObj !== null ? gradeObj.grade : "-";
-  };
+  if (header === "Student Name") return row.studentName;
+  
+
+  const assessmentGradeObj = row.assessmentGrades?.[header];
+
+  const grade = assessmentGradeObj?.gradeName || "";
+
+  return (
+    <select
+      value={grade}
+      className={`w-full border px-2 py-1 rounded text-sm cursor-not-allowed ${
+        grade.name === "A+" ? "bg-green-200" :
+        grade === "A" ? "bg-yellow-200" :
+        grade === "B" ? "bg-red-200" :
+        grade === "Fair" ? "bg-orange-200" :
+        grade === "Poor" ? "bg-pink-300" :
+        "bg-gray-100" 
+      }`}
+    >
+     
+      <option value="">{grade ? grade : "N/A"}</option> 
+      
+      {gradesList.map((g) => (
+        <option key={g.id} value={g.name}>
+          {g.name}
+        </option>
+      ))}
+    </select>
+  );
+};
+
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -114,6 +151,7 @@ export default function Grades() {
 
   useDidUpdate(() => table.resetRowSelection(), [StudentsList]);
   useLockScrollbar(tableSettings.enableFullScreen);
+  console.log(gradesList);
 
   return (
     <div className="overflow-auto">
@@ -176,6 +214,14 @@ export default function Grades() {
               >
                 Next
               </button>
+              {buttons.map((button)=>(
+              <button 
+              key={button.id}
+              onClick={button.onClick}
+              className={`px-4 py-2 text-white rounded focus:outline-none focus:ring-2 focus:ring-opacity-50 ${button.style}`}
+              >{button.label}</button>
+             ))
+             }
             </div>
           </div>
         </>
