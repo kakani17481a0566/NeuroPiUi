@@ -7,27 +7,31 @@ export const columns = [
   columnHelper.accessor("id", {
     id: "id",
     header: "Role ID",
-    cell: (info) => info.getValue(),
+    cell: (info) => info.getValue()?.toString() ?? "-",
+    filterFn: "fuzzy",
+    enableColumnFilter: true, // ✅ Add this
   }),
   columnHelper.accessor("name", {
     id: "name",
     header: "Role Name",
-    cell: (info) => info.getValue(),
+    cell: (info) => info.getValue()?.toString() ?? "-",
+    filterFn: "fuzzy",
+    enableColumnFilter: true,
   }),
   columnHelper.accessor("tenantName", {
     id: "tenantName",
-    header: "Tenant Name", // ✅ New Column
-    cell: (info) => info.getValue(),
+    header: "Tenant Name",
+    cell: (info) => info.getValue()?.toString() ?? "-",
+    filterFn: "fuzzy",
+    enableColumnFilter: true, // ✅ Add this
   }),
-  // Optional: Keep tenantId if needed
-  // columnHelper.accessor("tenantId", {
-  //   id: "tenantId",
-  //   header: "Tenant ID",
-  //   cell: (info) => info.getValue(),
-  // }),
   columnHelper.display({
     id: "actions",
     header: "Actions",
     cell: RowActions,
+    meta: {
+      align: "center",
+    },
+    enableColumnFilter: false,
   }),
 ];

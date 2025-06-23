@@ -133,10 +133,18 @@ export default function Roles() {
         </Button>
       </div>
 
-      <div className={clsx("flex flex-col pt-4", tableSettings.enableFullScreen && "fixed inset-0 z-61 h-full w-full bg-white pt-3 dark:bg-dark-900")}>
+      <div
+        className={clsx(
+          "flex flex-col pt-4",
+          tableSettings.enableFullScreen && "fixed inset-0 z-61 h-full w-full bg-white pt-3 dark:bg-dark-900"
+        )}
+      >
         <Toolbar table={table} />
         <Card
-          className={clsx("relative mt-3 flex grow flex-col", tableSettings.enableFullScreen && "overflow-hidden")}
+          className={clsx(
+            "relative mt-3 flex grow flex-col",
+            tableSettings.enableFullScreen && "overflow-hidden"
+          )}
           ref={cardRef}
         >
           <div
@@ -163,20 +171,32 @@ export default function Roles() {
                           ]
                         )}
                       >
-                        {header.column.getCanSort() ? (
-                          <div
-                            className="flex cursor-pointer select-none items-center space-x-3"
-                            onClick={header.column.getToggleSortingHandler()}
-                          >
-                            <span className="flex-1">
-                              {flexRender(header.column.columnDef.header, header.getContext())}
-                            </span>
-                            <TableSortIcon sorted={header.column.getIsSorted()} />
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center space-x-2">
+                            {header.column.getCanSort() ? (
+                              <button
+                                type="button"
+                                onClick={header.column.getToggleSortingHandler()}
+                                className="flex items-center space-x-1 focus:outline-none"
+                              >
+                                <span className="truncate">
+                                  {flexRender(header.column.columnDef.header, header.getContext())}
+                                </span>
+                                <TableSortIcon sorted={header.column.getIsSorted()} />
+                              </button>
+                            ) : (
+                              <span className="truncate">
+                                {flexRender(header.column.columnDef.header, header.getContext())}
+                              </span>
+                            )}
                           </div>
-                        ) : (
-                          flexRender(header.column.columnDef.header, header.getContext())
-                        )}
-                        {header.column.getCanFilter() && <ColumnFilter column={header.column} />}
+
+                          {header.column.getCanFilter() && (
+                            <div className="mt-1">
+                              <ColumnFilter column={header.column} />
+                            </div>
+                          )}
+                        </div>
                       </Th>
                     ))}
                   </Tr>
@@ -190,7 +210,8 @@ export default function Roles() {
                       className={clsx(
                         "relative border-y border-transparent border-b-gray-200 dark:border-b-dark-500",
                         row.getIsExpanded() && "border-dashed",
-                        row.getIsSelected() && !isSafari &&
+                        row.getIsSelected() &&
+                          !isSafari &&
                           "row-selected after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500"
                       )}
                     >

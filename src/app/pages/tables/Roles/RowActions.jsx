@@ -20,6 +20,9 @@ import { toast } from "sonner";
 import { Button } from "components/ui";
 import { ConfirmModal } from "components/shared/ConfirmModal";
 
+// API base (move to a separate config/constants file if reused)
+const API_BASE = "https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api";
+
 // ----------------------------------------------------------------------
 
 const confirmMessages = {
@@ -35,8 +38,7 @@ export function RowActions({ row, table }) {
   const [open, setOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [confirmDeleteLoading, setConfirmDeleteLoading] = useState(false);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const [deleteError, setDeleteError] = useState(false);
+  const [status, setStatus] = useState("pending"); // pending | success | error
 
   const {
     refs,
@@ -56,7 +58,7 @@ export function RowActions({ row, table }) {
 
   const handleDeleteRows = useCallback(async () => {
     const tenantId = localStorage.getItem("tenantId");
-    const roleId = row.original.id;
+    const roleId = row.original?.id;
 
     if (!tenantId || !roleId) {
       toast.error("Missing tenant or role ID");
@@ -66,29 +68,26 @@ export function RowActions({ row, table }) {
     setConfirmDeleteLoading(true);
 
     try {
-      const res = await fetch(
-        `https://localhost:7202/api/Role/tenant/${tenantId}/id/${roleId}`,
-        {
-          method: "DELETE",
-          headers: { Accept: "*/*" },
-        }
-      );
+      const res = await fetch(`${API_BASE}/Role/tenant/${tenantId}/id/${roleId}`, {
+        method: "DELETE",
+        headers: { Accept: "*/*" },
+      });
 
       const result = await res.json();
 
       if (res.ok && result.statusCode === 200) {
         table.options.meta?.deleteRow(row);
-        setDeleteSuccess(true);
+        setStatus("success");
         toast.success("Role deleted successfully");
       } else {
         console.error("Delete error:", result);
+        setStatus("error");
         toast.error(result.message || "Failed to delete role");
-        setDeleteError(true);
       }
     } catch (error) {
       console.error("Network error while deleting:", error);
+      setStatus("error");
       toast.error("Network error");
-      setDeleteError(true);
     } finally {
       setConfirmDeleteLoading(false);
     }
@@ -98,7 +97,7 @@ export function RowActions({ row, table }) {
     table.options.meta?.setSelectedRole(row.original);
     table.options.meta?.setDrawerOpen(true);
     table.options.meta?.setEditMode(false);
-    table.options.meta?.setViewMode?.(true); // ✅ Enable view mode
+    table.options.meta?.setViewMode?.(true);
     setOpen(false);
   };
 
@@ -110,14 +109,12 @@ export function RowActions({ row, table }) {
   };
 
   const openModal = () => {
+    setStatus("pending");
     setDeleteModalOpen(true);
-    setDeleteError(false);
-    setDeleteSuccess(false);
     setOpen(false);
   };
 
   const closeModal = () => setDeleteModalOpen(false);
-  const state = deleteError ? "error" : deleteSuccess ? "success" : "pending";
 
   return (
     <>
@@ -170,7 +167,7 @@ export function RowActions({ row, table }) {
         messages={confirmMessages}
         onOk={handleDeleteRows}
         confirmLoading={confirmDeleteLoading}
-        state={state}
+        state={status}
       />
     </>
   );

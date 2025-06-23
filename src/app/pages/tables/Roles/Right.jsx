@@ -12,6 +12,7 @@ import { Button } from "components/ui";
 
 export function Right({ isOpen, onClose, role, onSave, viewMode = false }) {
   const [formData, setFormData] = useState({ name: "" });
+  const [loading, setLoading] = useState(false); // ✅ Loading state
   const isCreating = !role;
 
   useEffect(() => {
@@ -23,17 +24,20 @@ export function Right({ isOpen, onClose, role, onSave, viewMode = false }) {
   };
 
   const handleSubmit = async () => {
+    setLoading(true); // ✅ Start loading
     const userId = parseInt(localStorage.getItem("userId"), 10);
     const tenantId = parseInt(localStorage.getItem("tenantId"), 10);
 
     if (!formData.name.trim()) {
       toast.error("Role name is required");
+      setLoading(false);
       return;
     }
 
     if (!userId || !tenantId) {
       console.error("Missing userId or tenantId:", { userId, tenantId });
       toast.error("Session error: user or tenant info missing");
+      setLoading(false);
       return;
     }
 
@@ -49,9 +53,6 @@ export function Right({ isOpen, onClose, role, onSave, viewMode = false }) {
     const method = role ? "PUT" : "POST";
 
     try {
-      console.log(`[${method}] URL:`, url);
-      console.log("Payload:", payload);
-
       const res = await fetch(url, {
         method,
         headers: {
@@ -62,8 +63,6 @@ export function Right({ isOpen, onClose, role, onSave, viewMode = false }) {
       });
 
       const text = await res.text();
-      console.log("Raw Response:", text);
-
       let result;
       try {
         result = JSON.parse(text);
@@ -72,8 +71,6 @@ export function Right({ isOpen, onClose, role, onSave, viewMode = false }) {
         toast.error("Unexpected response from server");
         return;
       }
-
-      console.log("Parsed Result:", result);
 
       if (res.ok && result.statusCode === 200) {
         toast.success(isCreating ? "Role created successfully" : "Role updated successfully");
@@ -86,6 +83,8 @@ export function Right({ isOpen, onClose, role, onSave, viewMode = false }) {
     } catch (err) {
       console.error("Network error:", err);
       toast.error("Something went wrong while saving");
+    } finally {
+      setLoading(false); // ✅ Stop loading
     }
   };
 
@@ -164,8 +163,19 @@ export function Right({ isOpen, onClose, role, onSave, viewMode = false }) {
                 </div>
 
                 {!viewMode && (
-                  <Button onClick={handleSubmit} color="primary" className="w-full">
-                    {isCreating ? "Create Role" : "Save Changes"}
+                  <Button
+                    onClick={handleSubmit}
+                    color="primary"
+                    className="w-full"
+                    disabled={loading}
+                  >
+                    {loading
+                      ? isCreating
+                        ? "Creating Role..."
+                        : "Saving Changes..."
+                      : isCreating
+                      ? "Create Role"
+                      : "Save Changes"}
                   </Button>
                 )}
               </div>

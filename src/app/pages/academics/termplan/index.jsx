@@ -11,9 +11,9 @@ export default function termplan(){
               <h2 className="truncate text-xl font-medium tracking-wide text-gray-800 dark:text-dark-50">
                 Academics
               </h2>
-              <Term/>
+
               <div className="mt-4"> {/* Added margin top for better spacing */}
-                {/* <TermPlan/> */}
+                              <Term/>
               </div>
             </div>
           </div>
