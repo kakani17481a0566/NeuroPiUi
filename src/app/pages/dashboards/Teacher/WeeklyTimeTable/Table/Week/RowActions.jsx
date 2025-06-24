@@ -12,7 +12,8 @@ import {
   LinkIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { useCallback, useState } from "react";
+import { useCallback, useState} from "react";
+import {useNavigate} from 'react-router-dom';
 import PropTypes from "prop-types";
 import Vimeo from "@u-wave/react-vimeo";
 
@@ -55,6 +56,7 @@ export function RowActions({ row }) {
   const handleClosePopup = () => {
     setShowResourcePopup(false);
   };
+   const navigate = useNavigate();
 
   const handleViewResourcePopup = async () => {
     setOpenedFromResources(true);
@@ -77,9 +79,12 @@ export function RowActions({ row }) {
     setShowVideoPlayer(true);
   };
 
-  const handleViewAttendancePopup = () => {
-    setStudentAttendancePopUp(true);
-  };
+  // const handleViewAttendancePopup = () => {
+  //   setStudentAttendancePopUp(true);
+  // };
+  const handleAssignMarks=()=>{
+  navigate("/academics/grades");
+  }
 
   const handlePdfPopUpClose = () => {
     setShowPdfViewerModal(false);
@@ -205,7 +210,7 @@ export function RowActions({ row }) {
                 </button>
               )}
             </MenuItem>
-            <MenuItem>
+            {/* <MenuItem>
               {({ active }) => (
                 <button
                   onClick={handleViewAttendancePopup}
@@ -218,14 +223,28 @@ export function RowActions({ row }) {
                   <span>Attendance</span>
                 </button>
               )}
-            </MenuItem>
+            </MenuItem> */}
+            <MenuItem>
+              {({ active }) => (
+                <button
+                  onClick={handleAssignMarks}
+                  className={clsx(
+                    "flex h-9 w-full items-center space-x-3 px-3",
+                    active && "dark:bg-dark-600 bg-gray-100"
+                  )}
+                >
+                  <LinkIcon className="size-4.5 stroke-1" />
+                  <span>Assign Marks</span>
+                </button>
+              )}
+            </MenuItem> 
           </Transition>
         </Menu>
       </div>
 
       {/* Modals: PDF Viewer, Resources, Assignments, Video, Attendance */}
       {showPdfViewerModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center  bg-black/50 backdrop-blur-sm">
           <div className="relative w-full max-w-3xl rounded-lg bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold">PDF View</h2>

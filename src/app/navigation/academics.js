@@ -40,15 +40,15 @@ export const academics = {
             Icon: AcademicsIcon,
 
         },
-        {
-            id: 'academics.grades',
-            path: path(ROOT_ACADEMICS, '/grades'),
-            type: NAV_TYPE_ITEM,
-            title: 'Grades',
-            transKey: 'nav.academics.Grades',
-            Icon: AcademicsIcon,
+        // {
+        //     id: 'academics.grades',
+        //     path: path(ROOT_ACADEMICS, '/grades'),
+        //     type: NAV_TYPE_ITEM,
+        //     title: 'Grades',
+        //     transKey: 'nav.academics.Grades',
+        //     Icon: AcademicsIcon,
 
-        },
+        // },
         
 
     ]
