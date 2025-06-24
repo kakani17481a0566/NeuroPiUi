@@ -1,16 +1,16 @@
 import { Fragment, useEffect, useState } from "react";
 import {
   Menu,
-  MenuButton,
+  // MenuButton,
   MenuItem,
   MenuItems,
   Transition,
 } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
+// import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 
 import { Page } from "components/shared/Page";
-import { Button } from "components/ui";
+// import { Button } from "components/ui";
 import { WorkingHours } from "./WorkingHours";
 import { Students } from "./Students";
 import { Calendar } from "./Calendar";
@@ -34,13 +34,13 @@ export default function Teacher() {
     <Page title="Teacher Dashboard">
       {/* Header with Dropdown (Not sticky) */}
       <div className="flex flex-wrap items-center gap-4 px-4 pt-4 pb-2 sm:px-5 lg:px-6 bg-white dark:bg-dark-800 border-b border-gray-100 dark:border-dark-500">
-        <h1 className="text-lg font-semibold text-gray-800 dark:text-dark-100">
+        {/* <h1 className="text-lg font-semibold text-gray-800 dark:text-dark-100">
           Timetable View
-        </h1>
+        </h1> */}
 
         <div className="relative z-30 w-full sm:w-auto">
           <Menu as="div" className="relative inline-block text-start w-full">
-            <MenuButton
+            {/* <MenuButton
               as={Button}
               color="primary"
               className="space-x-2 w-full sm:w-auto"
@@ -57,7 +57,7 @@ export default function Teacher() {
                   />
                 </>
               )}
-            </MenuButton>
+            </MenuButton> */}
 
             <Transition
               as={Fragment}

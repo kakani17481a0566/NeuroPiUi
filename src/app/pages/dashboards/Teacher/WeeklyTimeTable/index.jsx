@@ -27,9 +27,9 @@ export function WeeklyTimeTable({ view }) {
 
   return (
     <Box className="col-span-12 lg:col-span-8">
-      <h2 className="dark:text-dark-100 mb-2 text-base font-medium tracking-wide text-gray-800">
+      {/* <h2 className="dark:text-dark-100 mb-2 text-base font-medium tracking-wide text-gray-800">
         {view === "Week" ? "Weekly Timetable" : "Term Timetable"}
-      </h2>
+      </h2> */}
 
       {loading ? (
         <div className="flex justify-center py-8">
