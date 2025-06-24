@@ -1,4 +1,4 @@
-// Grades.jsx - Full Dynamic Version with AssessmentId Mapping from API
+// Grades.jsx - Full Dynamic Version with Grade Legend in Table Header
 import {
   getCoreRowModel,
   getExpandedRowModel,
@@ -16,12 +16,9 @@ import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
 import axios from "axios";
 import { fetchGradesList } from "./GradesList";
-import { Spinner, Table, THead, TBody, Th, Tr, Td } from "components/ui";
+import { Spinner, Table, THead, TBody, Th, Tr, Td, Avatar } from "components/ui";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import {GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID} from 'constants/apis';
-import { Avatar } from "components/ui";
-
-
+import { GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID } from "constants/apis";
 
 export default function Grades() {
   const [students, setStudents] = useState([]);
@@ -71,7 +68,6 @@ export default function Grades() {
         ]);
 
         setAssessmentIdMap(data?.data?.headerSkillMap || {});
-
         setStatusButtons(
           (data?.data?.assessmentStatusCode || []).map((s) => ({
             ...s,
@@ -79,7 +75,6 @@ export default function Grades() {
             onClick: () => alert(`Clicked: ${s.name}`),
           }))
         );
-
         setGradesList(grades);
         setStudents(data?.data?.rows || []);
         setOriginalStudents(JSON.parse(JSON.stringify(data?.data?.rows || [])));
@@ -117,13 +112,9 @@ export default function Grades() {
     );
   }, [gradesList]);
 
-  const renderGradeCell = useCallback(
-    
-    (row, header) => {
-      const grade = (
-        row.assessmentGrades?.[header]?.gradeName || "Not Graded"
-      ).trim();
-      const bgColor = getGradeColorStyle(grade);
+  const renderGradeCell = useCallback((row, header) => {
+    const grade = (row.assessmentGrades?.[header]?.gradeName || "Not Graded").trim();
+    const bgColor = getGradeColorStyle(grade);
 
     return (
       <div className="relative z-50">
@@ -149,14 +140,13 @@ export default function Grades() {
       accessorKey: "studentName",
       header: "Student Name",
       cell: ({ row }) => (
-         <div className="flex items-center gap-3">
-         <Avatar src="/images/200x200.png" />
-        <span className="dark:text-dark-100 font-medium text-gray-800">
-          {row.original.studentName}
-        </span>
+        <div className="flex items-center gap-1">
+          <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750751860/MSI/gor6z4k9ms5ylqzanugm.png" />
+          <span className="dark:text-dark-100 font-medium text-gray-800">
+            {row.original.studentName}
+          </span>
         </div>
       ),
-      cell: ({ row }) => <span className="font-medium text-gray-800 dark:text-dark-100">{row.original.studentName}</span>,
     };
 
     const assessmentColumns = assessmentHeaders.map((header) => ({
@@ -271,6 +261,29 @@ export default function Grades() {
                       {flexRender(header.column.columnDef.header, header.getContext())}
                     </Th>
                   ))}
+                </Tr>
+                <Tr>
+                  {table.getHeaderGroups()[0].headers.map((header) => {
+                    if (header.column.id === "studentName") {
+                      return (
+                        <Th key="legend-student" className="bg-white dark:bg-dark-700"></Th>
+                      );
+                    }
+                    const gradeName = gradesList.find(
+                      (g) => g.name.trim() === header.column.id.trim()
+                    )?.name;
+                    return (
+                      <Th key={`legend-${header.id}`} className="bg-white dark:bg-dark-700">
+                        <div
+                          className={`mx-auto w-fit rounded px-2 py-1 text-xs font-medium text-gray-800 ${getGradeColorStyle(
+                            gradeName || "Not Graded"
+                          )}`}
+                        >
+                          {gradeName || "Grade"}
+                        </div>
+                      </Th>
+                    );
+                  })}
                 </Tr>
               </THead>
               <TBody>
