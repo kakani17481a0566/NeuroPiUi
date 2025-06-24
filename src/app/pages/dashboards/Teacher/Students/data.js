@@ -28,7 +28,7 @@ export const userStatusOptions = [
 ];
 
 // Fetch logic centralized here
-export const fetchStudents= async (token) => {
+export const fetchStudents= async () => {
   try {
 
     //https://localhost:7202/api/User/by-tenant?tenantId=2
@@ -36,7 +36,7 @@ export const fetchStudents= async (token) => {
     const response = await fetch(STUDENTS_LIST, {
       headers: {
         accept: "*/*",
-        Authorization: token,
+        // Authorization: token,
       },
     });
      if (!response.ok) {

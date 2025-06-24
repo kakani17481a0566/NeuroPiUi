@@ -13,13 +13,14 @@ import {
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { useCallback, useState} from "react";
-import {useNavigate} from 'react-router-dom';
+// import {useNavigate} from 'react-router-dom';
 import PropTypes from "prop-types";
 import Vimeo from "@u-wave/react-vimeo";
 
 import { Button } from "components/ui";
 import { fetchWeeklyTimeTableData } from "./data";
 import { AppointmentsTable } from "../AppointmentsTable";
+import Grades from 'app/pages/tables/Grades';
 
 export function RowActions({ row }) {
   const [showPdfViewerModal, setShowPdfViewerModal] = useState(false);
@@ -32,8 +33,9 @@ export function RowActions({ row }) {
   const [openedFromResources, setOpenedFromResources] = useState(false);
   const [openedFromAssignments, setOpenedFromAssignments] = useState(false);
   const [studentAttendancePopUp, setStudentAttendancePopUp] = useState(false);
-  const [showAssignmentsPopup, setShowAssignmentsPopup] = useState(false);
+  const [showWorkShopPopup, setShowWorkShopPopup] = useState(false);
   const [assignments, setAssignments] = useState([]);
+  const[showAssignmentsPopUp,setShowAssignmentsPopUp]=useState(false);
 
   const normalizeUrl = (url) => {
     if (!url) return "";
@@ -56,7 +58,7 @@ export function RowActions({ row }) {
   const handleClosePopup = () => {
     setShowResourcePopup(false);
   };
-   const navigate = useNavigate();
+  //  const navigate = useNavigate();
 
   const handleViewResourcePopup = async () => {
     setOpenedFromResources(true);
@@ -79,29 +81,31 @@ export function RowActions({ row }) {
     setShowVideoPlayer(true);
   };
 
-  // const handleViewAttendancePopup = () => {
-  //   setStudentAttendancePopUp(true);
-  // };
+  const handleViewAttendancePopup = () => {
+    setStudentAttendancePopUp(true);
+  };
   const handleAssignMarks=()=>{
-  navigate("/academics/grades");
+    setShowAssignmentsPopUp(true);
+
   }
+  
 
   const handlePdfPopUpClose = () => {
     setShowPdfViewerModal(false);
     if (openedFromResources) setShowResourcePopup(true);
-    if (openedFromAssignments) setShowAssignmentsPopup(true);
+    if (openedFromAssignments) setShowWorkShopPopup(true);
   };
 
   const handleAssignmentView = (link) => {
     setPdfPath(normalizeUrl(link));
-    setShowAssignmentsPopup(false);
+    setShowWorkShopPopup(false);
     setShowPdfViewerModal(true);
   };
 
-  const handleViewAssignmentsPopup = () => {
+  const handleViewWorkSheetPopUp = () => {
     if (!row.original.column9) {
       setAssignments([]);
-      setShowAssignmentsPopup(true);
+      setShowWorkShopPopup(true);
       setOpenedFromAssignments(true);
       setShowResourcePopup(false);
       return;
@@ -122,7 +126,7 @@ export function RowActions({ row }) {
       .filter(Boolean);
 
     setAssignments(parsedAssignments);
-    setShowAssignmentsPopup(true);
+    setShowWorkShopPopup(true);
     setOpenedFromAssignments(true);
   };
 
@@ -199,18 +203,18 @@ export function RowActions({ row }) {
             <MenuItem>
               {({ active }) => (
                 <button
-                  onClick={handleViewAssignmentsPopup}
+                  onClick={handleViewWorkSheetPopUp}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
                     active && "dark:bg-dark-600 bg-gray-100"
                   )}
                 >
                   <LinkIcon className="size-4.5 stroke-1" />
-                  <span>Assignments</span>
+                  <span>WorkSheets</span>
                 </button>
               )}
             </MenuItem>
-            {/* <MenuItem>
+            <MenuItem>
               {({ active }) => (
                 <button
                   onClick={handleViewAttendancePopup}
@@ -223,7 +227,7 @@ export function RowActions({ row }) {
                   <span>Attendance</span>
                 </button>
               )}
-            </MenuItem> */}
+            </MenuItem>
             <MenuItem>
               {({ active }) => (
                 <button
@@ -234,7 +238,7 @@ export function RowActions({ row }) {
                   )}
                 >
                   <LinkIcon className="size-4.5 stroke-1" />
-                  <span>Assign Marks</span>
+                  <span>Assignment</span>
                 </button>
               )}
             </MenuItem> 
@@ -330,7 +334,7 @@ export function RowActions({ row }) {
         </div>
       )}
 
-      {showAssignmentsPopup && (
+      {showWorkShopPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="relative max-h-[80vh] w-full max-w-4xl overflow-auto rounded-lg bg-white p-6 shadow-lg">
             <h2 className="mb-4 text-lg font-semibold">Assignments</h2>
@@ -367,7 +371,7 @@ export function RowActions({ row }) {
             )}
             <button
               className="mt-4 rounded bg-blue-600 px-4 py-2 text-white"
-              onClick={() => setShowAssignmentsPopup(false)}
+              onClick={() => setShowWorkShopPopup(false)}
             >
               Close
             </button>
@@ -414,6 +418,24 @@ export function RowActions({ row }) {
             </div>
             <div className="max-h-[70vh] overflow-y-auto rounded border">
               <AppointmentsTable />
+            </div>
+          </div>
+        </div>
+      )}
+       {showAssignmentsPopUp && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
+          <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white p-4 shadow-lg">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Assignments</h2>
+              <button
+                onClick={() => setShowAssignmentsPopUp(false)}
+                className="text-xl font-bold text-red-500"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="max-h-[70vh] overflow-y-auto rounded border">
+              <Grades/>
             </div>
           </div>
         </div>
