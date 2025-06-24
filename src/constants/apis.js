@@ -21,3 +21,4 @@ export const STUDENTS_LIST=`${BASE_URL}/Student/by-tenant-course-branch?tenantId
 export const GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID=`${BASE_URL}/AssessmentMatrix/timetable/2/tenant/${tenantId}/course/1/branch/1`;
 
 
+export const SAVE_ASSESSMENT_MATRIX = "https://localhost:7202/api/DailyAssessment/save-matrix";
