@@ -18,7 +18,10 @@ import axios from "axios";
 import { fetchGradesList } from "./GradesList";
 import { Spinner, Table, THead, TBody, Th, Tr, Td } from "components/ui";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID } from "constants/apis";
+import {GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID} from 'constants/apis';
+import { Avatar } from "components/ui";
+
+
 
 export default function Grades() {
   const [students, setStudents] = useState([]);
@@ -114,9 +117,13 @@ export default function Grades() {
     );
   }, [gradesList]);
 
-  const renderGradeCell = useCallback((row, header) => {
-    const grade = (row.assessmentGrades?.[header]?.gradeName || "Not Graded").trim();
-    const bgColor = getGradeColorStyle(grade);
+  const renderGradeCell = useCallback(
+    
+    (row, header) => {
+      const grade = (
+        row.assessmentGrades?.[header]?.gradeName || "Not Graded"
+      ).trim();
+      const bgColor = getGradeColorStyle(grade);
 
     return (
       <div className="relative z-50">
@@ -141,6 +148,14 @@ export default function Grades() {
     const studentColumn = {
       accessorKey: "studentName",
       header: "Student Name",
+      cell: ({ row }) => (
+         <div className="flex items-center gap-3">
+         <Avatar src="/images/200x200.png" />
+        <span className="dark:text-dark-100 font-medium text-gray-800">
+          {row.original.studentName}
+        </span>
+        </div>
+      ),
       cell: ({ row }) => <span className="font-medium text-gray-800 dark:text-dark-100">{row.original.studentName}</span>,
     };
 
