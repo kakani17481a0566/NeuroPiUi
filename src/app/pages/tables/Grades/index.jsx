@@ -17,7 +17,10 @@ import axios from "axios";
 import { fetchGradesList } from "./GradesList";
 import { Spinner, Table, THead, TBody, Th, Tr, Td } from "components/ui";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import {GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID} from 'constants/apis'
+import {GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID} from 'constants/apis';
+import { Avatar } from "components/ui";
+
+
 
 export default function Grades() {
   // const [autoResetPageIndex] = useSkipper();
@@ -123,6 +126,7 @@ export default function Grades() {
   );
 
   const renderGradeCell = useCallback(
+    
     (row, header) => {
       const grade = (
         row.assessmentGrades?.[header]?.gradeName || "Not Graded"
@@ -159,9 +163,12 @@ export default function Grades() {
       accessorKey: "studentName",
       header: "Student Name",
       cell: ({ row }) => (
+         <div className="flex items-center gap-3">
+         <Avatar src="/images/200x200.png" />
         <span className="dark:text-dark-100 font-medium text-gray-800">
           {row.original.studentName}
         </span>
+        </div>
       ),
     };
 
