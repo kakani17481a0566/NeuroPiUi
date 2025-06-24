@@ -18,5 +18,6 @@ export const WEEKLY_TIMETABLE_API=`${BASE_URL}/TimeTable/weekId/1/tenantId/${ten
 
 export const STUDENTS_LIST=`${BASE_URL}/Student/by-tenant-course-branch?tenantId=${tenantId}&courseId=1&branchId=1`;
 
+export const GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID=`${BASE_URL}/AssessmentMatrix/timetable/2/tenant/${tenantId}/course/1/branch/1`;
 
 

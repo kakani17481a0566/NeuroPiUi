@@ -17,6 +17,7 @@ import axios from "axios";
 import { fetchGradesList } from "./GradesList";
 import { Spinner, Table, THead, TBody, Th, Tr, Td } from "components/ui";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import {GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID} from 'constants/apis'
 
 export default function Grades() {
   // const [autoResetPageIndex] = useSkipper();
@@ -66,7 +67,7 @@ export default function Grades() {
 
         const [{ data }, grades] = await Promise.all([
           axios.get(
-            "https://localhost:7202/api/AssessmentMatrix/timetable/2/tenant/1/course/1/branch/1",
+           GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID,
           ),
           fetchGradesList(),
         ]);
