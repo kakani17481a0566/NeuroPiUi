@@ -312,8 +312,9 @@ export default function Grades() {
         <div className="flex flex-wrap items-center gap-2">
           {statusButtons.map((btn) => (
             <button
+             onClick={handleSave}
               key={btn.id}
-              onClick={btn.onClick}
+
               className={`rounded px-4 py-1 text-sm text-white ${btn.style}`}
             >
               {btn.name}
@@ -374,9 +375,9 @@ export default function Grades() {
                 <button
                   onClick={handleSave}
                   disabled={isLoading}
-                  className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 disabled:opacity-50"
+                  // className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 disabled:opacity-50"
                 >
-                  {isLoading ? "Saving..." : "Save"}
+                  {/* {isLoading ? "Saving..." : "Save"} */}
                 </button>
               )}
 
