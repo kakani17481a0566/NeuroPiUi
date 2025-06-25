@@ -40,6 +40,7 @@ export function RowActions({ row }) {
   const [assignments, setAssignments] = useState([]);
   const[showAssignmentsPopUp,setShowAssignmentsPopUp]=useState(false);
 
+
   const normalizeUrl = (url) => {
     if (!url) return "";
     return /^https?:\/\//i.test(url) ? url : `https://${url}`;
@@ -88,6 +89,7 @@ export function RowActions({ row }) {
     setStudentAttendancePopUp(true);
   };
   const handleAssignMarks=()=>{
+      console.log(row.original.assessmentStausCodeId);
     setShowAssignmentsPopUp(true);
 
   }
@@ -438,7 +440,7 @@ export function RowActions({ row }) {
               </button>
             </div>
             <div className="max-h-[70vh] overflow-y-auto rounded border">
-              <Grades/>
+              <Grades timeTableId={row.original.timeTableId} assessmentStatusCode={row.original.assessmentStausCodeId} courseId={row.original.courseId}/>
             </div>
           </div>
         </div>

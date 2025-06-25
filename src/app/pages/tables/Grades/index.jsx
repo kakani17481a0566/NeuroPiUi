@@ -28,9 +28,9 @@ import {
   Avatar,
 } from "components/ui";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID } from "constants/apis";
+import { BASE_URL } from "constants/apis";
 
-export default function Grades() {
+export default function Grades({timeTableId,assessmentStatusCode,courseId}) {
   const [students, setStudents] = useState([]);
   const [originalStudents, setOriginalStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,8 +43,9 @@ export default function Grades() {
 
   const tenantId = 1;
   const branchId = 1;
-  const timeTableId = 4;
+  // const timeTableId = 4;
   const conductedById = 1;
+  console.log(assessmentStatusCode,courseId,timeTableId);
 
   const handleSave = async () => {
     try {
@@ -129,9 +130,7 @@ export default function Grades() {
       try {
         setIsLoading(true);
         const [{ data }, grades] = await Promise.all([
-          axios.get(
-            `${GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID}?tenantId=${tenantId}&branchId=${branchId}&timeTableId=${timeTableId}`,
-          ),
+          axios.get(`${BASE_URL}/AssessmentMatrix/timetable/${timeTableId}/tenant/${tenantId}/course/${courseId}/branch/1`),
           fetchGradesList(),
         ]);
 
@@ -290,19 +289,10 @@ export default function Grades() {
   useDidUpdate(() => table.resetRowSelection(), [students]);
   useLockScrollbar(false);
 
-  // if (error) {
-  //   return (
-  //     // <div className="rounded-lg bg-red-100 p-4 text-red-600 dark:bg-red-900 dark:text-red-400">
-  //     //   {error}
-  //     //   <button
-  //     //     onClick={() => window.location.reload()}
-  //     //     className="ml-2 rounded bg-red-600 px-3 py-1 text-white"
-  //     //   >
-  //     //     Retry
-  //     //   </button>
-  //     // </div>
-  //   );
-  // }
+const handleCompleted=()=>{
+  
+
+}
 
   return (
     <div className="overflow-visible p-4">
@@ -317,7 +307,7 @@ export default function Grades() {
           <Button color="warning" onClick={handleSave}>
           IN-PROGRESS
          </Button>
-         <Button color="success" >
+         <Button color="success" onClick={handleCompleted} >
           COMPLETED
          </Button>
         </div>
