@@ -89,7 +89,7 @@ export function RowActions({ row }) {
     setStudentAttendancePopUp(true);
   };
   const handleAssignMarks=()=>{
-      console.log(row.original.assessmentStausCodeId);
+      console.log(row);
     setShowAssignmentsPopUp(true);
 
   }
@@ -440,7 +440,7 @@ export function RowActions({ row }) {
               </button>
             </div>
             <div className="max-h-[70vh] overflow-y-auto rounded border">
-              <Grades timeTableId={row.original.timeTableId} assessmentStatusCode={row.original.assessmentStausCodeId} courseId={row.original.courseId}/>
+              <Grades timeTableId={row.original.timeTableId} assessmentStatusCode={row.original.assessmentStausCodeId}/>
             </div>
           </div>
         </div>

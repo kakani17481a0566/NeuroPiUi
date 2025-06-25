@@ -10,6 +10,8 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { Button } from "components/ui";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import { toast } from "sonner";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
@@ -30,28 +32,35 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { BASE_URL } from "constants/apis";
 
-export default function Grades({timeTableId,assessmentStatusCode,courseId}) {
+export default function Grades({ timeTableId, assessmentStatusCode }) {
   const [students, setStudents] = useState([]);
   const [originalStudents, setOriginalStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [gradesList, setGradesList] = useState([]);
-  const [ setStatusButtons] = useState([]);
-  const [ setError] = useState(null);
+  const [setStatusButtons] = useState([]);
+  const [setError] = useState(null);
   const [assessmentIdMap, setAssessmentIdMap] = useState({});
   const [isInProgress, setIsInProgress] = useState(false);
-  
+  const [gradeId, setGradeId] = useState(0);
+  const [gradeName, setGradeName] = useState(0);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isCompleted, setIsCompleted] = useState(false);
+
+
+
 
   const tenantId = 1;
   const branchId = 1;
   // const timeTableId = 4;
   const conductedById = 1;
-  console.log(assessmentStatusCode,courseId,timeTableId);
+  console.log(assessmentStatusCode, timeTableId);
 
   const handleSave = async () => {
     try {
       const originalMap = Object.fromEntries(
         originalStudents.map((s) => [s.studentId, s])
       );
+      setAlertMessage("");
 
       const changedStudents = students
         .map((student) => {
@@ -74,8 +83,10 @@ export default function Grades({timeTableId,assessmentStatusCode,courseId}) {
           };
         })
         .filter(Boolean);
-
-      if (!changedStudents.length) return alert("No changes to save.");
+alert
+      if (!changedStudents.length) return   toast.error("Nothing to be saved ", {
+            className: "soft-color",
+          });
 
       const payload = {
         timeTableId,
@@ -90,11 +101,16 @@ export default function Grades({timeTableId,assessmentStatusCode,courseId}) {
         "https://localhost:7202/api/DailyAssessment/save-matrix",
         payload
       );
-      alert("Grades saved successfully!");
+      toast.success("Grades saved successfully!", {
+        className: "soft-color",
+      });
+
       setOriginalStudents(JSON.parse(JSON.stringify(students)));
     } catch (err) {
       console.error("Save failed", err);
-      alert("Save failed. Please try again.");
+      toast.error("Save failed. Please try again. ", {
+            className: "soft-color",
+          });
     } finally {
       setIsLoading(false);
     }
@@ -130,11 +146,13 @@ export default function Grades({timeTableId,assessmentStatusCode,courseId}) {
       try {
         setIsLoading(true);
         const [{ data }, grades] = await Promise.all([
-          axios.get(`${BASE_URL}/AssessmentMatrix/timetable/${timeTableId}/tenant/${tenantId}/course/${courseId}/branch/1`),
+          axios.get(`${BASE_URL}/AssessmentMatrix/timetable/${timeTableId}/tenant/${tenantId}/course/1/branch/1`),
           fetchGradesList(),
         ]);
 
         const rawStatusList = data?.data?.assessmentStatusCode || [];
+        setGradeId(data.data.currentStatusId);
+        setGradeName(data.data.currentStatusName);
         const normalizedStatusList = rawStatusList.map((s) =>
           (s.name || "").toUpperCase().replace(/[\s_-]/g, "")
         );
@@ -180,16 +198,16 @@ export default function Grades({timeTableId,assessmentStatusCode,courseId}) {
         prev.map((student) =>
           student.studentId === studentId
             ? {
-                ...student,
-                assessmentGrades: {
-                  ...student.assessmentGrades,
-                  [header]: {
-                    ...student.assessmentGrades?.[header],
-                    gradeId,
-                    gradeName: newGradeName,
-                  },
+              ...student,
+              assessmentGrades: {
+                ...student.assessmentGrades,
+                [header]: {
+                  ...student.assessmentGrades?.[header],
+                  gradeId,
+                  gradeName: newGradeName,
                 },
-              }
+              },
+            }
             : student,
         ),
       );
@@ -203,6 +221,17 @@ export default function Grades({timeTableId,assessmentStatusCode,courseId}) {
         row.assessmentGrades?.[header]?.gradeName || "Not Graded"
       ).trim();
       const bgColor = getGradeColorStyle(grade);
+      // const isCompleted = assessmentStatusCode === gradeId && gradeName === "COMPLETED";
+      if (isCompleted || (assessmentStatusCode === gradeId && gradeName === "COMPLETED")) {
+        // Show only grade text
+        return (
+          <div
+            className={`w-full rounded-md border border-gray-300 px-1 py-1 text-sm ${bgColor} dark:bg-dark-700 dark:text-white`}
+          >
+            {grade}
+          </div>
+        );
+      }
 
       return (
         <div className="relative z-50">
@@ -211,7 +240,7 @@ export default function Grades({timeTableId,assessmentStatusCode,courseId}) {
             onChange={(e) =>
               handleGradeChange(row.studentId, header, e.target.value)
             }
-            className={`relative z-50 w-full rounded-md border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none ${bgColor} dark:bg-dark-700 dark:text-white`}
+            className={`relative z-50 w-full rounded-md border border-gray-300 px-1 py-1 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none ${bgColor} dark:bg-dark-700 dark:text-white`}
           >
             <option value="">Not Graded</option>
             {gradesList.map((g) => (
@@ -236,7 +265,7 @@ export default function Grades({timeTableId,assessmentStatusCode,courseId}) {
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
           <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750751860/MSI/gor6z4k9ms5ylqzanugm.png" />
-          <span className="dark:text-dark-100 font-medium text-gray-800">
+          <span className=" px-1 dark:text-dark-100 font-medium text-gray-800">
             {row.original.studentName}
           </span>
         </div>
@@ -289,10 +318,32 @@ export default function Grades({timeTableId,assessmentStatusCode,courseId}) {
   useDidUpdate(() => table.resetRowSelection(), [students]);
   useLockScrollbar(false);
 
-const handleCompleted=()=>{
-  
+  const handleCompleted = async () => {
+    const invalidStudents = students.filter((student) => {
+      return Object.values(student.assessmentGrades || {}).some((gradeObj) => {
+        const grade = (gradeObj?.gradeName || "").trim();
+        return grade === "Not Graded" || grade === "Marks Not Added";
+      });
+    });
 
-}
+    if (invalidStudents.length > 0) {
+      const names = invalidStudents.map((s) => s.studentName).join(", ");
+      setAlertMessage(`The following students have ungraded assessments: ${names}`);
+      return;
+    }
+    try {
+      await handleSave();
+      setIsCompleted(true);
+      setAlertMessage("");
+      //  alert("All students graded. You can now mark this as COMPLETED.");
+    }
+    catch (err) {
+      setAlertMessage("something went wrong", err);
+    }
+
+
+  };
+
 
   return (
     <div className="overflow-visible p-4">
@@ -300,22 +351,31 @@ const handleCompleted=()=>{
         <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
           Assessment Grades
         </h2>
-        <div className="flex flex-wrap items-center gap-2">
-         <Button color="error">
-          CANCEL
-         </Button>
-          <Button color="warning" onClick={handleSave}>
-          IN-PROGRESS
-         </Button>
-         <Button color="success" onClick={handleCompleted} >
-          COMPLETED
-         </Button>
+        <div className=" px-2 flex flex-wrap items-center gap-2">
+          <Button color="error" className="text-xs py-1 px-2">
+            CANCEL
+          </Button>
+          <Button color="warning" className="text-xs py-1 px-2" onClick={handleSave}>
+            IN-PROGRESS
+          </Button>
+          <Button color="success" className="text-xs py-1 px-2" onClick={handleCompleted} >
+            COMPLETED
+          </Button>
         </div>
       </div>
+      {alertMessage && (
+        <div
+          role="alert"
+          className="mb-4 flex items-center space-x-3 rounded-lg bg-yellow-500 px-4 py-4 text-white sm:px-5"
+        >
+          <ExclamationCircleIcon className="size-7" />
+          <span className="flex-1">{alertMessage}</span>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="flex justify-center py-10">
-          <Spinner color="primary" className="size-16 border-4" />
+          <Spinner color="primary" className="size-14 border-4" />
         </div>
       ) : (
         <>
@@ -344,7 +404,7 @@ const handleCompleted=()=>{
                   table.getRowModel().rows.map((row) => (
                     <Tr key={row.id}>
                       {row.getVisibleCells().map((cell) => (
-                        <Td key={cell.id} className="px-4 py-2 dark:text-white">
+                        <Td key={cell.id} className="px-2 py-2 dark:text-white">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </Td>
                       ))}
@@ -365,7 +425,7 @@ const handleCompleted=()=>{
                 <button
                   onClick={handleSave}
                   disabled={isLoading}
-                  // className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 disabled:opacity-50"
+                // className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 disabled:opacity-50"
                 >
                   {/* {isLoading ? "Saving..." : "Save"} */}
                 </button>
