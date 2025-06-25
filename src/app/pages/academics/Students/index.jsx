@@ -88,8 +88,9 @@ export default function UsersCard2() {
                 facebook: "https://facebook.com",
               }}
               // Optional props if your card handles them:
-              avatar={student.avatar || "/images/200x200.png"}
+              avatar={student.avatar || "https://res.cloudinary.com/kakani7/image/upload/v1750826264/MSI/wgs9xojgcs44xhupfh2f.png"}
               cover={student.cover || "/images/800x600.png"}
+              // src="https://res.cloudinary.com/kakani7/image/upload/v1746172182/MSI/yqjbpqtuvuf0co08zai4.svg"
               color="primary" // or assign based on logic
               //socialLinks={{}} // or dummy data
               chartData={[20, 30, 40]} // if you want to mock some data

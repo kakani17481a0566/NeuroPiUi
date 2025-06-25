@@ -13,7 +13,7 @@ import { Page } from "components/shared/Page";
 // import { Button } from "components/ui";
 import { WorkingHours } from "./WorkingHours";
 import { Students } from "./Students";
-import { Calendar } from "./Calendar";
+// import { Calendar } from "./Calendar";
 import { WeeklyTimeTable } from "./WeeklyTimeTable";
 import { Classes } from "./Classes";
 
@@ -102,7 +102,7 @@ export default function Teacher() {
         <div className="col-span-12 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:col-span-4 lg:grid-cols-1 lg:gap-6 xl:col-span-3">
           <WorkingHours />
           <Students />
-          <Calendar />
+ 
         </div>
       </div>
     </Page>

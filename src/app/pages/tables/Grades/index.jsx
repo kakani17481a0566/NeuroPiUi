@@ -264,8 +264,8 @@ alert
       header: "Student Name",
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
-          <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750751860/MSI/gor6z4k9ms5ylqzanugm.png" />
-          <span className=" px-1 dark:text-dark-100 font-medium text-gray-800">
+          <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750826264/MSI/wgs9xojgcs44xhupfh2f.png" />
+          <span className="dark:text-dark-100 font-medium text-gray-800">
             {row.original.studentName}
           </span>
         </div>

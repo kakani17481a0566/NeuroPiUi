@@ -1,6 +1,8 @@
 import { NAV_TYPE_ITEM, } from "constants/app.constant";
 import DashboardsIcon from 'assets/dualicons/dashboards.svg?react'
-import AcademicIcons from 'assets/dualicons/academics.svg?react'
+// import { AcademicCapIcon as AcademicIcons } from "@heroicons/react/24/outline";
+import AcademicIcon from 'assets/dualicons/academic_outline.svg?react'
+
 
 export const baseNavigation = [
     {
@@ -17,8 +19,10 @@ export const baseNavigation = [
         path: '/academics',
         title: 'Academics',
         transKey: 'nav.academics.academics',
-        Icon: AcademicIcons,
+        Icon: AcademicIcon,
     },
     
 
 ]
+
+

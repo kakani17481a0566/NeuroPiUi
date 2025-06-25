@@ -46,49 +46,57 @@ export default function SignIn() {
       <main className="auth-bg">
         <div className="auth-card-container">
           <Card className="auth-card">
-            {/* Left: Image Panel */}
-            <div className="auth-left-img" tabIndex={-1}></div>
-
-            {/* Right: Login Form */}
+            <div className="auth-left-img" tabIndex={-1} />
             <div className="auth-right-form">
               <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                 <div className="auth-inputs">
-
                   <div className="input-horizontal">
-                    <label className="input-label" htmlFor="username">Username</label>
+                    <label className="input-label" htmlFor="username">
+                      Username
+                    </label>
                     <Input
                       id="username"
-                      prefix={<UserIcon className="size-5" strokeWidth="1" />}
+                      prefix={<UserIcon className="size-5 bg-color : #1A4255" strokeWidth="1" />}
                       {...register("username")}
                       error={errors?.username?.message}
-                      className="input-black-text"
+                      className="input-black-text h-8 py-1 text-xs"
                     />
                   </div>
 
                   <div className="input-horizontal">
-                    <label className="input-label" htmlFor="password">Password</label>
+                    <label className="input-label" htmlFor="password">
+                      Password
+                    </label>
                     <Input
                       id="password"
                       type="password"
-                      prefix={<LockClosedIcon className="size-5" strokeWidth="1" />}
+                      prefix={
+                        <LockClosedIcon className="size-5" strokeWidth="1" />
+                      }
                       {...register("password")}
                       error={errors?.password?.message}
-                      className="input-black-text"
+                      className="input-black-text  h-8 py-1 text-xs"
                     />
                   </div>
-
                 </div>
 
-                <div className="auth-error">
+                <div>
                   <InputErrorMsg when={errorMessage?.message}>
-                    {errorMessage?.message}
+                    <span
+                      style={{
+                        color: "#B14434",
+                        fontWeight: 500,
+                        fontSize: "0.875rem",
+                      }}
+                    >
+                      {errorMessage?.message}
+                    </span>
                   </InputErrorMsg>
                 </div>
 
                 <Button
                   type="submit"
                   className="auth-button"
-                  color="primary"
                   disabled={loading}
                 >
                   {loading ? (

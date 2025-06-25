@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { StudentCard } from "./StudentCard";
 import { Spinner } from "components/ui";
+import { UserGroupIcon } from "@heroicons/react/24/outline"; // Import the outline icon
 
 export function Students() {
   const [students, setStudents] = useState([]);
@@ -29,7 +30,7 @@ export function Students() {
           const enriched = result.data.map((s, index) => ({
             uid: s.id,
             name: s.name,
-            avatar: "/images/200x200.png",
+            avatar: "https://res.cloudinary.com/kakani7/image/upload/v1750826264/MSI/wgs9xojgcs44xhupfh2f.png",
             isOnline: index % 2 === 0,
             progress: Math.floor(Math.random() * 100),
             messagesCount: index % 3 === 0 ? index : null,
@@ -49,9 +50,10 @@ export function Students() {
   return (
     <div className="sm:col-span-2 lg:col-span-1">
       <div className="flex h-8 items-center justify-between">
-        <h2 className="font-medium tracking-wide text-gray-800 dark:text-dark-100">
-          Students
-        </h2>
+        <UserGroupIcon className="w-6 h-6 text-[#1A4255]" />
+      <h2 className="font-medium tracking-wide text-gray-800 dark:text-dark-100">
+        Students
+      </h2>
         <a
           href="##"
           className="border-b border-dotted border-current pb-0.5 text-xs-plus font-medium text-primary-600 outline-hidden transition-colors duration-300 hover:text-primary-600/70 focus:text-primary-600/70 dark:text-primary-400 dark:hover:text-primary-400/70 dark:focus:text-primary-400/70"
