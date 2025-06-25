@@ -9,6 +9,7 @@ import {
   useReactTable,
   flexRender,
 } from "@tanstack/react-table";
+import { Button } from "components/ui";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
@@ -34,15 +35,15 @@ export default function Grades() {
   const [originalStudents, setOriginalStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [gradesList, setGradesList] = useState([]);
-  const [statusButtons, setStatusButtons] = useState([]);
-  const [error, setError] = useState(null);
+  const [ setStatusButtons] = useState([]);
+  const [ setError] = useState(null);
   const [assessmentIdMap, setAssessmentIdMap] = useState({});
   const [isInProgress, setIsInProgress] = useState(false);
   
 
   const tenantId = 1;
   const branchId = 1;
-  const timeTableId = 2;
+  const timeTableId = 4;
   const conductedById = 1;
 
   const handleSave = async () => {
@@ -289,19 +290,19 @@ export default function Grades() {
   useDidUpdate(() => table.resetRowSelection(), [students]);
   useLockScrollbar(false);
 
-  if (error) {
-    return (
-      <div className="rounded-lg bg-red-100 p-4 text-red-600 dark:bg-red-900 dark:text-red-400">
-        {error}
-        <button
-          onClick={() => window.location.reload()}
-          className="ml-2 rounded bg-red-600 px-3 py-1 text-white"
-        >
-          Retry
-        </button>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     // <div className="rounded-lg bg-red-100 p-4 text-red-600 dark:bg-red-900 dark:text-red-400">
+  //     //   {error}
+  //     //   <button
+  //     //     onClick={() => window.location.reload()}
+  //     //     className="ml-2 rounded bg-red-600 px-3 py-1 text-white"
+  //     //   >
+  //     //     Retry
+  //     //   </button>
+  //     // </div>
+  //   );
+  // }
 
   return (
     <div className="overflow-visible p-4">
@@ -310,16 +311,15 @@ export default function Grades() {
           Assessment Grades
         </h2>
         <div className="flex flex-wrap items-center gap-2">
-          {statusButtons.map((btn) => (
-            <button
-             onClick={handleSave}
-              key={btn.id}
-
-              className={`rounded px-4 py-1 text-sm text-white ${btn.style}`}
-            >
-              {btn.name}
-            </button>
-          ))}
+         <Button color="error">
+          CANCEL
+         </Button>
+          <Button color="warning" onClick={handleSave}>
+          IN-PROGRESS
+         </Button>
+         <Button color="success" >
+          COMPLETED
+         </Button>
         </div>
       </div>
 
