@@ -1,4 +1,3 @@
-// Grades.jsx - Full Dynamic Version with Grade Legend in Table Header
 import {
   getCoreRowModel,
   getExpandedRowModel,
@@ -16,7 +15,17 @@ import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
 import axios from "axios";
 import { fetchGradesList } from "./GradesList";
-import { Spinner, Table, THead, TBody, Th, Tr, Td, Avatar } from "components/ui";
+
+import {
+  Spinner,
+  Table,
+  THead,
+  TBody,
+  Th,
+  Tr,
+  Td,
+  Avatar,
+} from "components/ui";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID } from "constants/apis";
 
@@ -28,20 +37,76 @@ export default function Grades() {
   const [statusButtons, setStatusButtons] = useState([]);
   const [error, setError] = useState(null);
   const [assessmentIdMap, setAssessmentIdMap] = useState({});
+  const [isInProgress, setIsInProgress] = useState(false);
+  
 
   const tenantId = 1;
   const branchId = 1;
   const timeTableId = 2;
   const conductedById = 1;
 
+  const handleSave = async () => {
+    try {
+      const originalMap = Object.fromEntries(
+        originalStudents.map((s) => [s.studentId, s])
+      );
+
+      const changedStudents = students
+        .map((student) => {
+          const original = originalMap[student.studentId];
+          const changedGrades = Object.entries(student.assessmentGrades)
+            .filter(
+              ([key, grade]) =>
+                grade.gradeId !== original?.assessmentGrades?.[key]?.gradeId
+            )
+            .map(([key, grade]) => ({
+              assessmentId: assessmentIdMap[key],
+              gradeId: grade.gradeId,
+            }));
+
+          if (!changedGrades.length) return null;
+
+          return {
+            studentId: student.studentId,
+            grades: changedGrades,
+          };
+        })
+        .filter(Boolean);
+
+      if (!changedStudents.length) return alert("No changes to save.");
+
+      const payload = {
+        timeTableId,
+        tenantId,
+        branchId,
+        conductedById,
+        students: changedStudents,
+      };
+
+      setIsLoading(true);
+      await axios.post(
+        "https://localhost:7202/api/DailyAssessment/save-matrix",
+        payload
+      );
+      alert("Grades saved successfully!");
+      setOriginalStudents(JSON.parse(JSON.stringify(students)));
+    } catch (err) {
+      console.error("Save failed", err);
+      alert("Save failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const getStatusStyle = useCallback((status) => {
     const colorMap = {
-      "NOT STARTED": "bg-gray-500",
-      "IN-PROGRESS": "bg-yellow-500",
-      PENDING: "bg-orange-500",
-      COMPLETED: "bg-green-600",
+      "NOTSTARTED": "bg-gray-500",
+      "INPROGRESS": "bg-yellow-500",
+      "PENDING": "bg-orange-500",
+      "COMPLETED": "bg-green-600",
     };
-    return colorMap[status.toUpperCase()] || "bg-blue-500";
+    const key = status.toUpperCase().replace(/[\s_-]/g, "");
+    return colorMap[key] || "bg-blue-500";
   }, []);
 
   const getGradeColorStyle = useCallback((grade) => {
@@ -63,21 +128,36 @@ export default function Grades() {
       try {
         setIsLoading(true);
         const [{ data }, grades] = await Promise.all([
-          axios.get(`${GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID}?tenantId=${tenantId}&branchId=${branchId}&timeTableId=${timeTableId}`),
+          axios.get(
+            `${GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID}?tenantId=${tenantId}&branchId=${branchId}&timeTableId=${timeTableId}`,
+          ),
           fetchGradesList(),
         ]);
 
-        setAssessmentIdMap(data?.data?.headerSkillMap || {});
-        setStatusButtons(
-          (data?.data?.assessmentStatusCode || []).map((s) => ({
-            ...s,
-            style: getStatusStyle(s.name),
-            onClick: () => alert(`Clicked: ${s.name}`),
-          }))
+        const rawStatusList = data?.data?.assessmentStatusCode || [];
+        const normalizedStatusList = rawStatusList.map((s) =>
+          (s.name || "").toUpperCase().replace(/[\s_-]/g, "")
         );
+
+        setIsInProgress(normalizedStatusList.includes("INPROGRESS"));
+        setAssessmentIdMap(data?.data?.headerSkillMap || {});
         setGradesList(grades);
         setStudents(data?.data?.rows || []);
         setOriginalStudents(JSON.parse(JSON.stringify(data?.data?.rows || [])));
+
+        setStatusButtons(
+          rawStatusList.map((s) => {
+            const normalized = (s.name || "").toUpperCase().replace(/[\s_-]/g, "");
+            return {
+              ...s,
+              style: getStatusStyle(normalized),
+              onClick:
+                normalized === "INPROGRESS"
+                  ? handleSave
+                  : () => alert(`Clicked: ${s.name}`),
+            };
+          }),
+        );
       } catch (err) {
         console.error("Failed to fetch data", err);
         setError("Failed to load data. Please try again later.");
@@ -89,48 +169,62 @@ export default function Grades() {
     fetchData();
   }, [tenantId, branchId, timeTableId, getStatusStyle]);
 
-  const handleGradeChange = useCallback((studentId, header, newGradeName) => {
-    const gradeObj = gradesList.find((g) => g.name.trim() === newGradeName.trim());
-    const gradeId = gradeObj?.id ?? 0;
+  const handleGradeChange = useCallback(
+    (studentId, header, newGradeName) => {
+      const gradeObj = gradesList.find(
+        (g) => g.name.trim() === newGradeName.trim(),
+      );
+      const gradeId = gradeObj?.id ?? 0;
 
-    setStudents((prev) =>
-      prev.map((student) =>
-        student.studentId === studentId
-          ? {
-              ...student,
-              assessmentGrades: {
-                ...student.assessmentGrades,
-                [header]: {
-                  ...student.assessmentGrades?.[header],
-                  gradeId,
-                  gradeName: newGradeName,
+      setStudents((prev) =>
+        prev.map((student) =>
+          student.studentId === studentId
+            ? {
+                ...student,
+                assessmentGrades: {
+                  ...student.assessmentGrades,
+                  [header]: {
+                    ...student.assessmentGrades?.[header],
+                    gradeId,
+                    gradeName: newGradeName,
+                  },
                 },
-              },
+              }
+            : student,
+        ),
+      );
+    },
+    [gradesList],
+  );
+
+  const renderGradeCell = useCallback(
+    (row, header) => {
+      const grade = (
+        row.assessmentGrades?.[header]?.gradeName || "Not Graded"
+      ).trim();
+      const bgColor = getGradeColorStyle(grade);
+
+      return (
+        <div className="relative z-50">
+          <select
+            value={grade}
+            onChange={(e) =>
+              handleGradeChange(row.studentId, header, e.target.value)
             }
-          : student
-      )
-    );
-  }, [gradesList]);
-
-  const renderGradeCell = useCallback((row, header) => {
-    const grade = (row.assessmentGrades?.[header]?.gradeName || "Not Graded").trim();
-    const bgColor = getGradeColorStyle(grade);
-
-    return (
-      <div className="relative z-50">
-        <select
-          value={grade}
-          onChange={(e) => handleGradeChange(row.studentId, header, e.target.value)}
-          className={`relative z-50 w-full rounded-md border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none ${bgColor} dark:bg-dark-700 dark:text-white`}
-        >
-          <option value="">Not Graded</option>
-          {gradesList.map((g) => (
-            <option key={g.id} value={g.name?.trim()}>{g.name}</option>
-          ))}
-        </select>
-      </div>
-    );
-  }, [gradesList, handleGradeChange, getGradeColorStyle]);
+            className={`relative z-50 w-full rounded-md border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none ${bgColor} dark:bg-dark-700 dark:text-white`}
+          >
+            <option value="">Not Graded</option>
+            {gradesList.map((g) => (
+              <option key={g.id} value={g.name?.trim()}>
+                {g.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      );
+    },
+    [gradesList, handleGradeChange, getGradeColorStyle],
+  );
 
   const columns = useMemo(() => {
     if (!students.length) return [];
@@ -151,54 +245,14 @@ export default function Grades() {
 
     const assessmentColumns = assessmentHeaders.map((header) => ({
       id: header,
-      accessorFn: (row) => row.assessmentGrades?.[header]?.gradeName ?? "Not Graded",
+      accessorFn: (row) =>
+        row.assessmentGrades?.[header]?.gradeName ?? "Not Graded",
       header,
       cell: ({ row }) => renderGradeCell(row.original, header),
     }));
 
     return [studentColumn, ...assessmentColumns];
   }, [students, renderGradeCell]);
-
-  const handleSave = async () => {
-    try {
-      const changedStudents = students.map((student, i) => {
-        const original = originalStudents[i];
-        const changedGrades = Object.entries(student.assessmentGrades)
-          .filter(([key, grade]) => grade.gradeId !== original.assessmentGrades?.[key]?.gradeId)
-          .map(([key, grade]) => ({
-            assessmentId: assessmentIdMap[key],
-            gradeId: grade.gradeId,
-          }));
-
-        if (!changedGrades.length) return null;
-
-        return {
-          studentId: student.studentId,
-          grades: changedGrades,
-        };
-      }).filter(Boolean);
-
-      if (!changedStudents.length) return alert("No changes to save.");
-
-      const payload = {
-        timeTableId,
-        tenantId,
-        branchId,
-        conductedById,
-        students: changedStudents,
-      };
-
-      setIsLoading(true);
-      await axios.post("https://localhost:7202/api/DailyAssessment/save-matrix", payload);
-      alert("Grades saved successfully!");
-      setOriginalStudents(JSON.parse(JSON.stringify(students)));
-    } catch (err) {
-      console.error("Save failed", err);
-      alert("Save failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [globalFilter, setGlobalFilter] = useState("");
@@ -239,13 +293,35 @@ export default function Grades() {
     return (
       <div className="rounded-lg bg-red-100 p-4 text-red-600 dark:bg-red-900 dark:text-red-400">
         {error}
-        <button onClick={() => window.location.reload()} className="ml-2 rounded bg-red-600 px-3 py-1 text-white">Retry</button>
+        <button
+          onClick={() => window.location.reload()}
+          className="ml-2 rounded bg-red-600 px-3 py-1 text-white"
+        >
+          Retry
+        </button>
       </div>
     );
   }
 
   return (
     <div className="overflow-visible p-4">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+          Assessment Grades
+        </h2>
+        <div className="flex flex-wrap items-center gap-2">
+          {statusButtons.map((btn) => (
+            <button
+              key={btn.id}
+              onClick={btn.onClick}
+              className={`rounded px-4 py-1 text-sm text-white ${btn.style}`}
+            >
+              {btn.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {isLoading ? (
         <div className="flex justify-center py-10">
           <Spinner color="primary" className="size-16 border-4" />
@@ -257,39 +333,21 @@ export default function Grades() {
               <THead>
                 <Tr>
                   {table.getHeaderGroups()[0].headers.map((header) => (
-                    <Th key={header.id} className="bg-gray-200 text-gray-800 uppercase dark:bg-dark-800 dark:text-dark-100">
+                    <Th
+                      key={header.id}
+                      className="dark:bg-dark-800 dark:text-dark-100 bg-gray-200 text-gray-800 uppercase"
+                    >
                       {flexRender(header.column.columnDef.header, header.getContext())}
                     </Th>
                   ))}
-                </Tr>
-                <Tr>
-                  {table.getHeaderGroups()[0].headers.map((header) => {
-                    if (header.column.id === "studentName") {
-                      return (
-                        <Th key="legend-student" className="bg-white dark:bg-dark-700"></Th>
-                      );
-                    }
-                    const gradeName = gradesList.find(
-                      (g) => g.name.trim() === header.column.id.trim()
-                    )?.name;
-                    return (
-                      <Th key={`legend-${header.id}`} className="bg-white dark:bg-dark-700">
-                        <div
-                          className={`mx-auto w-fit rounded px-2 py-1 text-xs font-medium text-gray-800 ${getGradeColorStyle(
-                            gradeName || "Not Graded"
-                          )}`}
-                        >
-                          {gradeName || "Grade"}
-                        </div>
-                      </Th>
-                    );
-                  })}
                 </Tr>
               </THead>
               <TBody>
                 {table.getRowModel().rows.length === 0 ? (
                   <Tr>
-                    <Td colSpan={columns.length} className="py-4 text-center dark:text-white">No students found</Td>
+                    <Td colSpan={columns.length} className="py-4 text-center dark:text-white">
+                      No students found
+                    </Td>
                   </Tr>
                 ) : (
                   table.getRowModel().rows.map((row) => (
@@ -312,22 +370,33 @@ export default function Grades() {
             </span>
 
             <div className="flex flex-wrap items-center gap-2">
-              {statusButtons.map((btn) => (
-                <button key={btn.id} onClick={btn.onClick} className={`rounded px-4 py-2 text-white ${btn.style}`}>
-                  {btn.name}
+              {isInProgress && (
+                <button
+                  onClick={handleSave}
+                  disabled={isLoading}
+                  className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 disabled:opacity-50"
+                >
+                  {isLoading ? "Saving..." : "Save"}
                 </button>
-              ))}
-
-              <button onClick={handleSave} disabled={isLoading} className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 disabled:opacity-50">
-                {isLoading ? "Saving..." : "Save"}
-              </button>
+              )}
 
               <div className="ml-4 flex items-center gap-2">
-                <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()} className="rounded bg-gray-100 p-2 text-gray-700">
+                <button
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                  className="rounded bg-gray-100 p-2 text-gray-700"
+                >
                   <ChevronLeftIcon className="h-5 w-5" />
                 </button>
-                <span className="text-sm text-gray-800">Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}</span>
-                <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()} className="rounded bg-gray-100 p-2 text-gray-700">
+                <span className="text-sm text-gray-800">
+                  Page {table.getState().pagination.pageIndex + 1} of{" "}
+                  {table.getPageCount()}
+                </span>
+                <button
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                  className="rounded bg-gray-100 p-2 text-gray-700"
+                >
                   <ChevronRightIcon className="h-5 w-5" />
                 </button>
               </div>
