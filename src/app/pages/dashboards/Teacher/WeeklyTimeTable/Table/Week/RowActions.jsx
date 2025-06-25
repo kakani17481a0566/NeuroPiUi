@@ -10,6 +10,9 @@ import {
   EllipsisHorizontalIcon,
   EyeIcon,
   LinkIcon,
+  UserGroupIcon,
+DocumentIcon,
+ClipboardDocumentListIcon
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { useCallback, useState} from "react";
@@ -209,7 +212,7 @@ export function RowActions({ row }) {
                     active && "dark:bg-dark-600 bg-gray-100"
                   )}
                 >
-                  <LinkIcon className="size-4.5 stroke-1" />
+                  <DocumentIcon className="size-4.5 stroke-1" />
                   <span>WorkSheets</span>
                 </button>
               )}
@@ -223,7 +226,7 @@ export function RowActions({ row }) {
                     active && "dark:bg-dark-600 bg-gray-100"
                   )}
                 >
-                  <LinkIcon className="size-4.5 stroke-1" />
+                  <UserGroupIcon className="size-4.5 stroke-1" />
                   <span>Attendance</span>
                 </button>
               )}
@@ -237,7 +240,7 @@ export function RowActions({ row }) {
                     active && "dark:bg-dark-600 bg-gray-100"
                   )}
                 >
-                  <LinkIcon className="size-4.5 stroke-1" />
+                  <ClipboardDocumentListIcon className="size-4.5 stroke-1" />
                   <span>Assignment</span>
                 </button>
               )}
