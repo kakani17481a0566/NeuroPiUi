@@ -3,7 +3,7 @@ import {
   ClockIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
-import { STUDENTS_LIST } from "constants/apis";
+// import { STUDENTS_LIST } from "constants/apis";
 
 // Status options
 export const userStatusOptions = [
@@ -28,12 +28,12 @@ export const userStatusOptions = [
 ];
 
 // Fetch logic centralized here
-export const fetchStudents= async () => {
+export const fetchStudents= async (courseId) => {
   try {
-
+    console.log(courseId);
     //https://localhost:7202/api/User/by-tenant?tenantId=2
 
-    const response = await fetch(STUDENTS_LIST, {
+    const response = await fetch(`https://localhost:7202/api/Student/by-tenant-course-branch?tenantId=1&courseId=${courseId}&branchId=1`, {
       headers: {
         accept: "*/*",
         // Authorization: token,

@@ -34,9 +34,9 @@ const protectedRoutes = {
               }),
             },
             {
-              path: "test",
+              path: "attendance",
               lazy: async () => ({
-                Component: (await import("app/pages/dashboards/Test")).default,
+                Component: (await import("app/pages/dashboards/Teacher/WeeklyTimeTable/Table/Attendance")).default,
               }),
             },
             {

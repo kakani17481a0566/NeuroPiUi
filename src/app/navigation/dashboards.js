@@ -14,14 +14,14 @@ export const dashboards = {
     transKey: 'nav.dashboards.dashboards',
     Icon: DashboardsIcon,
     childs: [
-        // {
-        //     id: 'dashboards.home',
-        //     path: path(ROOT_DASHBOARDS, '/home'),
-        //     type: NAV_TYPE_ITEM,
-        //     title: 'Home',
-        //     transKey: 'nav.dashboards.home',
-        //     Icon: HomeIcon,
-        // },
+        {
+            id: 'dashboards.attendance',
+            path: path(ROOT_DASHBOARDS, '/attendance'),
+            type: NAV_TYPE_ITEM,
+            title: 'Attendance',
+            transKey: 'nav.dashboards.attendance',
+            Icon: HomeIcon,
+        },
         // {
         //     id: 'dashboards.Test',
         //     path: path(ROOT_DASHBOARDS, '/test'),

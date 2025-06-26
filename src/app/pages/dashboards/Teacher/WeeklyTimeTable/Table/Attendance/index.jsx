@@ -6,13 +6,14 @@ import { fetchStudents } from "app/pages/dashboards/Teacher/Students/data";
 //import { useReactTable, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel } from "@tanstack/react-table";
 // import { columns } from "./columns";
 // import clsx from "clsx";
-import { Checkbox,Avatar } from "components/ui";
+import { Checkbox, Avatar, Select } from "components/ui";
 import {
   Pagination,
   PaginationItems,
   PaginationNext,
   PaginationPrevious,
 } from "components/ui";
+import { fetchCourses } from "app/pages/dashboards/constantData/Courses";
 
 
 // import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
@@ -25,15 +26,26 @@ import {
 
 export default function Attendance() {
   const [students, setStudents] = useState([]);
+  const [selectedCourseId, setSelectedCourseId] = useState(); // ID of selected course
+  const [courses, setCourses] = useState([]);
   useEffect(() => {
     async function loadStudents() {
-      const data = await fetchStudents();
-      console.log(data);
-      setStudents(data);
+      // const data = await fetchStudents();
+      const courses = await fetchCourses();
+      setCourses(courses);
+      if (courses?.length > 0) {
+        const defaultCourseId = courses[0].id;
+        console.log(courses[0].id)
+        setSelectedCourseId(defaultCourseId);
+        console.log("selected course id is ",selectedCourseId)
+        
+      }
+      const data = await fetchStudents(courses[0].id);
+        setStudents(data.students);
     }
     loadStudents()
   }, []);
-    const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
 
 
@@ -42,38 +54,51 @@ export default function Attendance() {
     month: "long",
     year: "numeric",
   });
-    const totalPages = Math.ceil(students.length / pageSize);
+
+  const totalPages = Math.ceil(students.length / pageSize);
   const startIdx = (currentPage - 1) * pageSize;
   const currentStudents = students.slice(startIdx, startIdx + pageSize);
+
+
+  const handleCourseChnage = async (e) => {
+    const value = e.target.value;
+    setSelectedCourseId(value);
+    const data=await fetchStudents(selectedCourseId);
+    setStudents(data.students);
+  }
+
 
   const handleSave = () => {
     const selected = students.getSelectedRowModel().rows.map(row => row.original);
     console.log("Selected Students:", selected);
-    // TODO: call save API or logic here
-  };
-  // const table = useReactTable({
-  //   data: students,
-  //   // columns,
-  //   // state: {
-  //   //   sorting,
-  //   //   globalFilter,
-  //   // },
-  //   // onSortingChange: setSorting,
-  //   getCoreRowModel: getCoreRowModel(),
-  //   getFilteredRowModel: getFilteredRowModel(),
-  //   getSortedRowModel: getSortedRowModel(),
-  //   getPaginationRowModel: getPaginationRowModel(),
-  // });
+  }
+
   return (
     <Card className="flex flex-col">
-      {/* 🆕 Top Section with Course and Date */}
       <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-dark-500">
-        <div>
-          <h2 className="text-lg font-semibold">Course: Nursery</h2>
-          <p className="text-sm text-gray-600">{currentDate}</p>
+        {/* Label + Select side by side */}
+        <div className="flex items-center space-x-2">
+          <label className="text-sm font-medium text-gray-700">Course</label>
+          <div className="relative z-10">
+            <Select defaultValue="1" onChange={handleCourseChnage}>
+              {courses.map((course) => (
+                <option key={course.id} value={course.id}>
+                  {course.name}
+                </option>
+              ))}
+            </Select>
+          </div>
         </div>
-        <Button onClick={handleSave} className="ml-auto">Save</Button>
+
+        {/* Date and Save Button */}
+        <div className="flex items-center space-x-4">
+          <p className="text-sm text-gray-600">{currentDate}</p>
+          <Button onClick={handleSave} className="ml-auto">
+            Save
+          </Button>
+        </div>
       </div>
+
 
       {/* 👇 Table */}
       <div className="relative mt-5">
@@ -85,7 +110,7 @@ export default function Attendance() {
                   Student Name
                 </Td>
                 <Td className="text-lg font-semibold">
-                Attendance
+                  Attendance
                 </Td>
 
               </Tr>
@@ -93,20 +118,20 @@ export default function Attendance() {
             <TBody>
               {currentStudents.length === 0 ? (
                 <Tr>
-                  <Td  className="py-4 text-center dark:text-white">
+                  <Td className="py-4 text-center dark:text-white">
                     No students found
                   </Td>
                 </Tr>
               ) : (
                 currentStudents.map((row) => (
                   <Tr key={row.id}>
-                      <Td key={row.id}className="px-4 py-2 dark:text-white flex items-center gap-2">
-                        <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750826264/MSI/wgs9xojgcs44xhupfh2f.png" />
-                        {row.name}
-                      </Td>
-                       <Td key={row.id} className="px-4 py-2 dark:text-white">
-                        <Checkbox defaultChecked />
-                      </Td>
+                    <Td key={row.id} className="px-4 py-2 dark:text-white flex items-center gap-2">
+                      <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750826264/MSI/wgs9xojgcs44xhupfh2f.png" />
+                      {row.name}
+                    </Td>
+                    <Td key={row.id} className="px-4 py-2 dark:text-white">
+                      <Checkbox defaultChecked />
+                    </Td>
                   </Tr>
                 ))
               )}

@@ -4,10 +4,14 @@ import { dashboards } from "./dashboards";
 import { UserManagement } from "./UserManagement";
 import { getSessionData } from "utils/sessionStorage";
 const details=getSessionData();
+const role=details.role;
 let navigation=[];
 console.log(details);
-if(details.role=="Teacher"){
+if(role==="Teacher"){
    navigation=[academics]
+}
+ else if(role==="Nanny"){
+    navigation=[dashboards]
 }
 else{
     navigation=[UserManagement,dashboards];
