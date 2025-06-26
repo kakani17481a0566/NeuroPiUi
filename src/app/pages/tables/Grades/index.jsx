@@ -45,6 +45,8 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
   const [gradeName, setGradeName] = useState(0);
   const [alertMessage, setAlertMessage] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
+  const[overrideStatusCode,setOverRideStatusCode]=useState(0);
+  
 
   const tenantId = 1;
   const branchId = 1;
@@ -54,6 +56,13 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
 
   const handleSave = async () => {
     try {
+      if(isCompleted){
+        setOverRideStatusCode(174)
+      }
+      else{
+        setOverRideStatusCode(172)
+      }
+      
       const originalMap = Object.fromEntries(
         originalStudents.map((s) => [s.studentId, s]),
       );
@@ -91,6 +100,7 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
         tenantId,
         branchId,
         conductedById,
+        overrideStatusCode,
         students: changedStudents,
       };
 
