@@ -153,7 +153,7 @@ export default function TermPlan() {
       {/* Header Section */}
       <div className="flex items-center justify-between space-x-4">
         <div className="min-w-0">
-          <h2 className="truncate text-xl font-medium tracking-wide text-gray-800 dark:text-dark-50">
+          <h2 className="truncate text-xl font-medium tracking-wide text-gray-800 dark:text-dark-50 font-bold">
             Term Plan
           </h2>
         </div>

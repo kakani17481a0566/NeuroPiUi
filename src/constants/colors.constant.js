@@ -100,21 +100,20 @@ const colors = {
   },
 
 
-  salesRed: {
-  50:  "#FFEAEA",   // light blush red
-  100: "#FFC7C7",   // soft red
-  200: "#FF9D9D",   // salmon red
-  300: "#FF6B6B",   // moderate red (common button color)
-  400: "#F44336",   // vivid red (alert color)
-  450: "#E53935",   // slightly deeper
-  500: "#D32F2F",   // primary red
-  600: "#C62828",   // darkened
-  700: "#B71C1C",   // deeper for hover or dark themes
-  750: "#A31616",   // dark wine red
-  800: "#8B0000",   // strong dark red (border/shadow)
-  900: "#5B0000",   // almost maroon (footer, dark mode bg)
-},
-
+salesRed: {
+    50:  "#FBEFF7",
+    100: "#F5D9EB",
+    200: "#EDBEE0",
+    300: "#E49CCF",
+    400: "#DB7BBF",
+    450: "#D76BB7",
+    500: "#D2A5C2",
+    600: "#BB81A7",
+    700: "#A5668D",
+    750: "#8F4D73",
+    800: "#79345A",
+    900: "#622242",
+  },
 
   indigo: twColors.indigo,
   blue: twColors.blue,

@@ -19,7 +19,6 @@ import { useSkipper } from "utils/react-table/useSkipper";
 import { fetchWeeklyMatrixData } from "./data";
 import { generateTermColumns } from "./columns";
 import { useThemeContext } from "app/contexts/theme/context";
-
 import {
   CalendarDaysIcon,
   BookOpenIcon,
@@ -111,7 +110,9 @@ export default function Term() {
   useLockScrollbar(tableSettings.enableFullScreen);
 
   return (
-    <div className="space-y-4 px-4 py-4">
+ <div className="space-y-4 px-4 py-4 font-lato uppercase">
+
+      {/* Header Section */}
       {month &&
         (() => {
           const [prefix, ...rest] = month.split("Term Start Date");
@@ -126,13 +127,13 @@ export default function Term() {
               <div className="flex flex-wrap justify-center gap-2 space-x-2 text-center text-sm font-semibold sm:text-base">
                 {academicYearMatch && (
                   <span className="text-primary-950 dark:text-primary-300 flex items-center gap-1">
-                    <CalendarDaysIcon className="h-4 w-4 text-primary-600" />
+                    <CalendarDaysIcon className="text-primary-600 h-4 w-4" />
                     {academicYearMatch[0]}
                   </span>
                 )}
                 {termMatch && (
                   <span className="text-primary-950 dark:text-secondary-300 flex items-center gap-1">
-                    <BookOpenIcon className="h-4 w-4 text-primary-600" />
+                    <BookOpenIcon className="text-primary-600 h-4 w-4" />
                     {termMatch[0]}
                   </span>
                 )}
@@ -140,9 +141,9 @@ export default function Term() {
                   startEndDates.split("|").map((part, index) => (
                     <span
                       key={index}
-                      className="flex items-center gap-1 text-primary-100 dark:text-rose-300"
+                      className="text-primary-600 flex items-center gap-1 dark:text-rose-300"
                     >
-                      <ClockIcon className="h-4 w-4 text-primary-600" />
+                      <ClockIcon className="text-primary-950 h-4 w-4" />
                       {part.trim()}
                     </span>
                   ))}
@@ -151,6 +152,7 @@ export default function Term() {
           );
         })()}
 
+      {/* Table Section */}
       {loading ? (
         <div className="dark:text-dark-300 py-10 text-center text-sm text-gray-500">
           Loading term timetable...
@@ -180,16 +182,21 @@ export default function Term() {
                 hoverable
                 dense={tableSettings.enableRowDense}
                 sticky={tableSettings.enableFullScreen}
-                className="w-full text-left rtl:text-right"
+                className="w-full text-left text-sm rtl:text-right" // 👈 You control font size here
+                style={{ borderBottom: "2px solid #D2486E" }}
               >
                 <THead>
                   {table.getHeaderGroups().map((headerGroup) => (
                     <Tr key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => (
+                      {headerGroup.headers.map((header, i) => (
                         <Th
                           key={header.id}
                           className={clsx(
-                            "dark:bg-dark-800 dark:text-dark-100 bg-gray-200 font-semibold text-gray-800 uppercase first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
+                            "text-center font-semibold uppercase",
+                            "first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
+                            i === 0
+                              ? "text-primary-950 dark:text-dark-100"
+                              : "dark:text-dark-100 text-white",
                             header.column.getCanPin() && [
                               header.column.getIsPinned() === "left" &&
                                 "sticky z-2 ltr:left-0 rtl:right-0",
@@ -197,6 +204,18 @@ export default function Term() {
                                 "sticky z-2 ltr:right-0 rtl:left-0",
                             ],
                           )}
+                          style={{
+                            backgroundColor: i === 0 ? "#D2A5C2" : "#D27D9E",
+                            borderRight:
+                              i === 0 ? "1px solid #D27D9E" : undefined,
+                            transform: i === 0 ? "translateY(-1px)" : undefined,
+                            boxShadow:
+                              i === 0
+                                ? `0px 4px 10px rgba(0, 0, 0, 0.35), inset -2px 0 4px rgba(255, 255, 255, 0.2), 1px 0 0 #D2486E`
+                                : undefined,
+                            zIndex: 2,
+                            position: "relative",
+                          }}
                         >
                           {header.column.getCanSort() ? (
                             <div
@@ -237,10 +256,10 @@ export default function Term() {
                         <Td
                           key={cell.id}
                           className={clsx(
-                            "border-r border-gray-300 px-2 py-2 text-sm whitespace-nowrap",
-                            index === 0
-                              ? "dark:bg-dark-700 bg-gray-200 dark:text-white"
-                              : "dark:bg-dark-700 bg-white dark:text-white",
+                            "text-primary-950 border-r px-2 py-2 text-center text-sm whitespace-nowrap transition-all duration-200 ease-in-out",
+                            rowIndex % 2 !== 0
+                              ? "bg-[#FAFAFA] dark:bg-[#2D2D2D]"
+                              : "",
                             cardSkin === "shadow-sm"
                               ? "skin-shadow-sm"
                               : "skin-shadow",
@@ -250,28 +269,49 @@ export default function Term() {
                             cell.column.getIsPinned() === "right" &&
                               "is-pinned-right",
                           )}
+                          style={{
+                            backgroundColor:
+                              index === 0 ? "#D2A5C2" : "#FFFFFF",
+                            borderRight:
+                              index !== 0 ? "1px solid #D2486E" : undefined,
+                            transform:
+                              index === 0 ? "translateY(-1px)" : "none",
+                            boxShadow:
+                              index === 0
+                                ? `4px 0 8px rgba(0, 0, 0, 0.3),
+           inset -1px 0 2px rgba(255, 255, 255, 0.25),
+           1px 0 0 #D2486E`
+                                : `1px 0 4px rgba(0, 0, 0, 0.1)`,
+                            zIndex: index === 0 ? 1 : "auto",
+                            position: index === 0 ? "relative" : "static",
+                          }}
                         >
-                          {cell.column.getIsPinned() && (
-                            <div
-                              className={clsx(
-                                "dark:border-dark-500 pointer-events-none absolute inset-0 border-gray-200",
-                                cell.column.getIsPinned() === "left"
-                                  ? "ltr:border-r rtl:border-l"
-                                  : "ltr:border-l rtl:border-r",
-                              )}
-                            />
-                          )}
-                          <div
-                            style={
-                              cell.column.id.toLowerCase() === "colum1"
-                                ? { whiteSpace: "pre-line" }
-                                : undefined
-                            }
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext(),
+                          {/* Optional shadow glow effect on hover */}
+                          <div className="group relative">
+                            {cell.column.getIsPinned() && (
+                              <div
+                                className={clsx(
+                                  "dark:border-dark-500 pointer-events-none absolute inset-0 border-gray-200",
+                                  cell.column.getIsPinned() === "left"
+                                    ? "ltr:border-r rtl:border-l"
+                                    : "ltr:border-l rtl:border-r",
+                                )}
+                              />
                             )}
+
+                            <div
+                              className="transition-transform duration-200 ease-in-out group-hover:-translate-y-[1px] group-hover:shadow-md"
+                              style={
+                                cell.column.id.toLowerCase() === "colum1"
+                                  ? { whiteSpace: "pre-line" }
+                                  : {}
+                              }
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )}
+                            </div>
                           </div>
                         </Td>
                       ))}
@@ -280,7 +320,6 @@ export default function Term() {
                 </TBody>
               </Table>
             </div>
-
             <SelectedRowsActions table={table} />
           </Card>
         </div>

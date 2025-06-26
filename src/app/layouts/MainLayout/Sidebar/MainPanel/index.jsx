@@ -37,7 +37,8 @@ export function MainPanel({ nav, setActiveSegment, activeSegment }) {
         />
 
         {/* Bottom Links */}
-        <div className="flex flex-col items-center space-y-3 py-2.5">
+      <div className="flex flex-col items-center space-y-3 py-2.5 text-primary-600">
+
           <Item
             id={settings.id}
             component={Link}

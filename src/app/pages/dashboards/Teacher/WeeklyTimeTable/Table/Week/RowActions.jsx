@@ -6,16 +6,20 @@ import {
   Transition,
 } from "@headlessui/react";
 import {
-  ChevronUpIcon,
-  EllipsisHorizontalIcon,
   EyeIcon,
   LinkIcon,
+  DocumentIcon,
   UserGroupIcon,
-DocumentIcon,
-ClipboardDocumentListIcon
+  ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
+
+import {
+  ChevronUpIcon,
+  EllipsisHorizontalIcon,
+} from "@heroicons/react/24/outline";
+
 import clsx from "clsx";
-import { useCallback, useState} from "react";
+import { useCallback, useState } from "react";
 // import {useNavigate} from 'react-router-dom';
 import PropTypes from "prop-types";
 import Vimeo from "@u-wave/react-vimeo";
@@ -23,7 +27,7 @@ import Vimeo from "@u-wave/react-vimeo";
 import { Button } from "components/ui";
 import { fetchWeeklyTimeTableData } from "./data";
 import Attendance from "app/pages/dashboards/Teacher/WeeklyTimeTable/Table/Attendance";
-  import Grades from 'app/pages/tables/Grades';
+import Grades from "app/pages/tables/Grades";
 
 export function RowActions({ row }) {
   const [showPdfViewerModal, setShowPdfViewerModal] = useState(false);
@@ -38,8 +42,7 @@ export function RowActions({ row }) {
   const [studentAttendancePopUp, setStudentAttendancePopUp] = useState(false);
   const [showWorkShopPopup, setShowWorkShopPopup] = useState(false);
   const [assignments, setAssignments] = useState([]);
-  const[showAssignmentsPopUp,setShowAssignmentsPopUp]=useState(false);
-
+  const [showAssignmentsPopUp, setShowAssignmentsPopUp] = useState(false);
 
   const normalizeUrl = (url) => {
     if (!url) return "";
@@ -88,12 +91,10 @@ export function RowActions({ row }) {
   const handleViewAttendancePopup = () => {
     setStudentAttendancePopUp(true);
   };
-  const handleAssignMarks=()=>{
-      console.log(row);
+  const handleAssignMarks = () => {
+    console.log(row);
     setShowAssignmentsPopUp(true);
-
-  }
-  
+  };
 
   const handlePdfPopUpClose = () => {
     setShowPdfViewerModal(false);
@@ -148,18 +149,18 @@ export function RowActions({ row }) {
             <ChevronUpIcon
               className={clsx(
                 "size-4.5 transition-transform",
-                row.getIsExpanded() && "rotate-180"
+                row.getIsExpanded() && "rotate-180",
               )}
             />
           </Button>
         )}
 
-        <Menu as="div" className="relative inline-block text-left z-20">
+        <Menu as="div" className="relative z-20 inline-block text-left">
           <MenuButton
             as={Button}
             variant="flat"
             isIcon
-            className="size-7 rounded-full touch-manipulation"
+            className="size-7 touch-manipulation rounded-full"
             onMouseDown={(e) => e.preventDefault()}
             onTouchStart={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
@@ -183,10 +184,11 @@ export function RowActions({ row }) {
                   onClick={handleViewPdfPopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100"
+                    active && "dark:bg-dark-600 bg-gray-100",
                   )}
                 >
-                  <EyeIcon className="size-4.5 stroke-1" />
+                  <EyeIcon className="text-primary-950 size-4.5 stroke-[1.5]" />
+
                   <span>Lesson Plan</span>
                 </button>
               )}
@@ -197,10 +199,11 @@ export function RowActions({ row }) {
                   onClick={handleViewResourcePopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100"
+                    active && "dark:bg-dark-600 bg-gray-100",
                   )}
                 >
-                  <LinkIcon className="size-4.5 stroke-1" />
+                  <LinkIcon className="text-primary-950 size-4.5 stroke-[1.5]" />
+
                   <span>Resources</span>
                 </button>
               )}
@@ -211,10 +214,11 @@ export function RowActions({ row }) {
                   onClick={handleViewWorkSheetPopUp}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100"
+                    active && "dark:bg-dark-600 bg-gray-100",
                   )}
                 >
-                  <DocumentIcon className="size-4.5 stroke-1" />
+                  <DocumentIcon className="text-primary-950 size-4.5 stroke-[1.5]" />
+
                   <span>WorkSheets</span>
                 </button>
               )}
@@ -225,10 +229,10 @@ export function RowActions({ row }) {
                   onClick={handleViewAttendancePopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100"
+                    active && "dark:bg-dark-600 bg-gray-100",
                   )}
                 >
-                  <UserGroupIcon className="size-4.5 stroke-1" />
+                  <UserGroupIcon className="text-primary-950 size-4.5 stroke-[1.5]" />
                   <span>Attendance</span>
                 </button>
               )}
@@ -239,21 +243,22 @@ export function RowActions({ row }) {
                   onClick={handleAssignMarks}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100"
+                    active && "dark:bg-dark-600 bg-gray-100",
                   )}
                 >
-                  <ClipboardDocumentListIcon className="size-4.5 stroke-1" />
+                  <ClipboardDocumentListIcon className="text-primary-950 size-4.5 stroke-[1.5]" />
+
                   <span>Assignment</span>
                 </button>
               )}
-            </MenuItem> 
+            </MenuItem>
           </Transition>
         </Menu>
       </div>
 
       {/* Modals: PDF Viewer, Resources, Assignments, Video, Attendance */}
       {showPdfViewerModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center  bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="relative w-full max-w-3xl rounded-lg bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold">PDF View</h2>
@@ -280,7 +285,7 @@ export function RowActions({ row }) {
 
       {showResourcePopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="relative w-full max-w-4xl rounded-lg bg-white p-6 shadow-lg overflow-auto">
+          <div className="relative w-full max-w-4xl overflow-auto rounded-lg bg-white p-6 shadow-lg">
             <h2 className="mb-4 text-lg font-semibold">Resources</h2>
             {loadingResources ? (
               <p>Loading...</p>
@@ -385,7 +390,7 @@ export function RowActions({ row }) {
       )}
 
       {showVideoPlayer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
           <div className="relative w-full max-w-3xl rounded-lg bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold">Video</h2>
@@ -410,7 +415,7 @@ export function RowActions({ row }) {
       )}
 
       {studentAttendancePopUp && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
           <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold">Attendance</h2>
@@ -427,8 +432,8 @@ export function RowActions({ row }) {
           </div>
         </div>
       )}
-       {showAssignmentsPopUp && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
+      {showAssignmentsPopUp && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
           <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold">Assignments</h2>
@@ -440,7 +445,10 @@ export function RowActions({ row }) {
               </button>
             </div>
             <div className="max-h-[70vh] overflow-y-auto rounded border">
-              <Grades timeTableId={row.original.timeTableId} assessmentStatusCode={row.original.assessmentStausCodeId}/>
+              <Grades
+                timeTableId={row.original.timeTableId}
+                assessmentStatusCode={row.original.assessmentStausCodeId}
+              />
             </div>
           </div>
         </div>
