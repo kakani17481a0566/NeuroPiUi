@@ -2,7 +2,6 @@
 import {
   flexRender,
   getCoreRowModel,
-  // getExpandedRowModel,
   getFacetedMinMaxValues,
   getFacetedUniqueValues,
   getFilteredRowModel,
@@ -13,20 +12,14 @@ import {
 import clsx from "clsx";
 import { Fragment, useRef, useState, useEffect } from "react";
 import {
-  // ArrowPathIcon,
-  // CheckBadgeIcon,
-  // ClockIcon,
   PlusIcon,
-  // XCircleIcon,
 } from "@heroicons/react/20/solid";
+import { AcademicCapIcon } from "@heroicons/react/24/outline"; // ✅ Icon for heading
 
 // Local Imports
-// import { TableSortIcon } from "components/shared/table/TableSortIcon";
-// import { ColumnFilter } from "components/shared/table/ColumnFilter";
 import { PaginationSection } from "components/shared/table/PaginationSection";
 import { Button, Card, Table, THead, TBody, Th, Tr, Td } from "components/ui";
 import {
-  // useBoxSize,
   useLockScrollbar,
   useLocalStorage,
   useDidUpdate,
@@ -38,8 +31,6 @@ import { columns } from "./columns";
 import { Toolbar } from "./Toolbar";
 import { useThemeContext } from "app/contexts/theme/context";
 import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
-
-// ----------------------------------------------------------------------
 
 const isSafari = getUserAgentBrowser() === "Safari";
 
@@ -56,7 +47,6 @@ export default function TermPlan() {
     enableRowDense: false,
   });
 
-  // const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
   const [columnVisibility, setColumnVisibility] = useLocalStorage(
     "column-visibility-users",
@@ -68,19 +58,17 @@ export default function TermPlan() {
   );
 
   const cardRef = useRef();
-  // const { width: cardWidth } = useBoxSize({ ref: cardRef });
 
   // Fetch users from API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await fetch(
-          // 'https://localhost:7171/tenantId?tenantId=2'
-          'https://localhost:7202/tenantId?tenantId=2'
-          
-          , {
-          headers: { 'accept': '*/*' }
-        });
+          'https://localhost:7202/tenantId?tenantId=2',
+          {
+            headers: { 'accept': '*/*' }
+          }
+        );
         const data = await response.json();
         if (data.data) {
           setUsers(data.data);
@@ -118,13 +106,10 @@ export default function TermPlan() {
         setUsers((old) => old.filter((row) => !rowIds.includes(row.userId)));
       },
     },
-    filterFns: {
-      fuzzy: fuzzyFilter,
-    },
+    filterFns: { fuzzy: fuzzyFilter },
     enableSorting: tableSettings.enableSorting,
     enableColumnFilters: tableSettings.enableColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    // onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
@@ -149,11 +134,12 @@ export default function TermPlan() {
   }
 
   return (
-    <div className="transition-content grid grid-cols-1 grid-rows-[auto_1fr] px-(--margin-x) py-4">
-      {/* Header Section */}
+    <div className="transition-content grid grid-cols-1 grid-rows-[auto_1fr] px-[--margin-x] py-4">
+      {/* Header Section with Icon */}
       <div className="flex items-center justify-between space-x-4">
-        <div className="min-w-0">
-          <h2 className="truncate text-primary-600 text-xl font-medium tracking-wide text-gray-800 dark:text-dark-50">
+        <div className="flex items-center space-x-2">
+          <AcademicCapIcon className="h-6 w-6 text-[#1A4255]" />
+          <h2 className="truncate text-xl font-medium tracking-wide text-primary-600 dark:text-dark-50">
             Term Plan
           </h2>
         </div>
@@ -205,32 +191,19 @@ export default function TermPlan() {
                           ]
                         )}
                       >
-                        {header.column.getCanSort() ? (
-                          <div
-                            className="flex cursor-pointer select-none items-center space-x-3"
-                            onClick={header.column.getToggleSortingHandler()}
-                          >
-                            <span className="flex-1">
-                              {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                  )}
-                            </span>
-                            {/* <TableSortIcon
-                              sorted={header.column.getIsSorted()}
-                            /> */}
-                          </div>
-                        ) : header.isPlaceholder ? null : (
-                          flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )
-                        )}
-                        {/* {header.column.getCanFilter() ? (
-                          <ColumnFilter column={header.column} />
-                        ) : null} */}
+                        <div
+                          className="flex cursor-pointer select-none items-center space-x-3"
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
+                          <span className="flex-1">
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                          </span>
+                        </div>
                       </Th>
                     ))}
                   </Tr>
@@ -247,7 +220,6 @@ export default function TermPlan() {
                           "row-selected after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500"
                       )}
                     >
-                      {/* Normal Row Cells */}
                       {row.getVisibleCells().map((cell) => (
                         <Td
                           key={cell.id}
@@ -287,10 +259,8 @@ export default function TermPlan() {
             </Table>
           </div>
 
-          {/* Selected Rows Actions */}
           <SelectedRowsActions table={table} />
 
-          {/* Pagination Section */}
           {table.getCoreRowModel().rows.length > 0 && (
             <div
               className={clsx(
@@ -305,7 +275,6 @@ export default function TermPlan() {
             </div>
           )}
         </Card>
-
       </div>
     </div>
   );

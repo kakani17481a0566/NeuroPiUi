@@ -20,12 +20,18 @@ import { fetchWeeklyMatrixData } from "./data";
 import { generateTermColumns } from "./columns";
 import { useThemeContext } from "app/contexts/theme/context";
 
+
+import { CalendarDaysIcon, BookOpenIcon, ClockIcon } from "@heroicons/react/24/outline";
+
+
+
 const isSafari = getUserAgentBrowser() === "Safari";
 
 export default function Term() {
   const { cardSkin } = useThemeContext();
   const [autoResetPageIndex] = useSkipper();
   const cardRef = useRef();
+  const wrapperRef = useRef();
 
   const [orders, setOrders] = useState([]);
   const [columns, setColumns] = useState([]);
@@ -105,38 +111,42 @@ export default function Term() {
 
   return (
     <div className="space-y-4 px-4 py-4">
-    {month && (() => {
-  const [prefix, ...rest] = month.split("Term Start Date");
-  const academicYearMatch = prefix.match(/Academic Year \d{4}-\d{2}/);
-  const termMatch = prefix.match(/Term \d/);
-  const startEndDates = rest.length ? "Term Start Date" + rest.join("Term Start Date") : "";
+      {month && (() => {
+        const [prefix, ...rest] = month.split("Term Start Date");
+        const academicYearMatch = prefix.match(/Academic Year \d{4}-\d{2}/);
+        const termMatch = prefix.match(/Term \d/);
+        const startEndDates = rest.length ? "Term Start Date" + rest.join("Term Start Date") : "";
 
-  return (
-    <Box className="dark:bg-dark-500 w-full rounded-lg bg-gray-200 px-4 py-3">
-      <div className="text-center text-sm font-semibold sm:text-base space-x-2 flex flex-wrap justify-center gap-2">
-        <span className="text-primary-700 dark:text-primary-300">
-          {academicYearMatch?.[0]}
+        return (
+          <Box className="dark:bg-dark-500 w-full rounded-lg bg-gray-200 px-4 py-3">
+  <div className="text-center text-sm font-semibold sm:text-base space-x-2 flex flex-wrap justify-center gap-2">
+    {academicYearMatch && (
+      <span className="flex items-center gap-1 text-primary-700 dark:text-primary-300">
+        <CalendarDaysIcon className="h-4 w-4" />
+        {academicYearMatch[0]}
+      </span>
+    )}
+    {termMatch && (
+      <span className="flex items-center gap-1 text-secondary-600 dark:text-secondary-300">
+        <BookOpenIcon className="h-4 w-4" />
+        {termMatch[0]}
+      </span>
+    )}
+    {startEndDates &&
+      startEndDates.split("|").map((part, index) => (
+        <span
+          key={index}
+          className="flex items-center gap-1 text-rose-600 dark:text-rose-300"
+        >
+          <ClockIcon className="h-4 w-4" />
+          {part.trim()}
         </span>
-        {termMatch && (
-          <span className="text-secondary-600 dark:text-secondary-300">
-            {termMatch[0]}
-          </span>
-        )}
-        {startEndDates && (
-          startEndDates.split("|").map((part, index) => (
-            <span
-              key={index}
-              className="text-rose-600 dark:text-rose-300"
-            >
-              {part.trim()}
-            </span>
-          ))
-        )}
-      </div>
-    </Box>
-  );
-})()}
+      ))}
+  </div>
+</Box>
 
+        );
+      })()}
 
       {loading ? (
         <div className="dark:text-dark-300 py-10 text-center text-sm text-gray-500">
@@ -154,16 +164,20 @@ export default function Term() {
 
           <Card
             className={clsx(
-              "relative mt-3 w-full overflow-x-auto",
-              tableSettings.enableFullScreen && "h-full w-full",
+              "relative mt-3 flex grow flex-col",
+              tableSettings.enableFullScreen && "overflow-hidden",
             )}
             ref={cardRef}
           >
-            <div className="min-w-[768px]">
+            <div
+              ref={wrapperRef}
+              className="table-wrapper min-w-full grow overflow-x-auto"
+            >
               <Table
+                hoverable
                 dense={tableSettings.enableRowDense}
                 sticky={tableSettings.enableFullScreen}
-                className="w-full text-center"
+                className="w-full text-left rtl:text-right"
               >
                 <THead>
                   {table.getHeaderGroups().map((headerGroup) => (
@@ -172,13 +186,10 @@ export default function Term() {
                         <Th
                           key={header.id}
                           className={clsx(
-                            "dark:bg-dark-800 dark:text-dark-100 bg-gray-200 px-2 py-2 text-sm font-semibold whitespace-nowrap text-gray-800 uppercase",
-                            "first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
+                            "bg-gray-200 font-semibold uppercase text-gray-800 dark:bg-dark-800 dark:text-dark-100 first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
                             header.column.getCanPin() && [
-                              header.column.getIsPinned() === "left" &&
-                                "sticky z-2 ltr:left-0 rtl:right-0",
-                              header.column.getIsPinned() === "right" &&
-                                "sticky z-2 ltr:right-0 rtl:left-0",
+                              header.column.getIsPinned() === "left" && "sticky z-2 ltr:left-0 rtl:right-0",
+                              header.column.getIsPinned() === "right" && "sticky z-2 ltr:right-0 rtl:left-0",
                             ],
                           )}
                         >

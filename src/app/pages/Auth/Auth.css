@@ -4,11 +4,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url('https://res.cloudinary.com/kakani7/image/upload/v1750861644/MSI/LOGIN_PAGE/nx7slzy4lrunswsudfet.jpg')  center;
-  background-size: contain; /* ensures image fits inside without stretching */
-  position: relative;
+  background: url('https://res.cloudinary.com/kakani7/image/upload/v1750861644/MSI/LOGIN_PAGE/nx7slzy4lrunswsudfet.jpg') center center no-repeat;
+  background-size: cover; /* cover entire area without distortion */
   padding: 1rem;
+  position: relative;
 }
+
 
 
 /* .auth-bg::before {
