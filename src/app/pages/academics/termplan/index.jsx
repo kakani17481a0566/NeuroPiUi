@@ -10,7 +10,7 @@ export default function termplan() {
           {/* ✅ Updated heading with icon */}
           <div className="flex items-center space-x-2">
             <AcademicCapIcon className="w-6 h-6 text-[#1A4255]" />
-            <h2 className="truncate text-xl font-medium tracking-wide text-[#1A4255] dark:text-dark-50">
+            <h2 className="truncate text-primary-600 text-xl font-medium tracking-wide  dark:text-dark-50">
               Academics
             </h2>
           </div>

@@ -198,8 +198,8 @@ export default function Week() {
                           key={cell.id}
                           className={clsx(
                             index === 0
-                              ? "dark:bg-dark-700 bg-gray-200 text-gray-900" // first column
-                              : "dark:bg-dark-700 bg-white text-gray-900", // rest of the cells
+                              ? "dark:bg-dark-700 dark:text-dark-100 bg-gray-200 text-gray-900"
+                              : "dark:bg-dark-700 dark:text-dark-100 bg-white text-gray-900",
                             "table-td",
                             cardSkin === "shadow-sm"
                               ? "skin-shadow-sm"

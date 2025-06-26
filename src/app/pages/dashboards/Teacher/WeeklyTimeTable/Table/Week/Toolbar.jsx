@@ -23,7 +23,7 @@ export function Toolbar({ table }) {
       {/* Wrap Icon + Text in a flex container */}
       <div className="flex items-center space-x-2">
         <CalendarDaysIcon className="h-6 w-6 text-[#1A4255]" />
-        <h2 className="dark:text-dark-100 truncate text-base font-medium tracking-wide text-[#1A4255]">
+        <h2 className="dark:text-dark-100  text-primary-600 truncate text-base font-medium tracking-wide text-[#1A4255]">
           Week Time Table
         </h2>
       </div>
