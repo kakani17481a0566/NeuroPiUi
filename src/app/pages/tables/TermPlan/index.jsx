@@ -11,19 +11,13 @@ import {
 } from "@tanstack/react-table";
 import clsx from "clsx";
 import { Fragment, useRef, useState, useEffect } from "react";
-import {
-  PlusIcon,
-} from "@heroicons/react/20/solid";
+import { PlusIcon } from "@heroicons/react/20/solid";
 import { AcademicCapIcon } from "@heroicons/react/24/outline"; // ✅ Icon for heading
 
 // Local Imports
 import { PaginationSection } from "components/shared/table/PaginationSection";
 import { Button, Card, Table, THead, TBody, Th, Tr, Td } from "components/ui";
-import {
-  useLockScrollbar,
-  useLocalStorage,
-  useDidUpdate,
-} from "hooks";
+import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
 import { useSkipper } from "utils/react-table/useSkipper";
 import { SelectedRowsActions } from "./SelectedRowsActions";
@@ -50,11 +44,11 @@ export default function TermPlan() {
   const [sorting, setSorting] = useState([]);
   const [columnVisibility, setColumnVisibility] = useLocalStorage(
     "column-visibility-users",
-    {}
+    {},
   );
   const [columnPinning, setColumnPinning] = useLocalStorage(
     "column-pinning-users",
-    {}
+    {},
   );
 
   const cardRef = useRef();
@@ -64,10 +58,10 @@ export default function TermPlan() {
     const fetchUsers = async () => {
       try {
         const response = await fetch(
-          'https://localhost:7202/tenantId?tenantId=2',
+          "https://localhost:7202/tenantId?tenantId=2",
           {
-            headers: { 'accept': '*/*' }
-          }
+            headers: { accept: "*/*" },
+          },
         );
         const data = await response.json();
         if (data.data) {
@@ -97,7 +91,7 @@ export default function TermPlan() {
       deleteRow: (row) => {
         skipAutoResetPageIndex();
         setUsers((old) =>
-          old.filter((oldRow) => oldRow.userId !== row.original.userId)
+          old.filter((oldRow) => oldRow.userId !== row.original.userId),
         );
       },
       deleteRows: (rows) => {
@@ -128,7 +122,7 @@ export default function TermPlan() {
   if (loading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+        <div className="border-primary-500 h-12 w-12 animate-spin rounded-full border-t-2 border-b-2"></div>
       </div>
     );
   }
@@ -138,8 +132,9 @@ export default function TermPlan() {
       {/* Header Section with Icon */}
       <div className="flex items-center justify-between space-x-4">
         <div className="flex items-center space-x-2">
-          <AcademicCapIcon className="h-6 w-6 text-[#1A4255]" />
-          <h2 className="truncate text-xl font-medium tracking-wide text-primary-600 dark:text-dark-50">
+          <AcademicCapIcon className="text-primary-600 dark:text-primary-400 h-6 w-6" />
+
+          <h2 className="text-primary-600 dark:text-dark-50 truncate text-xl font-medium tracking-wide">
             Term Plan
           </h2>
         </div>
@@ -157,14 +152,14 @@ export default function TermPlan() {
         className={clsx(
           "flex flex-col pt-4",
           tableSettings.enableFullScreen &&
-            "fixed inset-0 z-61 h-full w-full bg-white pt-3 dark:bg-dark-900"
+            "dark:bg-dark-900 fixed inset-0 z-61 h-full w-full bg-white pt-3",
         )}
       >
         <Toolbar table={table} />
         <Card
           className={clsx(
             "relative mt-3 flex grow flex-col",
-            tableSettings.enableFullScreen && "overflow-hidden"
+            tableSettings.enableFullScreen && "overflow-hidden",
           )}
           ref={cardRef}
         >
@@ -182,17 +177,17 @@ export default function TermPlan() {
                       <Th
                         key={header.id}
                         className={clsx(
-                          "bg-gray-200 font-semibold uppercase text-gray-800 dark:bg-dark-800 dark:text-dark-100 first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
+                          "dark:bg-dark-800 dark:text-dark-100 bg-gray-200 font-semibold text-gray-800 uppercase first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
                           header.column.getCanPin() && [
                             header.column.getIsPinned() === "left" &&
                               "sticky z-2 ltr:left-0 rtl:right-0",
                             header.column.getIsPinned() === "right" &&
                               "sticky z-2 ltr:right-0 rtl:left-0",
-                          ]
+                          ],
                         )}
                       >
                         <div
-                          className="flex cursor-pointer select-none items-center space-x-3"
+                          className="flex cursor-pointer items-center space-x-3 select-none"
                           onClick={header.column.getToggleSortingHandler()}
                         >
                           <span className="flex-1">
@@ -200,7 +195,7 @@ export default function TermPlan() {
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext()
+                                  header.getContext(),
                                 )}
                           </span>
                         </div>
@@ -214,10 +209,10 @@ export default function TermPlan() {
                   <Fragment key={row.id}>
                     <Tr
                       className={clsx(
-                        "relative border-y border-transparent border-b-gray-200 dark:border-b-dark-500",
+                        "dark:border-b-dark-500 relative border-y border-transparent border-b-gray-200",
                         row.getIsSelected() &&
                           !isSafari &&
-                          "row-selected after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500"
+                          "row-selected after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500 after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent",
                       )}
                     >
                       {row.getVisibleCells().map((cell) => (
@@ -233,22 +228,22 @@ export default function TermPlan() {
                                 "sticky z-2 ltr:left-0 rtl:right-0",
                               cell.column.getIsPinned() === "right" &&
                                 "sticky z-2 ltr:right-0 rtl:left-0",
-                            ]
+                            ],
                           )}
                         >
                           {cell.column.getIsPinned() && (
                             <div
                               className={clsx(
-                                "pointer-events-none absolute inset-0 border-gray-200 dark:border-dark-500",
+                                "dark:border-dark-500 pointer-events-none absolute inset-0 border-gray-200",
                                 cell.column.getIsPinned() === "left"
                                   ? "ltr:border-r rtl:border-l"
-                                  : "ltr:border-l rtl:border-r"
+                                  : "ltr:border-l rtl:border-r",
                               )}
                             />
                           )}
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext()
+                            cell.getContext(),
                           )}
                         </Td>
                       ))}
@@ -265,10 +260,10 @@ export default function TermPlan() {
             <div
               className={clsx(
                 "px-4 pb-4 sm:px-5 sm:pt-4",
-                tableSettings.enableFullScreen && "bg-gray-50 dark:bg-dark-800",
+                tableSettings.enableFullScreen && "dark:bg-dark-800 bg-gray-50",
                 !(
                   table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()
-                ) && "pt-4"
+                ) && "pt-4",
               )}
             >
               <PaginationSection table={table} />

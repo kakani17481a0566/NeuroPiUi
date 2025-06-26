@@ -94,9 +94,11 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
         students: changedStudents,
       };
 
+      ///AssessmentMatrix/timetable/2/tenant/1/course/1/branch/1
+
       setIsLoading(true);
       await axios.post(
-        "https://localhost:7202/api/DailyAssessment/save-matrix",
+        "https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/DailyAssessment/save-matrix",
         payload,
       );
       toast.success("Grades saved successfully!", {
