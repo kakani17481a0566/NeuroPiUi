@@ -328,7 +328,7 @@ alert
 
     if (invalidStudents.length > 0) {
       const names = invalidStudents.map((s) => s.studentName).join(", ");
-      setAlertMessage(`The following students have ungraded assessments: ${names}`);
+      setAlertMessage(`The following students have ungraded assessments: ${names}\n`);
       return;
     }
     try {
@@ -366,10 +366,10 @@ alert
       {alertMessage && (
         <div
           role="alert"
-          className="mb-4 flex items-center space-x-3 rounded-lg bg-yellow-500 px-4 py-4 text-white sm:px-5"
+          className="mb-4 flex items-center space-x-3 rounded-lg bg-yellow-500 px-4 py-4 text-white sm:px-5 max-w-full break-words overflow-hidden"
         >
-          <ExclamationCircleIcon className="size-7" />
-          <span className="flex-1">{alertMessage}</span>
+          <ExclamationCircleIcon className="size-7 mt-1 shrink-0" />
+          <span className="flex-1 break-all whitespace-pre-line">{alertMessage}</span>
         </div>
       )}
 
