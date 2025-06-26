@@ -22,7 +22,8 @@ export function Classes() {
       {/* Top Header Row */}
       <div className="flex items-center gap-1">
         <DocumentPlusIcon className="size-4.5" />
-        <h2 className="dark:text-dark-100 text-base font-medium tracking-wide text-gray-800">
+        <h2 className="text-xs-plus text-primary-600 hover:text-primary-600/70 focus:text-primary-600/70 dark:text-primary-400 dark:hover:text-primary-400/70 dark:focus:text-primary-400/70 border-b border-dotted border-current pb-0.5 font-medium outline-hidden transition-colors duration-300"
+>
           Todays Task
           {/* {weekInfo.weekName} - ({weekInfo.currentDate}) */}
         </h2>

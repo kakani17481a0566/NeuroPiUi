@@ -169,7 +169,7 @@
 }
 
 .auth-button:hover {
-  background-color: #00C9EA;
+  background-color: var(--color-primary-400);
 }
 
 .auth-button:disabled {

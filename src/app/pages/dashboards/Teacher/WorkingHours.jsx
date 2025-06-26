@@ -21,12 +21,13 @@ import { Button, Card, Circlebar } from "components/ui";
 
 export function WorkingHours() {
   return (
-    <Card className="pb-5">
+    <Card className="pb-5 text-primary-600">
       <div className="flex min-w-0 items-center justify-between px-4 py-3 pt-3">
           
              <ClockIcon className="w-5 h-5 text-gray-700" />
 
-        <h2 className="truncate text-sm-plus font-medium tracking-wide text-gray-800 dark:text-dark-100">
+        <h2 className="truncate text-primary-600 text-sm-plus font-medium tracking-wide text-gray-800 dark:text-dark-100">
+ 
 
    
           Working Hours

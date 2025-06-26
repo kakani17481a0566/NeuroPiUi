@@ -48,7 +48,7 @@ export function Students() {
   }, []);
 
   return (
-    <div className="sm:col-span-2 lg:col-span-1">
+    <div className="sm:col-span-2 lg:col-span-1 text-primary-600">
       <div className="flex h-8 items-center justify-between">
         <UserGroupIcon className="w-6 h-6 text-[#1A4255]" />
       <h2 className="font-medium tracking-wide text-gray-800 dark:text-dark-100">
