@@ -16,10 +16,11 @@ export const TERM_PLAN_DETAILS=`${BASE_URL}/VwTermPlanDetailsView/GetAll?tenantI
 
 export const WEEKLY_TIMETABLE_API=`https://localhost:7202/api/TimeTable/weekId/1/tenantId/1/courseId/1`;
 
-export const STUDENTS_LIST=`${BASE_URL}/Student/by-tenant-course-branch?tenantId=${tenantId}&courseId=1&branchId=1`;
+export const STUDENTS_LIST=`${BASE_URL}/Student/by-tenant-course-branch?tenantId=${tenantId}`;
 
 export const GET_GRADES_BY_TENANTID_COURSEID_BRANCHID_TIMETABLEID=`${BASE_URL}/AssessmentMatrix/timetable/1/tenant/${tenantId}/course/1/branch/1`;
 
 
 export const SAVE_ASSESSMENT_MATRIX = "https://localhost:7202/api/DailyAssessment/save-matrix";
 export const COURSES_LIST=`${BASE_URL}/Course/tenant/${tenantId}`;
+export const BRANCHES_LIST=`${BASE_URL}/Branch/tenant/${tenantId}`;

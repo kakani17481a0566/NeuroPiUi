@@ -1,13 +1,12 @@
-import { STUDENTS_LIST } from "constants/apis";
+import { BRANCHES_LIST } from "constants/apis";
 
-
-// Fetch logic centralized here
-export const fetchStudents= async (courseId,branchId) => {
+export const fetchBranches= async () => {
   try {
-    console.log(courseId);
+
     //https://localhost:7202/api/User/by-tenant?tenantId=2
 
-    const response = await fetch(`${STUDENTS_LIST}&courseId=${courseId}&branchId=${branchId}`, {
+    const response = await fetch(BRANCHES_LIST
+    , {
       headers: {
         accept: "*/*",
         // Authorization: token,
@@ -22,7 +21,7 @@ export const fetchStudents= async (courseId,branchId) => {
     
     return data.data || [];
   } catch (error) {
-    console.error("Error fetching users:", error);
+    console.error("Error fetching Courses:", error);
     return [];
   }
 };
