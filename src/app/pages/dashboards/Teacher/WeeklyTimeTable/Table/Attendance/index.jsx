@@ -101,7 +101,7 @@ export default function Attendance() {
                 currentStudents.map((row) => (
                   <Tr key={row.id}>
                       <Td key={row.id}className="px-4 py-2 dark:text-white flex items-center gap-2">
-                        <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750751860/MSI/gor6z4k9ms5ylqzanugm.png" />
+                        <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750826264/MSI/wgs9xojgcs44xhupfh2f.png" />
                         {row.name}
                       </Td>
                        <Td key={row.id} className="px-4 py-2 dark:text-white">

@@ -58,3 +58,5 @@
 [data-layout="sideblock"].is-sidebar-open .sidebar-panel {
   @apply visible translate-x-0 ease-out;
 }
+
+

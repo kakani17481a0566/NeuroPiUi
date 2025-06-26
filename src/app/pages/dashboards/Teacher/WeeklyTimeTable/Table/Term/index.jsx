@@ -72,7 +72,6 @@ export default function Term() {
           setTerm(`Term ${match[2]}`);
           setDateRange(`${match[3]} to ${match[4]}`);
         } else {
-          console.warn("Month format mismatch:", month);
           setAcademicYear("");
           setTerm("");
           setDateRange("");
@@ -125,15 +124,15 @@ export default function Term() {
       {month && (
         <Box className="dark:bg-dark-500 mb-4 w-full rounded-lg bg-gray-200 px-4 py-3">
           <div className="flex flex-col items-center justify-center space-y-1 text-center">
-            <div className="text-primary-500 dark:text-primary-400 text-base font-semibold">
-              {academicYear}
-            </div>
-            <div className="dark:text-dark-100 text-base font-semibold text-gray-800">
-              {term}
-            </div>
-            <div className="dark:text-dark-100 text-sm font-medium text-gray-800">
-              {dateRange}
-            </div>
+            <p className="space-x-2">
+              <span className="font-semibold text-[#2F469A]">
+                {academicYear}
+              </span>
+              <span className="font-semibold text-[#2F469A]">| {term}</span>
+              <span className="font-semibold text-[#2F469A]">
+                | {dateRange}
+              </span>
+            </p>
           </div>
         </Box>
       )}
@@ -160,7 +159,6 @@ export default function Term() {
           >
             <div className="table-wrapper min-w-full grow overflow-x-auto">
               <Table
-                hoverable
                 dense={tableSettings.enableRowDense}
                 sticky={tableSettings.enableFullScreen}
                 className="table"
@@ -172,12 +170,13 @@ export default function Term() {
                         <Th
                           key={header.id}
                           className={clsx(
-                            "table-th dark:border-dark-500 border-b border-gray-300",
-                            header.column.columnDef.meta?.columnClassName,
-                            header.column.getIsPinned() === "left" &&
-                              "is-pinned-left",
-                            header.column.getIsPinned() === "right" &&
-                              "is-pinned-right",
+                            "dark:bg-dark-800 dark:text-dark-100 bg-gray-200 font-semibold text-gray-800 uppercase first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
+                            header.column.getCanPin() && [
+                              header.column.getIsPinned() === "left" &&
+                                "sticky z-2 ltr:left-0 rtl:right-0",
+                              header.column.getIsPinned() === "right" &&
+                                "sticky z-2 ltr:right-0 rtl:left-0",
+                            ],
                           )}
                         >
                           {header.column.getCanSort() ? (
@@ -206,25 +205,28 @@ export default function Term() {
                   ))}
                 </THead>
                 <TBody className="table-tbody">
-                  {table.getRowModel().rows.map((row) => (
+                  {table.getRowModel().rows.map((row, rowIndex) => (
                     <Tr
                       key={row.id}
                       className={clsx(
                         "table-tr",
                         row.getIsSelected() && !isSafari && "row-selected",
+                        rowIndex === 0 && "bg-[#E2E2E2] dark:bg-[#3A3A3A]",
                       )}
                     >
                       {row.getVisibleCells().map((cell, index) => (
                         <Td
                           key={cell.id}
                           className={clsx(
+                            index === 0
+                              ? "dark:bg-dark-700 bg-gray-200 text-gray-900" // First column: light gray
+                              : "dark:bg-dark-700 bg-white text-gray-900", // Other cells: white
                             "table-td",
                             cardSkin === "shadow-sm"
                               ? "skin-shadow-sm"
                               : "skin-shadow",
                             cell.column.columnDef.meta?.columnClassName,
-                            index === 0 &&
-                              "dark:border-dark-500 border-r border-gray-300",
+                            "border-r border-gray-300", // border for all cells
                             cell.column.getIsPinned() === "left" &&
                               "is-pinned-left",
                             cell.column.getIsPinned() === "right" &&

@@ -6,13 +6,13 @@ const DEFAULT_DARK_COLOR = "cinder";
 const DEFAULT_LIGHT_COLOR = "slate";  
 // Options: "slate", "gray", "neutral"  
 
-const DEFAULT_PRIMARY_COLOR = "blue";  
+const DEFAULT_PRIMARY_COLOR = "neruopi";  
 // Options: "indigo", "blue", "green", "amber", "purple", "rose"  
 
 // Default theme configuration  
 export const defaultTheme = {  
     themeMode: "system",  
-    // Options: "light", "dark", "system"  
+    // Options: "light", "darkthesrc/constants/colors.constants.js ", "system"  
     isMonochrome: false,  
     // If true, the theme uses a monochrome color palette  
 

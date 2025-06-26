@@ -46,9 +46,6 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
   const [alertMessage, setAlertMessage] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
 
-
-
-
   const tenantId = 1;
   const branchId = 1;
   // const timeTableId = 4;
@@ -58,7 +55,7 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
   const handleSave = async () => {
     try {
       const originalMap = Object.fromEntries(
-        originalStudents.map((s) => [s.studentId, s])
+        originalStudents.map((s) => [s.studentId, s]),
       );
       setAlertMessage("");
 
@@ -68,7 +65,7 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
           const changedGrades = Object.entries(student.assessmentGrades)
             .filter(
               ([key, grade]) =>
-                grade.gradeId !== original?.assessmentGrades?.[key]?.gradeId
+                grade.gradeId !== original?.assessmentGrades?.[key]?.gradeId,
             )
             .map(([key, grade]) => ({
               assessmentId: assessmentIdMap[key],
@@ -83,10 +80,11 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
           };
         })
         .filter(Boolean);
-alert
-      if (!changedStudents.length) return   toast.error("Nothing to be saved ", {
-            className: "soft-color",
-          });
+      alert;
+      if (!changedStudents.length)
+        return toast.error("Nothing to be saved ", {
+          className: "soft-color",
+        });
 
       const payload = {
         timeTableId,
@@ -99,7 +97,7 @@ alert
       setIsLoading(true);
       await axios.post(
         "https://localhost:7202/api/DailyAssessment/save-matrix",
-        payload
+        payload,
       );
       toast.success("Grades saved successfully!", {
         className: "soft-color",
@@ -109,8 +107,8 @@ alert
     } catch (err) {
       console.error("Save failed", err);
       toast.error("Save failed. Please try again. ", {
-            className: "soft-color",
-          });
+        className: "soft-color",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -118,10 +116,10 @@ alert
 
   const getStatusStyle = useCallback((status) => {
     const colorMap = {
-      "NOTSTARTED": "bg-gray-500",
-      "INPROGRESS": "bg-yellow-500",
-      "PENDING": "bg-orange-500",
-      "COMPLETED": "bg-green-600",
+      NOTSTARTED: "bg-gray-500",
+      INPROGRESS: "bg-yellow-500",
+      PENDING: "bg-orange-500",
+      COMPLETED: "bg-green-600",
     };
     const key = status.toUpperCase().replace(/[\s_-]/g, "");
     return colorMap[key] || "bg-blue-500";
@@ -146,7 +144,9 @@ alert
       try {
         setIsLoading(true);
         const [{ data }, grades] = await Promise.all([
-          axios.get(`${BASE_URL}/AssessmentMatrix/timetable/${timeTableId}/tenant/${tenantId}/course/1/branch/1`),
+          axios.get(
+            `${BASE_URL}/AssessmentMatrix/timetable/${timeTableId}/tenant/${tenantId}/course/1/branch/1`,
+          ),
           fetchGradesList(),
         ]);
 
@@ -154,7 +154,7 @@ alert
         setGradeId(data.data.currentStatusId);
         setGradeName(data.data.currentStatusName);
         const normalizedStatusList = rawStatusList.map((s) =>
-          (s.name || "").toUpperCase().replace(/[\s_-]/g, "")
+          (s.name || "").toUpperCase().replace(/[\s_-]/g, ""),
         );
 
         setIsInProgress(normalizedStatusList.includes("INPROGRESS"));
@@ -165,7 +165,9 @@ alert
 
         setStatusButtons(
           rawStatusList.map((s) => {
-            const normalized = (s.name || "").toUpperCase().replace(/[\s_-]/g, "");
+            const normalized = (s.name || "")
+              .toUpperCase()
+              .replace(/[\s_-]/g, "");
             return {
               ...s,
               style: getStatusStyle(normalized),
@@ -198,16 +200,16 @@ alert
         prev.map((student) =>
           student.studentId === studentId
             ? {
-              ...student,
-              assessmentGrades: {
-                ...student.assessmentGrades,
-                [header]: {
-                  ...student.assessmentGrades?.[header],
-                  gradeId,
-                  gradeName: newGradeName,
+                ...student,
+                assessmentGrades: {
+                  ...student.assessmentGrades,
+                  [header]: {
+                    ...student.assessmentGrades?.[header],
+                    gradeId,
+                    gradeName: newGradeName,
+                  },
                 },
-              },
-            }
+              }
             : student,
         ),
       );
@@ -222,7 +224,10 @@ alert
       ).trim();
       const bgColor = getGradeColorStyle(grade);
       // const isCompleted = assessmentStatusCode === gradeId && gradeName === "COMPLETED";
-      if (isCompleted || (assessmentStatusCode === gradeId && gradeName === "COMPLETED")) {
+      if (
+        isCompleted ||
+        (assessmentStatusCode === gradeId && gradeName === "COMPLETED")
+      ) {
         // Show only grade text
         return (
           <div
@@ -264,8 +269,8 @@ alert
       header: "Student Name",
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
-          <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750751860/MSI/gor6z4k9ms5ylqzanugm.png" />
-          <span className=" px-1 dark:text-dark-100 font-medium text-gray-800">
+          <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750826264/MSI/wgs9xojgcs44xhupfh2f.png" />
+          <span className="dark:text-dark-100 font-medium text-gray-800">
             {row.original.studentName}
           </span>
         </div>
@@ -286,8 +291,14 @@ alert
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
-  const [columnVisibility, setColumnVisibility] = useLocalStorage("column-visibility-grades", {});
-  const [columnPinning, setColumnPinning] = useLocalStorage("column-pinning-grades", {});
+  const [columnVisibility, setColumnVisibility] = useLocalStorage(
+    "column-visibility-grades",
+    {},
+  );
+  const [columnPinning, setColumnPinning] = useLocalStorage(
+    "column-pinning-grades",
+    {},
+  );
 
   const table = useReactTable({
     data: students,
@@ -336,14 +347,10 @@ alert
       setIsCompleted(true);
       setAlertMessage("");
       //  alert("All students graded. You can now mark this as COMPLETED.");
-    }
-    catch (err) {
+    } catch (err) {
       setAlertMessage("something went wrong", err);
     }
-
-
   };
-
 
   return (
     <div className="overflow-visible p-4">
@@ -351,14 +358,32 @@ alert
         <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
           Assessment Grades
         </h2>
-        <div className=" px-2 flex flex-wrap items-center gap-2">
-          <Button color="error" className="text-xs py-1 px-2">
+        <div className="flex flex-wrap items-center gap-2 px-2">
+          <Button
+            color="error"
+            className="px-2 py-1 text-xs"
+            onClick={() => {
+              setStudents(JSON.parse(JSON.stringify(originalStudents)));
+              toast.info("Local changes discarded", {
+                className: "soft-color",
+              });
+            }}
+          >
             CANCEL
           </Button>
-          <Button color="warning" className="text-xs py-1 px-2" onClick={handleSave}>
+
+          <Button
+            color="warning"
+            className="px-2 py-1 text-xs"
+            onClick={handleSave}
+          >
             IN-PROGRESS
           </Button>
-          <Button color="success" className="text-xs py-1 px-2" onClick={handleCompleted} >
+          <Button
+            color="success"
+            className="px-2 py-1 text-xs"
+            onClick={handleCompleted}
+          >
             COMPLETED
           </Button>
         </div>
@@ -388,7 +413,10 @@ alert
                       key={header.id}
                       className="dark:bg-dark-800 dark:text-dark-100 bg-gray-200 text-gray-800 uppercase"
                     >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                     </Th>
                   ))}
                 </Tr>
@@ -396,7 +424,10 @@ alert
               <TBody>
                 {table.getRowModel().rows.length === 0 ? (
                   <Tr>
-                    <Td colSpan={columns.length} className="py-4 text-center dark:text-white">
+                    <Td
+                      colSpan={columns.length}
+                      className="py-4 text-center dark:text-white"
+                    >
                       No students found
                     </Td>
                   </Tr>
@@ -405,7 +436,10 @@ alert
                     <Tr key={row.id}>
                       {row.getVisibleCells().map((cell) => (
                         <Td key={cell.id} className="px-2 py-2 dark:text-white">
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
                         </Td>
                       ))}
                     </Tr>
@@ -417,7 +451,8 @@ alert
 
           <div className="mt-4 flex flex-col items-center justify-between gap-4 sm:flex-row">
             <span className="text-sm text-gray-700 dark:text-gray-300">
-              Showing {table.getRowModel().rows.length} of {students.length} students
+              Showing {table.getRowModel().rows.length} of {students.length}{" "}
+              students
             </span>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -425,7 +460,7 @@ alert
                 <button
                   onClick={handleSave}
                   disabled={isLoading}
-                // className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 disabled:opacity-50"
+                  // className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 disabled:opacity-50"
                 >
                   {/* {isLoading ? "Saving..." : "Save"} */}
                 </button>

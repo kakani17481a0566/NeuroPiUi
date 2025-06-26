@@ -1,5 +1,5 @@
 
-import AcademicsIcon from 'assets/dualicons/academics.svg?react'
+import AcademicIcon from 'assets/dualicons/academics.svg?react'
 import { NAV_TYPE_ROOT, NAV_TYPE_ITEM } from 'constants/app.constant'
 
 const ROOT_ACADEMICS = '/academics'
@@ -12,7 +12,7 @@ export const academics = {
     path: '/academics',
     title: 'Academics',
     transKey: 'nav.academics.academics',
-    Icon: AcademicsIcon,
+    Icon: AcademicIcon,
     childs: [
         {
             id: 'academics.termplan',
@@ -20,7 +20,7 @@ export const academics = {
             type: NAV_TYPE_ITEM,
             title: 'TermPlan',
             transKey: 'nav.academics.termplan',
-            Icon: AcademicsIcon,
+            Icon: AcademicIcon,
         },
         {
             id: 'academics.weeklyplan',
@@ -28,7 +28,7 @@ export const academics = {
             type: NAV_TYPE_ITEM,
             title: 'weeklyplan',
             transKey: 'nav.academics.weeklyplan',
-            Icon: AcademicsIcon,
+            Icon: AcademicIcon,
 
         },
         {
@@ -37,7 +37,7 @@ export const academics = {
             type: NAV_TYPE_ITEM,
             title: 'students',
             transKey: 'nav.academics.Students',
-            Icon: AcademicsIcon,
+            Icon: AcademicIcon,
 
         },
         // {
