@@ -111,7 +111,8 @@ export default function Week() {
   useLockScrollbar(tableSettings.enableFullScreen);
 
   return (
-    <div className="grid grid-cols-1 grid-rows-[auto_auto_1fr] px-4 py-4">
+<div className="grid grid-cols-1 grid-rows-[auto_auto_1fr] px-4 py-4 font-lato uppercase text-center">
+
       <div
         className={clsx(
           "flex flex-col pt-4",
@@ -145,11 +146,15 @@ export default function Week() {
                 <THead className="table-thead">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <Tr key={headerGroup.id} className="table-tr">
-                      {headerGroup.headers.map((header) => (
+                      {headerGroup.headers.map((header, index) => (
                         <Th
                           key={header.id}
                           className={clsx(
-                            "dark:bg-dark-800 dark:text-dark-100 bg-gray-200 font-semibold text-gray-800 uppercase first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
+                            "text-center text-xs font-semibold uppercase",
+                            "first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
+                            index === 0
+                              ? "text-primary-950 dark:text-dark-100"
+                              : "dark:text-dark-100 text-white",
                             header.column.getCanPin() && [
                               header.column.getIsPinned() === "left" &&
                                 "sticky z-2 ltr:left-0 rtl:right-0",
@@ -157,6 +162,28 @@ export default function Week() {
                                 "sticky z-2 ltr:right-0 rtl:left-0",
                             ],
                           )}
+                          style={{
+                            backgroundColor:
+                              index === 0
+                                ? "#93E6E6"
+                                : window.matchMedia(
+                                      "(prefers-color-scheme: dark)",
+                                    ).matches
+                                  ? "#33CDCD"
+                                  : "#93E6E6",
+                            // borderBottom: "1px solid #2BBBAD",
+                            // borderRight: "1px solid #2BBBAD",
+                                 borderBottom: "none",
+                            borderRight: "none",
+                            transform:
+                              index === 0 ? "translateY(-1px)" : undefined,
+                            boxShadow:
+                              index === 0
+                                ? "0px 4px 10px rgba(0, 0, 0, 0.35), inset -2px 0 4px rgba(255, 255, 255, 0.2), 1px 0 0 #D2486E"
+                                : undefined,
+                            zIndex: 2,
+                            position: "relative",
+                          }}
                         >
                           {header.column.getCanSort() ? (
                             <div
@@ -164,15 +191,15 @@ export default function Week() {
                               onClick={header.column.getToggleSortingHandler()}
                             >
                               <span className="flex-1">
-                                {header.isPlaceholder
-                                  ? null
-                                  : flexRender(
-                                      header.column.columnDef.header,
-                                      header.getContext(),
-                                    )}
+                                {!header.isPlaceholder &&
+                                  flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext(),
+                                  )}
                               </span>
                             </div>
-                          ) : header.isPlaceholder ? null : (
+                          ) : (
+                            !header.isPlaceholder &&
                             flexRender(
                               header.column.columnDef.header,
                               header.getContext(),
@@ -183,6 +210,7 @@ export default function Week() {
                     </Tr>
                   ))}
                 </THead>
+
                 <TBody className="table-tbody">
                   {table.getRowModel().rows.map((row, rowIndex) => (
                     <Tr
@@ -198,25 +226,30 @@ export default function Week() {
                           key={cell.id}
                           className={clsx(
                             index === 0
-                              ? "dark:bg-dark-700 dark:text-dark-100 bg-gray-200 text-gray-900"
+                              ? "dark:bg-dark-700 dark:text-dark-100 bg-[#93E6E6] text-gray-900"
                               : "dark:bg-dark-700 dark:text-dark-100 bg-white text-gray-900",
                             "table-td",
                             cardSkin === "shadow-sm"
                               ? "skin-shadow-sm"
                               : "skin-shadow",
                             cell.column.columnDef.meta?.columnClassName,
-                            index === 0 &&
-                              "dark:border-dark-500 border-r border-gray-300",
                             cell.column.getIsPinned() === "left" &&
                               "is-pinned-left",
                             cell.column.getIsPinned() === "right" &&
                               "is-pinned-right",
                           )}
+                          style={{
+                            borderRight: "1px solid #2BBBAD",
+                            position: "relative",
+                            zIndex: cell.column.getIsPinned() ? 1 : "auto",
+                            transform:
+                              index === 0 ? "translateY(-1px)" : undefined,
+                          }}
                         >
                           {cell.column.getIsPinned() && (
                             <div
                               className={clsx(
-                                "dark:border-dark-500 pointer-events-none absolute inset-0 border-gray-200",
+                                "pointer-events-none absolute inset-0 border-[#2BBBAD]",
                                 cell.column.getIsPinned() === "left"
                                   ? "ltr:border-r rtl:border-l"
                                   : "ltr:border-l rtl:border-r",

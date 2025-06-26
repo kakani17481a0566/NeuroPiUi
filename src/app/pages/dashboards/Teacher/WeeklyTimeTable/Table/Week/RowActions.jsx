@@ -187,9 +187,9 @@ export function RowActions({ row }) {
                     active && "dark:bg-dark-600 bg-gray-100",
                   )}
                 >
-                  <EyeIcon className="text-primary-950 size-4.5 stroke-[1.5]" />
+                  <EyeIcon className="text-primary-600 size-4.5 stroke-[1.5]" />
 
-                  <span>Lesson Plan</span>
+                  <span className="text-primary-950 ">Lesson Plan</span>
                 </button>
               )}
             </MenuItem>
@@ -202,9 +202,9 @@ export function RowActions({ row }) {
                     active && "dark:bg-dark-600 bg-gray-100",
                   )}
                 >
-                  <LinkIcon className="text-primary-950 size-4.5 stroke-[1.5]" />
+                  <LinkIcon className="text-primary-600 size-4.5 stroke-[1.5]" />
 
-                  <span>Resources</span>
+                  <span className="text-primary-950 ">Resources</span>
                 </button>
               )}
             </MenuItem>
@@ -217,9 +217,9 @@ export function RowActions({ row }) {
                     active && "dark:bg-dark-600 bg-gray-100",
                   )}
                 >
-                  <DocumentIcon className="text-primary-950 size-4.5 stroke-[1.5]" />
+                  <DocumentIcon className="text-primary-600 size-4.5 stroke-[1.5]" />
 
-                  <span>WorkSheets</span>
+                  <span className="text-primary-950 ">WorkSheets</span>
                 </button>
               )}
             </MenuItem>
@@ -232,8 +232,8 @@ export function RowActions({ row }) {
                     active && "dark:bg-dark-600 bg-gray-100",
                   )}
                 >
-                  <UserGroupIcon className="text-primary-950 size-4.5 stroke-[1.5]" />
-                  <span>Attendance</span>
+                  <UserGroupIcon className="text-primary-600 size-4.5 stroke-[1.5]" />
+                  <span className="text-primary-950 ">Attendance</span>
                 </button>
               )}
             </MenuItem>
@@ -246,9 +246,9 @@ export function RowActions({ row }) {
                     active && "dark:bg-dark-600 bg-gray-100",
                   )}
                 >
-                  <ClipboardDocumentListIcon className="text-primary-950 size-4.5 stroke-[1.5]" />
+                  <ClipboardDocumentListIcon className="text-primary-600 size-4.5 stroke-[1.5]" />
 
-                  <span>Assignment</span>
+                  <span className="text-primary-950 ">Assignment</span>
                 </button>
               )}
             </MenuItem>

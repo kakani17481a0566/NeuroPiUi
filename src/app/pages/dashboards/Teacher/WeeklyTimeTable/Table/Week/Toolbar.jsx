@@ -21,7 +21,7 @@ export function Toolbar({ table }) {
       {/* Left: Icon + Title */}
       <div className="flex items-center gap-2">
         <CalendarDaysIcon className="h-6 w-6 text-primary-600 dark:text-primary-300" />
-        <h2 className="truncate text-base font-medium tracking-wide text-primary-600 dark:text-dark-100">
+        <h2 className="truncate text-base font-medium tracking-wide text-primary-950 dark:text-dark-100">
           Week Time Table
         </h2>
       </div>
