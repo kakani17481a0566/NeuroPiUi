@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import clsx from "clsx";
 
 // Local Imports
-import Logo from "assets/appLogo.svg?react";
+import Logo from "assets/round_logo_with_500_500.svg?react";
 import { Menu } from "./Menu";
 import { Item } from "./Menu/Item";
 import { Profile } from "../../Profile";
@@ -19,14 +19,14 @@ export function MainPanel({ nav, setActiveSegment, activeSegment }) {
     <div className="main-panel">
       <div
         className={clsx(
-          "flex h-full w-full flex-col items-center border-gray-150 bg-white dark:border-dark-600/80 ltr:border-r rtl:border-l",
+          "border-primary-950 flex h-full w-full flex-col items-center rounded-r-xl border-r-2 bg-white",
           cardSkin === "shadow-sm" ? "dark:bg-dark-750" : "dark:bg-dark-900",
         )}
       >
         {/* Application Logo */}
-        <div className="flex pt-3.5">
+        <div className="w-full rounded-r-xl">
           <Link to="/">
-            <Logo className="size-10 text-primary-600 dark:text-primary-400" />
+            <Logo className="text-primary-600 dark:text-primary-400 h-[80px] w-[65px]" />
           </Link>
         </div>
 

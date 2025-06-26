@@ -134,7 +134,7 @@ export default function TermPlan() {
         <div className="flex items-center space-x-2">
           <AcademicCapIcon className="text-primary-600 dark:text-primary-400 h-6 w-6" />
 
-          <h2 className="text-primary-600 dark:text-dark-50 truncate text-xl font-medium tracking-wide">
+          <h2 className="text-primary-900 dark:text-dark-50 truncate text-xl font-medium tracking-wide">
             Term Plan
           </h2>
         </div>

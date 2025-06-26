@@ -10,7 +10,7 @@ export default function TermPlan() {
           {/* Heading with icon */}
           <div className="flex items-center gap-2">
             <AcademicCapIcon className="h-6 w-6 text-primary-600 dark:text-primary-300" />
-            <h2 className="truncate text-xl font-semibold tracking-wide text-primary-600 dark:text-dark-50">
+            <h2 className="truncate text-xl font-semibold tracking-wide text-primary-950 dark:text-dark-50">
               Academic Term Plan
             </h2>
           </div>

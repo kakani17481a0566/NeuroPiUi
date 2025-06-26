@@ -72,6 +72,7 @@ export function Menu({ nav, pathname }) {
                 return null;
             }
           })}
+          
         </div>
       </SimpleBar>
     </Accordion>

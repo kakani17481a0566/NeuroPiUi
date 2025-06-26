@@ -11,33 +11,30 @@ import { Menu } from "./Menu";
 
 // ----------------------------------------------------------------------
 
-export function PrimePanel({
-  currentSegment,
-  pathname,
-  close,
-}) {
+export function PrimePanel({ currentSegment, pathname, close }) {
   const { cardSkin } = useThemeContext();
   const { t } = useTranslation();
 
   const title = t(currentSegment?.transKey) || currentSegment?.title;
 
   return (
-    <div
-      className={clsx(
-        "prime-panel flex h-full flex-col",
-        cardSkin === "shadow-sm"
-          ? "shadow-soft dark:shadow-dark-900/60"
-          : "dark:border-dark-600/80 ltr:border-r rtl:border-l",
-      )}
-    >
+  <div
+  className={clsx(
+    "prime-panel flex h-full flex-col bg-white border-r-2 border-primary-600 rounded-r-2xl shadow-lg overflow-hidden",
+    cardSkin === "shadow-sm"
+      ? "dark:bg-dark-750 dark:shadow-dark-900/60"
+      : "dark:bg-dark-900 dark:border-dark-600/80"
+  )}
+>
+
       <div
         className={clsx(
           "flex h-full grow flex-col bg-white ltr:pl-(--main-panel-width) rtl:pr-(--main-panel-width)",
           cardSkin === "shadow-sm" ? "dark:bg-dark-750" : "dark:bg-dark-900",
         )}
       >
-        <div className="relative flex h-16 w-full shrink-0 items-center justify-between pl-4 pr-1 rtl:pl-1 rtl:pr-4">
-          <p className="truncate text-base tracking-wider text-gray-800 dark:text-dark-100">
+        <div className="relative flex h-16 w-full shrink-0 items-center justify-between pr-1 pl-4 rtl:pr-4 rtl:pl-1">
+          <p className="dark:text-dark-100 truncate text-base tracking-wider text-gray-800">
             {title}
           </p>
           <Button
@@ -50,10 +47,7 @@ export function PrimePanel({
           </Button>
         </div>
         {currentSegment?.childs && (
-          <Menu
-            nav={currentSegment?.childs}
-            pathname={pathname}
-          />
+          <Menu nav={currentSegment?.childs} pathname={pathname} />
         )}
       </div>
     </div>

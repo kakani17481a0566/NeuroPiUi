@@ -204,15 +204,19 @@
 
 [data-theme-primary="neruopi"] {
   --color-primary-50: #E0FBFE;
-  --color-primary-100: #B3F0FB;
+  --color-primary-100: #2BBBAD;
   --color-primary-200: #83E6F7;
   --color-primary-300: #4ADBF3;
+  /* --color-primary-350: #2BBBAD; */
+
   --color-primary-400: #00C9EA;
   --color-primary-500: #00B3D1;
-  --color-primary-600: #009AB3;
+  --color-primary-600: #5bc6e6;
   --color-primary-700: #00829A;
   --color-primary-800: #006D84;
   --color-primary-900: #00596E;
+    --color-primary-950: #1A4255;
+
   
 
 }

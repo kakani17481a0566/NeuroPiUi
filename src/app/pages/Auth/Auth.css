@@ -55,7 +55,9 @@
 .auth-left-img {
   flex: none;
   height: 200px;
-  background: url('https://res.cloudinary.com/kakani7/image/upload/MSI/wfwzyoynyjecsgyvvmdb.svg') center/cover no-repeat;
+  /* background: url('https://res.cloudinary.com/kakani7/image/upload/MSI/wfwzyoynyjecsgyvvmdb.svg') center/cover no-repeat; */
+  background: url('https://res.cloudinary.com/kakani7/image/upload/v1750923624/MSI/LOGIN_PAGE/c5okkfelbao4zxbsoc11.jpg') center/cover no-repeat;
+
   background-color: #ffffffa0;
   user-select: none;
 }

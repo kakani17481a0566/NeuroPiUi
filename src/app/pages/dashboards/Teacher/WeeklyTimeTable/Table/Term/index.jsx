@@ -20,10 +20,11 @@ import { fetchWeeklyMatrixData } from "./data";
 import { generateTermColumns } from "./columns";
 import { useThemeContext } from "app/contexts/theme/context";
 
-
-import { CalendarDaysIcon, BookOpenIcon, ClockIcon } from "@heroicons/react/24/outline";
-
-
+import {
+  CalendarDaysIcon,
+  BookOpenIcon,
+  ClockIcon,
+} from "@heroicons/react/24/outline";
 
 const isSafari = getUserAgentBrowser() === "Safari";
 
@@ -111,42 +112,44 @@ export default function Term() {
 
   return (
     <div className="space-y-4 px-4 py-4">
-      {month && (() => {
-        const [prefix, ...rest] = month.split("Term Start Date");
-        const academicYearMatch = prefix.match(/Academic Year \d{4}-\d{2}/);
-        const termMatch = prefix.match(/Term \d/);
-        const startEndDates = rest.length ? "Term Start Date" + rest.join("Term Start Date") : "";
+      {month &&
+        (() => {
+          const [prefix, ...rest] = month.split("Term Start Date");
+          const academicYearMatch = prefix.match(/Academic Year \d{4}-\d{2}/);
+          const termMatch = prefix.match(/Term \d/);
+          const startEndDates = rest.length
+            ? "Term Start Date" + rest.join("Term Start Date")
+            : "";
 
-        return (
-          <Box className="dark:bg-dark-500 w-full rounded-lg bg-gray-200 px-4 py-3">
-  <div className="text-center text-sm font-semibold sm:text-base space-x-2 flex flex-wrap justify-center gap-2">
-    {academicYearMatch && (
-      <span className="flex items-center gap-1 text-primary-700 dark:text-primary-300">
-        <CalendarDaysIcon className="h-4 w-4" />
-        {academicYearMatch[0]}
-      </span>
-    )}
-    {termMatch && (
-      <span className="flex items-center gap-1 text-secondary-600 dark:text-secondary-300">
-        <BookOpenIcon className="h-4 w-4" />
-        {termMatch[0]}
-      </span>
-    )}
-    {startEndDates &&
-      startEndDates.split("|").map((part, index) => (
-        <span
-          key={index}
-          className="flex items-center gap-1 text-rose-600 dark:text-rose-300"
-        >
-          <ClockIcon className="h-4 w-4" />
-          {part.trim()}
-        </span>
-      ))}
-  </div>
-</Box>
-
-        );
-      })()}
+          return (
+            <Box className="dark:bg-dark-500 w-full rounded-lg bg-gray-200 px-4 py-3">
+              <div className="flex flex-wrap justify-center gap-2 space-x-2 text-center text-sm font-semibold sm:text-base">
+                {academicYearMatch && (
+                  <span className="text-primary-950 dark:text-primary-300 flex items-center gap-1">
+                    <CalendarDaysIcon className="h-4 w-4 text-primary-600" />
+                    {academicYearMatch[0]}
+                  </span>
+                )}
+                {termMatch && (
+                  <span className="text-primary-950 dark:text-secondary-300 flex items-center gap-1">
+                    <BookOpenIcon className="h-4 w-4 text-primary-600" />
+                    {termMatch[0]}
+                  </span>
+                )}
+                {startEndDates &&
+                  startEndDates.split("|").map((part, index) => (
+                    <span
+                      key={index}
+                      className="flex items-center gap-1 text-primary-100 dark:text-rose-300"
+                    >
+                      <ClockIcon className="h-4 w-4 text-primary-600" />
+                      {part.trim()}
+                    </span>
+                  ))}
+              </div>
+            </Box>
+          );
+        })()}
 
       {loading ? (
         <div className="dark:text-dark-300 py-10 text-center text-sm text-gray-500">
@@ -186,10 +189,12 @@ export default function Term() {
                         <Th
                           key={header.id}
                           className={clsx(
-                            "bg-gray-200 font-semibold uppercase text-gray-800 dark:bg-dark-800 dark:text-dark-100 first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
+                            "dark:bg-dark-800 dark:text-dark-100 bg-gray-200 font-semibold text-gray-800 uppercase first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
                             header.column.getCanPin() && [
-                              header.column.getIsPinned() === "left" && "sticky z-2 ltr:left-0 rtl:right-0",
-                              header.column.getIsPinned() === "right" && "sticky z-2 ltr:right-0 rtl:left-0",
+                              header.column.getIsPinned() === "left" &&
+                                "sticky z-2 ltr:left-0 rtl:right-0",
+                              header.column.getIsPinned() === "right" &&
+                                "sticky z-2 ltr:right-0 rtl:left-0",
                             ],
                           )}
                         >
