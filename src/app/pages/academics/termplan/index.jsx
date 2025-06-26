@@ -1,17 +1,17 @@
 import { Page } from "components/shared/Page";
 import Term from "app/pages/dashboards/Teacher/WeeklyTimeTable/Table/Term";
-import { AcademicCapIcon } from "@heroicons/react/24/outline"; // ✅ icon import
+import { AcademicCapIcon } from "@heroicons/react/24/outline";
 
-export default function termplan() {
+export default function TermPlan() {
   return (
-    <Page title="Homepage">
+    <Page title="Academic Term Plan">
       <div className="transition-content w-full px-[var(--margin-x)] pt-5 lg:pt-6">
         <div className="min-w-0">
-          {/* ✅ Updated heading with icon */}
-          <div className="flex items-center space-x-2">
-            <AcademicCapIcon className="w-6 h-6 text-[#1A4255]" />
-            <h2 className="truncate text-xl font-medium tracking-wide text-[#1A4255] dark:text-dark-50">
-              Academics
+          {/* Heading with icon */}
+          <div className="flex items-center gap-2">
+            <AcademicCapIcon className="h-6 w-6 text-primary-600 dark:text-primary-300" />
+            <h2 className="truncate text-xl font-semibold tracking-wide text-primary-600 dark:text-dark-50">
+              Academic Term Plan
             </h2>
           </div>
 

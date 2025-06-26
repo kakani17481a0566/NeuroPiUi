@@ -1,8 +1,7 @@
+import { AcademicCapIcon } from '@heroicons/react/24/outline';
+import { NAV_TYPE_ROOT, NAV_TYPE_ITEM } from 'constants/app.constant';
 
-import AcademicIcon from 'assets/dualicons/academics.svg?react'
-import { NAV_TYPE_ROOT, NAV_TYPE_ITEM } from 'constants/app.constant'
-
-const ROOT_ACADEMICS = '/academics'
+const ROOT_ACADEMICS = '/academics';
 
 const path = (root, item) => `${root}${item}`;
 
@@ -12,7 +11,7 @@ export const academics = {
     path: '/academics',
     title: 'Academics',
     transKey: 'nav.academics.academics',
-    Icon: AcademicIcon,
+    Icon: AcademicCapIcon, // ✅ Changed to outline icon
     childs: [
         {
             id: 'academics.termplan',
@@ -20,7 +19,7 @@ export const academics = {
             type: NAV_TYPE_ITEM,
             title: 'TermPlan',
             transKey: 'nav.academics.termplan',
-            Icon: AcademicIcon,
+            Icon: AcademicCapIcon,
         },
         {
             id: 'academics.weeklyplan',
@@ -28,8 +27,7 @@ export const academics = {
             type: NAV_TYPE_ITEM,
             title: 'weeklyplan',
             transKey: 'nav.academics.weeklyplan',
-            Icon: AcademicIcon,
-
+            Icon: AcademicCapIcon,
         },
         {
             id: 'academics.students',
@@ -37,19 +35,7 @@ export const academics = {
             type: NAV_TYPE_ITEM,
             title: 'students',
             transKey: 'nav.academics.Students',
-            Icon: AcademicIcon,
-
+            Icon: AcademicCapIcon,
         },
-        // {
-        //     id: 'academics.grades',
-        //     path: path(ROOT_ACADEMICS, '/grades'),
-        //     type: NAV_TYPE_ITEM,
-        //     title: 'Grades',
-        //     transKey: 'nav.academics.Grades',
-        //     Icon: AcademicsIcon,
-
-        // },
-        
-
     ]
-}
+};
