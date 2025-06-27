@@ -35,7 +35,7 @@ export default function SignIn() {
         username: data.username,
         password: data.password,
       });
-      navigate("/dashboards/Teacher");
+      navigate("/dashboards");
     } finally {
       setLoading(false);
     }

@@ -18,10 +18,6 @@ import { fetchCourses } from "app/pages/dashboards/constantData/Courses";
 import { fetchBranches } from "app/pages/dashboards/constantData/Branches";
 
 
-// import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
-// const isSafari = getUserAgentBrowser() === "Safari";
-
-
 
 
 
