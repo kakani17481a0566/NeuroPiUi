@@ -13,9 +13,9 @@ export function generateTermColumns(headers) {
           createElement(
             Fragment,
             null,
-            ...header.split("/").map((line, i) =>
-              createElement("div", { key: i }, line.trim())
-            )
+            ...header
+              .split("/")
+              .map((line, i) => createElement("div", { key: i }, line.trim())),
           ),
         cell: (info) => {
           const value = info.getValue();
@@ -29,26 +29,25 @@ export function generateTermColumns(headers) {
               .map((line, i) => {
                 const trimmed = line.trim();
                 let textClass = "";
-
                 if (trimmed.startsWith("AS:")) {
-                  textClass = "text-purple-600 font-semibold";
+                  textClass = "text-[#713427] font-bold";
                 } else if (trimmed.startsWith("FT:")) {
-                  textClass = "text-yellow-600 font-semibold";
+                  textClass = "text-[#E27257] font-bold";
                 } else if (trimmed.startsWith("NR:")) {
-                  textClass = "text-green-600 font-semibold";
+                  textClass = "text-[#B14434] font-bold";
                 } else if (trimmed.startsWith("ET:")) {
-                  textClass = "text-red-600 font-semibold";
+                  textClass = "text-[#52AA97] font-bold";
                 }
 
                 return createElement(
                   "div",
                   { key: i, className: textClass },
-                  trimmed
+                  trimmed,
                 );
-              })
+              }),
           );
         },
-      })
+      }),
     ),
 
     // Uncomment if actions are needed

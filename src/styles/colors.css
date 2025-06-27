@@ -224,18 +224,17 @@
 
 
 
-
 [data-theme-primary="salesRed"] {
-  --color-primary-50: #FFEAEA;
-  --color-primary-100: #FFC7C7;
-  --color-primary-200: #FF9D9D;
-  --color-primary-300: #FF6B6B;
-  --color-primary-400: #F44336;
-  --color-primary-450: #E53935;
-  --color-primary-500: #D32F2F;
-  --color-primary-600: #C62828;
-  --color-primary-700: #B71C1C;
-  --color-primary-750: #A31616;
-  --color-primary-800: #8B0000;
-  --color-primary-900: #5B0000;
+  --color-primary-50:  #FBEFF7;
+  --color-primary-100: #F5D9EB;
+  --color-primary-200: #EDBEE0;
+  --color-primary-300: #E49CCF;
+  --color-primary-400: #DB7BBF;
+  --color-primary-450: #D76BB7;
+  --color-primary-500: #D2A5C2;
+  --color-primary-600: #BB81A7;
+  --color-primary-700: #A5668D;
+  --color-primary-750: #8F4D73;
+  --color-primary-800: #79345A;
+  --color-primary-900: #622242;
 }

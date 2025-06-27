@@ -20,9 +20,9 @@ export function Toolbar({ table }) {
     >
       {/* ✅ Wrap icon and text */}
       <div className="flex items-center space-x-2">
-      <CalendarDaysIcon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+        <CalendarDaysIcon className="text-primary-600 dark:text-primary-400 h-6 w-6" />
 
-        <h2 className="truncate text-primary-600 text-base font-medium tracking-wide text-[#1A4255] dark:text-dark-100">
+        <h2 className="text-primary-950 dark:text-dark-100 truncate text-base font-bold tracking-wide text-[#1A4255]">
           Term Plan
         </h2>
       </div>

@@ -57,17 +57,15 @@ export function generateWeeklyTimeTableColumns(headers) {
               const trimmed = line.trim();
               let textClass = "";
 
-              if (trimmed.startsWith("AS:")) {
-                textClass = "text-purple-600 font-semibold";
-              } else if (trimmed.startsWith("FT:")) {
-                textClass = "text-yellow-600 font-semibold";
-              } else if (trimmed.startsWith("NR:")) {
-                textClass = "text-green-600 font-semibold";
-              }
-             else if (trimmed.startsWith("ET:")) {
-                textClass = "text-red-600 font-semibold";
-              }
-
+                if (trimmed.startsWith("AS:")) {
+                  textClass = "text-[#713427] font-bold";
+                } else if (trimmed.startsWith("FT:")) {
+                  textClass = "text-[#E27257] font-bold";
+                } else if (trimmed.startsWith("NR:")) {
+                  textClass = "text-[#B14434] font-bold";
+                } else if (trimmed.startsWith("ET:")) {
+                  textClass = "text-[#52AA97] font-bold";
+                }
               return createElement(
                 "div",
                 { key: i, className: textClass },

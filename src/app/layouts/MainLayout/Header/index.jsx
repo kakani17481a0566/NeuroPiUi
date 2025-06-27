@@ -56,10 +56,11 @@ export function Header() {
 
 
       <header
-      className={clsx(
-        "app-header transition-content sticky top-0 z-20 flex h-[65px] shrink-0 items-center justify-between border-b border-gray-200 bg-white/80 px-(--margin-x) backdrop-blur-sm backdrop-saturate-150 dark:border-dark-600",
-        cardSkin === "shadow-sm" ? "dark:bg-dark-750/80" : "dark:bg-dark-900/80",
-      )}
+className={clsx(
+  "app-header transition-content sticky top-0 z-20 flex h-[65px] shrink-0 items-center justify-between border-b-1 border-primary-600 bg-white/80 backdrop-blur-sm backdrop-saturate-150 dark:border-dark-600",
+  cardSkin === "shadow-sm" ? "dark:bg-dark-750/80" : "dark:bg-dark-900/80"
+)}
+
     >
       
       <SidebarToggleBtn />
@@ -79,19 +80,20 @@ export function Header() {
         <Search
           renderButton={(open) => (
             <>
-              <Button
-                onClick={open}
-                unstyled
-                className="text-xs-plus dark:border-dark-500 dark:hover:border-dark-400 h-8 w-64 justify-between gap-2 rounded-full border border-gray-200 px-3 hover:border-gray-400 max-sm:hidden"
-              >
-                <div className="flex items-center gap-2">
-                  <MagnifyingGlassIcon className="size-4" />
-                  <span className="dark:text-dark-300 text-gray-400">
-                    Search here...
-                  </span>
-                </div>
-                <SlashIcon />
-              </Button>
+             <Button
+  onClick={open}
+  unstyled
+  className="text-xs-plus h-8 w-64 justify-between gap-2 rounded-full border border-primary-600 bg-primary-50 px-3 text-primary-600 max-sm:hidden"
+>
+  <div className="flex items-center gap-2">
+    <MagnifyingGlassIcon className="size-4 text-primary-600" />
+    <span className="text-primary-950 dark:text-primary-950">
+      Search here.....
+    </span>
+  </div>
+  <SlashIcon className="text-primary-600 dark:text-primary-400" />
+</Button>
+
 
               <Button
                 onClick={open}
