@@ -36,7 +36,7 @@ const protectedRoutes = {
             {
               path: "attendance",
               lazy: async () => ({
-                Component: (await import("app/pages/dashboards/Teacher/WeeklyTimeTable/Table/Attendance")).default,
+                Component: (await import("app/pages/tables/Att")).default,
               }),
             },
             {
