@@ -281,7 +281,9 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
       header: "Student Name",
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
-          <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750826264/MSI/wgs9xojgcs44xhupfh2f.png" />
+          {/* <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750990674/MSI/STUDENTS/pq8wjceb814q7athx01m.jpg"  className="h-15 w-15" /> */}
+          <Avatar src="https://res.cloudinary.com/kakani7/image/upload/v1750990674/MSI/STUDENTS/pq8wjceb814q7athx01m.jpg"  className="h-15 w-15" />
+
           <span className="dark:text-dark-100 font-medium text-gray-800">
             {row.original.studentName}
           </span>

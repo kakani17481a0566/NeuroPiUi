@@ -136,19 +136,30 @@ export function AuthProvider({ children }) {
       //const response = await axios.get(`https://localhost:7171/api/User/login?username=${username}&password=${password}`);
       const response = await axios.get(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/User/login?username=${username}&password=${password}`);
 
-      const { tenantId, userId, userName,roleName } = response.data.data;
+      const { tenantId, userId, userName,roleName,departmentId} = response.data.data;
       const token = response.data.data.token;
       if (!isString(token)) {
         throw new Error("Response is not vallid");
       }
+      const ids=await axios.get(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/department/${departmentId}/user/${userId}`);
+      // console.log(ids.data.data);
+      const{branchId,weekId,termId,courses}=ids.data.data;
 
       localStorage.setItem("authToken", token);
       localStorage.setItem("tenantId", tenantId);
       localStorage.setItem("userId", userId);
+      localStorage.setItem("departmentId", departmentId);
+      localStorage.setItem("branchId", branchId);
+      localStorage.setItem("weekId", weekId);
+      localStorage.setItem("termId", termId);
+      localStorage.setItem("courses", JSON.stringify(courses));
       // localStorage.setItem("userProfile", JSON.stringify(userProfile));
       // localStorage.setItem("roleName",roleName);
 
-      setSessionData({ token: token, tid: tenantId, uid: userId, userName: userName,roleName:roleName });
+      setSessionData({ token: token, tid: tenantId, uid: userId,
+         userName: userName,roleName:roleName, departmentId:departmentId , 
+         branchId:branchId, weekId:weekId, termId:termId,courses:courses});
+
 
 
       setSession(token);

@@ -6,6 +6,7 @@ export const fetchStudents= async (courseId,branchId) => {
   try {
     console.log(courseId);
     //https://localhost:7202/api/User/by-tenant?tenantId=2
+    
 
     const response = await fetch(`${STUDENTS_LIST}&courseId=${courseId}&branchId=${branchId}`, {
       headers: {

@@ -13,4 +13,4 @@ export const NAV_TYPE_COLLAPSE = 'collapse';
 export const NAV_TYPE_ITEM = 'item';
 export const NAV_TYPE_DIVIDER = 'divider';
 
-export const COLORS = ['neutral', 'primary', 'secondary', 'info', 'success', 'warning', 'error']
+export const COLORS = ['neutral', 'primary', 'secondary', 'info', 'success', 'warning', 'error',"gray"]

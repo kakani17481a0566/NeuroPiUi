@@ -24,7 +24,7 @@ export function WorkingHours() {
         <ClockIcon className="text-primary-600 dark:text-primary-400 h-5 w-5" />
 
         {/* Center: Absolute centered text */}
-        <span className="text-sm-plus text-primary-600 dark:text-primary-400 absolute left-1/2 -translate-x-1/2 font-medium tracking-wide">
+        <span className="text-sm-plus text-primary-950 dark:text-primary-950 absolute left-1/2 -translate-x-1/2 font-medium tracking-wide">
           Working Hours
         </span>
 
