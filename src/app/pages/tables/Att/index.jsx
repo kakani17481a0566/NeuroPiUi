@@ -87,10 +87,10 @@ export default function AttendanceTable() {
     const allowedHeaders = [
       "studentId",
       "studentName",
-      "className",
-      "fromTime",
-      "toTime",
-      "markedBy",
+      // "className",
+      // "fromTime",
+      // "toTime",
+      // "markedBy",
       "attendanceStatus",
     ];
     const filteredHeaders = response.headers.filter((h) =>
