@@ -12,15 +12,7 @@ import axios from "axios";
 export async function fetchAttendanceSummary({ date, tenantId, branchId, courseId }) {
   try {
     const response = await axios.get(
-      "https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/StudentAttendance/summary-structured",
-      {
-        params: {
-          date,
-          tenantId,
-          branchId,
-          courseId,
-        },
-      }
+      `https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/StudentAttendance/summary-structured?date=${date}&tenantId=${tenantId}&branchId=${branchId}&courseId=${courseId}`,
     );
 
     const { data, headers } = response?.data || {};

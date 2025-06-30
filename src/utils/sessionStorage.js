@@ -56,6 +56,6 @@ export const clearSessionData = () => {
   localStorage.removeItem("tenantId");
   localStorage.removeItem("userId");
   localStorage.removeItem("role");
-    localStorage.removeItem("user");
+  localStorage.removeItem("user");
 
 };

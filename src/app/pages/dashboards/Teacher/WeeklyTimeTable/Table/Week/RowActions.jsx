@@ -26,8 +26,9 @@ import Vimeo from "@u-wave/react-vimeo";
 
 import { Button } from "components/ui";
 import { fetchWeeklyTimeTableData } from "./data";
-import Attendance from "app/pages/dashboards/Teacher/WeeklyTimeTable/Table/Attendance";
+// import Attendance from "app/pages/dashboards/Teacher/WeeklyTimeTable/Table/Attendance";
 import Grades from "app/pages/tables/Grades";
+import Att from 'app/pages/tables/Att'
 
 export function RowActions({ row }) {
   const [showPdfViewerModal, setShowPdfViewerModal] = useState(false);
@@ -427,7 +428,7 @@ export function RowActions({ row }) {
               </button>
             </div>
             <div className="max-h-[70vh] overflow-y-auto rounded border">
-              <Attendance />
+              <Att />
             </div>
           </div>
         </div>

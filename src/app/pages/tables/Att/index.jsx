@@ -82,7 +82,7 @@ export default function AttendanceTable() {
       date: today,
       tenantId: tenantId,
       branchId: branch,
-      courseId:course ,
+      courseId:course,
     });
     setData(response.data);
     const allowedHeaders = [
