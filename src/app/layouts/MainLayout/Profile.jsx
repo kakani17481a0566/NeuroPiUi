@@ -73,7 +73,7 @@ export function Profile() {
         as={Avatar}
         size={12}
         role="button"
-        src="/images/100x100.png"
+        src="https://res.cloudinary.com/kakani7/image/upload/v1750990674/MSI/STUDENTS/pq8wjceb814q7athx01m.jpg"
         alt="Profile"
         indicator={
           <AvatarDot color="success" className="ltr:right-0 rtl:left-0" />
@@ -99,7 +99,7 @@ export function Profile() {
               <div className="dark:bg-dark-800 flex items-center gap-4 rounded-t-lg bg-gray-100 px-4 py-5">
                 <Avatar
                   size={14}
-                  src="/images/100x100.png"
+                  src="https://res.cloudinary.com/kakani7/image/upload/v1750990674/MSI/STUDENTS/pq8wjceb814q7athx01m.jpg"
                   alt="Profile"
                 />
                 <div>

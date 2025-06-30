@@ -7,7 +7,7 @@ import { useBreakpointsContext } from "../breakpoint/context";
 import { SidebarContext } from "./context";
 
 const initialState = {
-  isExpanded: true,
+  isExpanded: false,
   setIsExpanded: () => {},
 };
 
