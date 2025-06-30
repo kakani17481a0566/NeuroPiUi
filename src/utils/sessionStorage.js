@@ -11,26 +11,28 @@ let branch = null;
 let term=null;
 let course = null;
 
-export const setSessionData = ({ token, tid, uid,userName ,roleName,departmentId,branchId,weekId,termId,courses}) => {
+export const setSessionData = ({ token, tid, uid, userName, roleName, departmentId, branchId, weekId, termId, courses }) => {
   jwtToken = token;
   tenantId = tid;
   userId = uid;
-  user=userName;
-  role=roleName;
-  department=departmentId;
-  branch=branchId;
-  week=weekId;
-  term=termId;
+  user = userName;
+  role = roleName;
+  department = departmentId;
+  branch = branchId;
+  week = weekId;
+  term = termId;
   course = courses;
 
-
-  // localStorage.setItem("authToken", token);
-  // localStorage.setItem("tenantId", tid);
-  // localStorage.setItem("userId", uid);
-  // localStorage.setItem("user",user);
-  // localStorage.setItem("role",role);
-  // localStorage.setItem("department", department);
-
+  localStorage.setItem("authToken", token);
+  localStorage.setItem("tenantId", tid);
+  localStorage.setItem("userId", uid);
+  localStorage.setItem("user", user);
+  localStorage.setItem("role", role);
+  localStorage.setItem("department", department);
+  localStorage.setItem("weekId", week);  
+  localStorage.setItem("termId", term);  
+  localStorage.setItem("branchId", branch); 
+  localStorage.setItem("courses", JSON.stringify(course)); 
 };
 
 export const getSessionData = () => ({
@@ -38,32 +40,35 @@ export const getSessionData = () => ({
   tenantId: tenantId || localStorage.getItem("tenantId"),
   userId: userId || localStorage.getItem("userId"),
   user: user || localStorage.getItem("user"),
-  role:role||localStorage.getItem("role"),
+  role: role || localStorage.getItem("role"),
   department: department || localStorage.getItem("department"),
-  week: week || localStorage.getItem("weekId"),
-  branch: branch || localStorage.getItem("branchId"),
-  term: term || localStorage.getItem("termId"),
-  course: course || JSON.parse(localStorage.getItem("courses")),
-
+  week: week || localStorage.getItem("weekId"), 
+  term: term || localStorage.getItem("termId"), 
+  branch: branch || localStorage.getItem("branchId"), 
+  course: course || JSON.parse(localStorage.getItem("courses") || "null"), 
 });
 
 export const clearSessionData = () => {
   jwtToken = null;
   tenantId = null;
   userId = null;
-  week=null;
-  term=null;
+  user = null;
+  role = null;
+  department = null;
+  week = null;
+  term = null;
   course = null;
   branch = null;
 
   localStorage.removeItem("authToken");
   localStorage.removeItem("tenantId");
   localStorage.removeItem("userId");
-  localStorage.removeItem("role");
   localStorage.removeItem("user");
-  localStorage.removeItem("week");
-  localStorage.removeItem("term");
-  localStorage.removeItem("branch");
-
-
+  localStorage.removeItem("role");
+  localStorage.removeItem("department");
+  localStorage.removeItem("weekId");
+  localStorage.removeItem("termId");
+  localStorage.removeItem("branchId");
+  localStorage.removeItem("courses");
 };
+
