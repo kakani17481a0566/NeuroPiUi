@@ -12,8 +12,6 @@ import { WorkingHours } from "./WorkingHours";
 import { Students } from "./Students";
 import { WeeklyTimeTable } from "./WeeklyTimeTable";
 import { Classes } from "./Classes";
-import Att from "app/pages/tables/Att";
-
 export default function Teacher() {
   const [selectedView, setSelectedView] = useState("Week");
 
@@ -72,9 +70,6 @@ export default function Teacher() {
             <Classes />
             <div className="mt-4">
               <WeeklyTimeTable key={selectedView} view={selectedView} />
-            </div>
-            <div className="mt-4">
-              <Att />
             </div>
           </div>
 
