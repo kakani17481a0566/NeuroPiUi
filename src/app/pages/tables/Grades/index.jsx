@@ -31,6 +31,7 @@ import {
 } from "components/ui";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { BASE_URL } from "constants/apis";
+import { getSessionData } from "utils/sessionStorage";
 
 export default function Grades({ timeTableId, assessmentStatusCode }) {
   const [students, setStudents] = useState([]);
@@ -46,13 +47,13 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
   const [alertMessage, setAlertMessage] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
   const[overrideStatusCode,setOverRideStatusCode]=useState(0);
+  const{branch,course,tenantId}=getSessionData();
+  const courseId=course[0].id;
   
 
-  const tenantId = 1;
-  const branchId = 1;
+
   // const timeTableId = 4;
   const conductedById = 1;
-  console.log(assessmentStatusCode, timeTableId);
 
   const handleSave = async () => {
     try {
@@ -98,7 +99,7 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
       const payload = {
         timeTableId,
         tenantId,
-        branchId,
+        branch,
         conductedById,
         overrideStatusCode,
         students: changedStudents,
@@ -157,7 +158,7 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
         setIsLoading(true);
         const [{ data }, grades] = await Promise.all([
           axios.get(
-            `${BASE_URL}/AssessmentMatrix/timetable/${timeTableId}/tenant/${tenantId}/course/1/branch/1`,
+            `${BASE_URL}/AssessmentMatrix/timetable/${timeTableId}/tenant/${tenantId}/course/${courseId}/branch/${branch}`,
           ),
           fetchGradesList(),
         ]);
@@ -199,7 +200,7 @@ export default function Grades({ timeTableId, assessmentStatusCode }) {
     };
 
     fetchData();
-  }, [tenantId, branchId, timeTableId, getStatusStyle]);
+  }, [tenantId, branch, timeTableId, getStatusStyle]);
 
   const handleGradeChange = useCallback(
     (studentId, header, newGradeName) => {
