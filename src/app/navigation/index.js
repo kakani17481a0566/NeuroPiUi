@@ -8,7 +8,7 @@ const role=details.role;
 let navigation=[];
 console.log(details);
 if(role==="Teacher"){
-   navigation=[academics,dashboards]
+   navigation=[academics]
 }
  else if(role==="Nanny"){
     navigation=[dashboards]

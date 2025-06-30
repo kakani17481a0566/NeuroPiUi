@@ -27,7 +27,7 @@ import { Toolbar } from "./Toolbar";
 import { useThemeContext } from "app/contexts/theme/context";
 import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 import { AttendanceHeaderBox } from "./VerticalWithoutText";
-
+import {getSessionData}  from 'utils/sessionStorage';
 const isSafari = getUserAgentBrowser() === "Safari";
 
 function SubRowComponent({ row }) {
@@ -46,6 +46,7 @@ export default function AttendanceTable() {
   const [columns, setColumns] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
+  const {branch,tenantId,course}=getSessionData();
 
   const [columnVisibility, setColumnVisibility] = useLocalStorage(
     "column-visibility-attendance",
@@ -79,9 +80,9 @@ export default function AttendanceTable() {
     const today = new Date().toISOString().split("T")[0];
     const response = await fetchAttendanceSummary({
       date: today,
-      tenantId: 1,
-      branchId: 1,
-      courseId: 1,
+      tenantId: tenantId,
+      branchId: branch,
+      courseId:course ,
     });
     setData(response.data);
     const allowedHeaders = [
