@@ -1,13 +1,17 @@
 // src/app/pages/dashboards/Teacher/Classes/fetchWeeklyClasses.js
 import axios from "utils/axios";
+import { getSessionData } from "utils/sessionStorage";
+
 
 /**
  * Fetches weekly class timetable data and transforms it for ClassCard component.
  */
 export async function fetchWeeklyClasses() {
+  const {tenantId,course}=getSessionData();
+  const courseId=course[0].id;
   try {
     const response = await axios.get(
-      `https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/TimeTable/weekId/1/tenantId/1/courseId/1`
+      `https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/TimeTable/weekId/-1/tenantId/${tenantId}/courseId/${courseId}`
     );
 
     const { timeTableData, currentDate, weekName, headers } = response.data.data;

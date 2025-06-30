@@ -9,7 +9,7 @@ import clsx from "clsx";
 
 import { Page } from "components/shared/Page";
 import { WorkingHours } from "./WorkingHours";
-import { Students } from "./Students";
+// import { Students } from "./Students";
 import { WeeklyTimeTable } from "./WeeklyTimeTable";
 import { Classes } from "./Classes";
 export default function Teacher() {
@@ -76,7 +76,7 @@ export default function Teacher() {
           {/* Sidebar Widgets */}
           <div className="col-span-12 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:col-span-4 lg:grid-cols-1 lg:gap-6 xl:col-span-3">
             <WorkingHours />
-            <Students />
+            {/* <Students /> */}
           </div>
         </div>
       </div>

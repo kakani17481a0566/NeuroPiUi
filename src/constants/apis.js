@@ -1,5 +1,5 @@
 import { getSessionData } from "utils/sessionStorage";
-const {tenantId,week,branch,course}=getSessionData();
+const {tenantId,branch,course,week}=getSessionData();
 // export const USER_LIST=`https://localhost:7171/api/user/by-tenant?tenantId=${tenantId}`;
 const defaultCourse = course && course.length > 0 ? course[0].id : null;
 export const BASE_URL=`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api`;

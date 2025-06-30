@@ -7,9 +7,9 @@ import {
 } from "@headlessui/react";
 import {
   ArrowLeftStartOnRectangleIcon,
-  Cog6ToothIcon,
+  // Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
-import { TbCoins, TbUser } from "react-icons/tb";
+// import { TbCoins, TbUser } from "react-icons/tb";
 import { Link } from "react-router";
 // import { Navigate } from "react-router";
 import { useNavigate } from "react-router-dom";
@@ -27,30 +27,30 @@ import { Avatar, AvatarDot, Button } from "components/ui";
 // ----------------------------------------------------------------------
 
 const links = [
-  {
-    id: "1",
-    title: "Profile",
-    description: "Your profile Setting",
-    to: "/settings/general",
-    Icon: TbUser,
-    color: "warning",
-  },
-  {
-    id: "4",
-    title: "Billing",
-    description: "Your billing information",
-    to: "/settings/billing",
-    Icon: TbCoins,
-    color: "error",
-  },
-  {
-    id: "5",
-    title: "Settings",
-    description: "Webapp settings",
-    to: "/settings/appearance",
-    Icon: Cog6ToothIcon,
-    color: "success",
-  },
+  // {
+  //   id: "1",
+  //   title: "Profile",
+  //   description: "Your profile Setting",
+  //   to: "/settings/general",
+  //   Icon: TbUser,
+  //   color: "warning",
+  // },
+  // {
+  //   id: "4",
+  //   title: "Billing",
+  //   description: "Your billing information",
+  //   to: "/settings/billing",
+  //   Icon: TbCoins,
+  //   color: "error",
+  // },
+  // {
+  //   id: "5",
+  //   title: "Settings",
+  //   description: "Webapp settings",
+  //   to: "/settings/appearance",
+  //   Icon: Cog6ToothIcon,
+  //   color: "success",
+  // },
 ];
 
 
