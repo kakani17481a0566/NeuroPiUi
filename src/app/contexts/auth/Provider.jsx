@@ -145,14 +145,14 @@ export function AuthProvider({ children }) {
       // console.log(ids.data.data);
       const{branchId,weekId,termId,courses}=ids.data.data;
 
-      localStorage.setItem("authToken", token);
-      localStorage.setItem("tenantId", tenantId);
-      localStorage.setItem("userId", userId);
-      localStorage.setItem("departmentId", departmentId);
-      localStorage.setItem("branchId", branchId);
-      localStorage.setItem("weekId", weekId);
-      localStorage.setItem("termId", termId);
-      localStorage.setItem("courses", JSON.stringify(courses));
+      // localStorage.setItem("authToken", token);
+      // localStorage.setItem("tenantId", tenantId);
+      // localStorage.setItem("userId", userId);
+      // localStorage.setItem("departmentId", departmentId);
+      // localStorage.setItem("branchId", branchId);
+      // localStorage.setItem("weekId", weekId);
+      // localStorage.setItem("termId", termId);
+      // localStorage.setItem("courses", JSON.stringify(courses));
       // localStorage.setItem("userProfile", JSON.stringify(userProfile));
       // localStorage.setItem("roleName",roleName);
 

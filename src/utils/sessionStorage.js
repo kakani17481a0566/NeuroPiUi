@@ -51,11 +51,19 @@ export const clearSessionData = () => {
   jwtToken = null;
   tenantId = null;
   userId = null;
+  week=null;
+  term=null;
+  course = null;
+  branch = null;
 
   localStorage.removeItem("authToken");
   localStorage.removeItem("tenantId");
   localStorage.removeItem("userId");
   localStorage.removeItem("role");
   localStorage.removeItem("user");
+  localStorage.removeItem("week");
+  localStorage.removeItem("term");
+  localStorage.removeItem("branch");
+
 
 };
