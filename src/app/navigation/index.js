@@ -6,7 +6,6 @@ import { getSessionData } from "utils/sessionStorage";
 const details=getSessionData();
 const role=details.role;
 let navigation=[];
-console.log(details);
 if(role==="Teacher"){
    navigation=[academics]
 }
