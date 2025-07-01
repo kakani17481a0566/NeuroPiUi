@@ -136,7 +136,9 @@ export function AuthProvider({ children }) {
       //const response = await axios.get(`https://localhost:7171/api/User/login?username=${username}&password=${password}`);
       const response = await axios.get(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/User/login?username=${username}&password=${password}`);
 
-      const { tenantId, userId, userName,roleName,departmentId} = response.data.data;
+      // const { tenantId, userId, userName,roleName,departmentId} = response.data.data;
+      const { tenantId, userId, userName, roleName, departmentId, userImageUrl } = response.data.data;
+
       const token = response.data.data.token;
       if (!isString(token)) {
         throw new Error("Response is not vallid");
@@ -158,7 +160,7 @@ export function AuthProvider({ children }) {
 
       setSessionData({ token: token, tid: tenantId, uid: userId,
          userName: userName,roleName:roleName, departmentId:departmentId , 
-         branchId:branchId, weekId:weekId, termId:termId,courses:courses});
+         branchId:branchId, weekId:weekId, termId:termId,courses:courses,userImageUrl: userImageUrl});
 
 
 

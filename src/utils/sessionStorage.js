@@ -3,15 +3,28 @@
 let jwtToken = null;
 let tenantId = null;
 let userId = null;
-let user=null;
-let role=null;
-let department=null;
+let user = null;
+let role = null;
+let department = null;
 let week = null;
 let branch = null;
-let term=null;
+let term = null;
 let course = null;
+let imageUrl = null;
 
-export const setSessionData = ({ token, tid, uid, userName, roleName, departmentId, branchId, weekId, termId, courses }) => {
+export const setSessionData = ({
+  token,
+  tid,
+  uid,
+  userName,
+  roleName,
+  departmentId,
+  branchId,
+  weekId,
+  termId,
+  courses,
+  userImageUrl, 
+}) => {
   jwtToken = token;
   tenantId = tid;
   userId = uid;
@@ -22,6 +35,7 @@ export const setSessionData = ({ token, tid, uid, userName, roleName, department
   week = weekId;
   term = termId;
   course = courses;
+  imageUrl = userImageUrl;
 
   localStorage.setItem("authToken", token);
   localStorage.setItem("tenantId", tid);
@@ -29,10 +43,11 @@ export const setSessionData = ({ token, tid, uid, userName, roleName, department
   localStorage.setItem("user", user);
   localStorage.setItem("role", role);
   localStorage.setItem("department", department);
-  localStorage.setItem("weekId", week);  
-  localStorage.setItem("termId", term);  
-  localStorage.setItem("branchId", branch); 
-  localStorage.setItem("courses", JSON.stringify(course)); 
+  localStorage.setItem("weekId", week);
+  localStorage.setItem("termId", term);
+  localStorage.setItem("branchId", branch);
+  localStorage.setItem("courses", JSON.stringify(course));
+  localStorage.setItem("userImageUrl", userImageUrl); 
 };
 
 export const getSessionData = () => ({
@@ -42,10 +57,11 @@ export const getSessionData = () => ({
   user: user || localStorage.getItem("user"),
   role: role || localStorage.getItem("role"),
   department: department || localStorage.getItem("department"),
-  week: week || localStorage.getItem("weekId"), 
-  term: term || localStorage.getItem("termId"), 
-  branch: branch || localStorage.getItem("branchId"), 
-  course: course || JSON.parse(localStorage.getItem("courses") || "null"), 
+  week: week || localStorage.getItem("weekId"),
+  term: term || localStorage.getItem("termId"),
+  branch: branch || localStorage.getItem("branchId"),
+  course: course || JSON.parse(localStorage.getItem("courses") || "null"),
+  imageUrl: imageUrl || localStorage.getItem("userImageUrl"), 
 });
 
 export const clearSessionData = () => {
@@ -59,6 +75,7 @@ export const clearSessionData = () => {
   term = null;
   course = null;
   branch = null;
+  imageUrl = null;
 
   localStorage.removeItem("authToken");
   localStorage.removeItem("tenantId");
@@ -70,5 +87,5 @@ export const clearSessionData = () => {
   localStorage.removeItem("termId");
   localStorage.removeItem("branchId");
   localStorage.removeItem("courses");
+  localStorage.removeItem("userImageUrl"); 
 };
-

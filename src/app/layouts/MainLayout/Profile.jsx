@@ -20,9 +20,11 @@ import { getSessionData } from "utils/sessionStorage";
 
 
 
+
 // Local Imports
 import { Avatar, AvatarDot, Button } from "components/ui";
 
+const { imageUrl } = getSessionData();
 
 // ----------------------------------------------------------------------
 
@@ -69,19 +71,19 @@ export function Profile() {
   }
   return (
     <Popover className="relative">
-      <PopoverButton
-        as={Avatar}
-        size={12}
-        role="button"
-        src="https://res.cloudinary.com/kakani7/image/upload/v1750990674/MSI/STUDENTS/pq8wjceb814q7athx01m.jpg"
-        alt="Profile"
-        indicator={
-          <AvatarDot color="success" className="ltr:right-0 rtl:left-0" />
-        }
-        classNames={{
-          root: "cursor-pointer",
-        }}
-      />
+<PopoverButton
+  as={Avatar}
+  size={12}
+  role="button"
+  src={imageUrl || "/default-profile.png"} // fallback if null
+  alt="Profile"
+  indicator={
+    <AvatarDot color="success" className="ltr:right-0 rtl:left-0" />
+  }
+  classNames={{
+    root: "cursor-pointer",
+  }}
+/>
       <Transition
         enter="duration-200 ease-out"
         enterFrom="translate-x-2 opacity-0"
@@ -96,12 +98,14 @@ export function Profile() {
         >
           {({ close }) => (
             <>
-              <div className="dark:bg-dark-800 flex items-center gap-4 rounded-t-lg bg-gray-100 px-4 py-5">
-                <Avatar
-                  size={14}
-                  src="https://res.cloudinary.com/kakani7/image/upload/v1750990674/MSI/STUDENTS/pq8wjceb814q7athx01m.jpg"
-                  alt="Profile"
-                />
+       <div className="dark:bg-dark-800 flex items-center gap-4 rounded-t-lg bg-gray-100 px-4 py-5">
+<Avatar
+  size={14}
+  src={imageUrl}
+  alt="Profile"
+/>
+
+
                 <div>
 
                   <p className="hover:text-primary-600 focus:text-primary-600 dark:text-dark-100 dark:hover:text-primary-400 dark:focus:text-primary-400 text-base font-medium text-gray-700">
