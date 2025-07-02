@@ -56,7 +56,14 @@ export default function SignIn() {
                     </label>
                     <Input
                       id="username"
-                      prefix={<UserIcon className="size-5 bg-color : #1A4255" strokeWidth="1" />}
+                      aria-label="Username"
+                      prefix={
+                        <UserIcon
+                          className="size-5"
+                          strokeWidth="1"
+                          style={{ color: "#1A4255" }}
+                        />
+                      }
                       {...register("username")}
                       error={errors?.username?.message}
                       className="input-black-text h-8 py-1 text-xs"
@@ -69,13 +76,18 @@ export default function SignIn() {
                     </label>
                     <Input
                       id="password"
+                      aria-label="Password"
                       type="password"
                       prefix={
-                        <LockClosedIcon className="size-5" strokeWidth="1" />
+                        <LockClosedIcon
+                          className="size-5"
+                          strokeWidth="1"
+                          style={{ color: "#1A4255" }}
+                        />
                       }
                       {...register("password")}
                       error={errors?.password?.message}
-                      className="input-black-text  h-8 py-1 text-xs"
+                      className="input-black-text h-8 py-1 text-xs"
                     />
                   </div>
                 </div>

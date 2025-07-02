@@ -5,21 +5,10 @@
   align-items: center;
   justify-content: center;
   background: url('https://res.cloudinary.com/kakani7/image/upload/v1750861644/MSI/LOGIN_PAGE/nx7slzy4lrunswsudfet.jpg') center center no-repeat;
-  background-size: cover; /* cover entire area without distortion */
+  background-size: cover;
   padding: 1rem;
   position: relative;
 }
-
-
-
-/* .auth-bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(6px);
-  z-index: 0;
-} */
 
 /* ---------- Card Container ---------- */
 .auth-card-container {
@@ -31,8 +20,7 @@
 /* ---------- Card ---------- */
 .auth-card {
   display: flex;
-  flex-direction: column;
-  height: auto;
+  flex-direction: column; /* Mobile: form on top, image below */
   width: 100%;
   background-color: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
@@ -40,13 +28,11 @@
   border-radius: 1rem;
   overflow: hidden;
   z-index: 1;
-
- 
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .auth-card {
-    flex-direction: row;
+    flex-direction: row; /* Desktop: image left, form right */
     height: 300px;
   }
 }
@@ -55,14 +41,12 @@
 .auth-left-img {
   flex: none;
   height: 200px;
-  /* background: url('https://res.cloudinary.com/kakani7/image/upload/MSI/wfwzyoynyjecsgyvvmdb.svg') center/cover no-repeat; */
   background: url('https://res.cloudinary.com/kakani7/image/upload/v1750923624/MSI/LOGIN_PAGE/c5okkfelbao4zxbsoc11.jpg') center/cover no-repeat;
-
   background-color: #ffffffa0;
   user-select: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .auth-left-img {
     flex: 1;
     height: auto;
@@ -79,24 +63,19 @@
   min-width: 300px;
   background-color: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(10px);
- 
-  
   text-align: center;
   color: #1A4255;
   font-weight: bold;
 }
-
 
 /* ---------- Form Layout ---------- */
 .auth-right-form form {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
-
   padding: 1rem;
   border-radius: 0.5rem;
-   border: 1px solid  #E2E2E2;
-  
+  border: 1px solid #E2E2E2;
 }
 
 .auth-inputs {
@@ -157,9 +136,7 @@
 .auth-button {
   margin-top: 2rem;
   width: 50%;
-  /* background-color: data-theme-primary="neruopi"; */
-    background-color: var(--color-primary-500);
-
+  background-color: var(--color-primary-500);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -167,8 +144,8 @@
   border-radius: 0.375rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-   margin-left: auto; /* Push to right */
-  display: block;   
+  margin-left: auto;
+  display: block;
 }
 
 .auth-button:hover {
@@ -182,8 +159,17 @@
 
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
+  .auth-card {
+    width: 100%;
+    min-height: 50%;
+  }
+
+  .auth-left-img {
+    height: 200px;
+  }
+
   .auth-right-form {
-    padding: 2rem 1rem;
+    padding: 1.5rem 1rem;
   }
 
   .input-horizontal {

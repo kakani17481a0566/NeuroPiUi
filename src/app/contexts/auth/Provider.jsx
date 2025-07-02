@@ -205,7 +205,7 @@ export function AuthProvider({ children }) {
   dispatch({ type: "LOGOUT" });
 
   // Optional: redirect user to login page (if you have react-router)
-  // window.location.href = "/login";
+  window.location.href = "/login";
 };
 
 
