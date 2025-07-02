@@ -25,7 +25,7 @@ export function TableConfig({ table }) {
         aria-label="Table Settings"
         title="Table Settings"
       >
-        <Cog6ToothIcon className="size-5" />
+        <Cog6ToothIcon className="size-5 bg-p text-primary-600" />
       </PopoverButton>
       <Transition
         as={PopoverPanel}

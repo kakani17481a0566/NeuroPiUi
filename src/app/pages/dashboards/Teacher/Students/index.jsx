@@ -4,11 +4,14 @@ import { Spinner } from "components/ui";
 import { UserGroupIcon } from "@heroicons/react/24/outline";
 
 import { fetchStudents } from "./data"; // Adjust the import path as necessary
+import { getSessionData } from "utils/sessionStorage";
 
 export function Students() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const{course,branch} = getSessionData();
+  const courseId = course ? course[0].id : 1;
 
   // Handle device resize
   useEffect(() => {
@@ -24,7 +27,7 @@ export function Students() {
     const fetchstu = async () => {
       try {
         setLoading(true);
-        const response = await fetchStudents(1, 1);
+        const response = await fetchStudents(courseId, branch);
 
         const enriched = response.students.map((s, index) => ({
           uid: s.id,

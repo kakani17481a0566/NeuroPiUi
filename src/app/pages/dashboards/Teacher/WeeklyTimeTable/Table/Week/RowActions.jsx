@@ -188,7 +188,7 @@ export function RowActions({ row }) {
                     active && "dark:bg-dark-600 bg-gray-100",
                   )}
                 >
-                  <EyeIcon className="text-primary-600 size-4.5 stroke-[1.5]" />
+                  <EyeIcon className=" text-primary-600 size-4.5 stroke-[1.5]" />
 
                   <span className="text-primary-950 ">Lesson Plan</span>
                 </button>
@@ -203,7 +203,7 @@ export function RowActions({ row }) {
                     active && "dark:bg-dark-600 bg-gray-100",
                   )}
                 >
-                  <LinkIcon className="text-primary-600 size-4.5 stroke-[1.5]" />
+                  <LinkIcon className="  text-primary-600 size-4.5 stroke-[1.5]" />
 
                   <span className="text-primary-950 ">Resources</span>
                 </button>
@@ -262,10 +262,10 @@ export function RowActions({ row }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="relative w-full max-w-3xl rounded-lg bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">PDF View</h2>
+              <h2 className="text-lg text-primary-950  font-semibold">PDF View</h2>
               <button
                 onClick={handlePdfPopUpClose}
-                className="text-xl font-bold text-red-500"
+                className="text-xl font-bold text-primary-600"
                 aria-label="Close"
               >
                 &times;
@@ -287,15 +287,15 @@ export function RowActions({ row }) {
       {showResourcePopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="relative w-full max-w-4xl overflow-auto rounded-lg bg-white p-6 shadow-lg">
-            <h2 className="mb-4 text-lg font-semibold">Resources</h2>
+            <h2 className="mb-4 text-lg text-primary-950 font-semibold">Resources</h2>
             {loadingResources ? (
               <p>Loading...</p>
             ) : (
               <table className="w-full table-fixed border">
                 <thead>
                   <tr className="bg-gray-100">
-                    <th className="w-1/2 border-b p-2">PDF</th>
-                    <th className="w-1/2 border-b p-2">Video</th>
+                    <th className="w-1/2  border-b p-2 text-primary-950">PDF</th>
+                    <th className="w-1/2 border-b p-2 text-primary-950">Video</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -309,7 +309,7 @@ export function RowActions({ row }) {
                           {pdf[i] ? (
                             <button
                               onClick={() => handlepdfResource(pdf[i])}
-                              className="text-blue-600 underline"
+                              className="text-primary-950 underline"
                             >
                               {pdf[i].name}
                             </button>
@@ -321,7 +321,7 @@ export function RowActions({ row }) {
                           {mp4[i] ? (
                             <button
                               onClick={() => handleResourceClick(mp4[i])}
-                              className="text-blue-600 underline"
+                              className="text-primary-950 underline"
                             >
                               {mp4[i].name}
                             </button>
@@ -336,7 +336,7 @@ export function RowActions({ row }) {
               </table>
             )}
             <button
-              className="mt-4 rounded bg-blue-600 px-4 py-2 text-white"
+              className="mt-4 rounded bg-primary-600 px-4 py-2 text-white"
               onClick={handleClosePopup}
             >
               Close
@@ -367,7 +367,6 @@ export function RowActions({ row }) {
                         {link ? (
                           <button
                             onClick={() => handleAssignmentView(link)}
-                            className="text-blue-600 underline"
                           >
                             View
                           </button>
@@ -381,7 +380,7 @@ export function RowActions({ row }) {
               </table>
             )}
             <button
-              className="mt-4 rounded bg-blue-600 px-4 py-2 text-white"
+              className="mt-4 rounded bg-primary-600 text-primary-950 px-4 py-2 text-white"
               onClick={() => setShowWorkShopPopup(false)}
             >
               Close
@@ -391,13 +390,13 @@ export function RowActions({ row }) {
       )}
 
       {showVideoPlayer && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="relative w-full max-w-3xl rounded-lg bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Video</h2>
+              <h2 className="text-lg font-semibold text-purple-950">Video</h2>
               <button
                 onClick={() => setShowVideoPlayer(false)}
-                className="text-xl font-bold text-red-500"
+                className="text-xl font-bold text-primary-600"
               >
                 &times;
               </button>
@@ -419,10 +418,10 @@ export function RowActions({ row }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
           <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Attendance</h2>
+              <h2 className="text-lg font-semibold text-primary-950 dark:text-dark-50">Attendance</h2>
               <button
                 onClick={() => setStudentAttendancePopUp(false)}
-                className="text-xl font-bold text-red-500"
+                className="text-xl font-bold text-primary-600"
               >
                 &times;
               </button>
@@ -440,7 +439,7 @@ export function RowActions({ row }) {
               <h2 className="text-lg font-semibold">Assignments</h2>
               <button
                 onClick={() => setShowAssignmentsPopUp(false)}
-                className="text-xl font-bold text-red-500"
+                className="text-xl font-bold text-primary-600"
               >
                 &times;
               </button>

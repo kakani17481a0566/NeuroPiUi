@@ -17,10 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "app/contexts/auth/context";
 import { getSessionData } from "utils/sessionStorage";
 
-
-
-
-
 // Local Imports
 import { Avatar, AvatarDot, Button } from "components/ui";
 
@@ -55,35 +51,34 @@ const links = [
   // },
 ];
 
-
 export function Profile() {
   const navigate = useNavigate();
   // const { setAuthenticated } = useAuthContext(); // or whatever updates auth
   // const { dispatch } = useAuthContext();
   const { logout } = useAuthContext();
-  const {user,role}=getSessionData();
+  const { user, role } = getSessionData();
   // const { user } = getSessionData();
 
   const handleLogOut = async () => {
     console.log("Logging out...");
     await logout(); // ✅ clear session + auth state
     navigate("/login?redirectUrl=/");
-  }
+  };
   return (
     <Popover className="relative">
-<PopoverButton
-  as={Avatar}
-  size={12}
-  role="button"
-  src={imageUrl || "/default-profile.png"} // fallback if null
-  alt="Profile"
-  indicator={
-    <AvatarDot color="success" className="ltr:right-0 rtl:left-0" />
-  }
-  classNames={{
-    root: "cursor-pointer",
-  }}
-/>
+      <PopoverButton
+        as={Avatar}
+        size={15}
+        role="button"
+        src={imageUrl || "/default-profile.png"  } // fallback if null
+        alt="Profile"
+        indicator={
+          <AvatarDot color="success" className="ltr:right-0 rtl:left-0" />
+        }
+        classNames={{
+          root: "cursor-pointer ",
+        }}
+      />
       <Transition
         enter="duration-200 ease-out"
         enterFrom="translate-x-2 opacity-0"
@@ -98,21 +93,15 @@ export function Profile() {
         >
           {({ close }) => (
             <>
-       <div className="dark:bg-dark-800 flex items-center gap-4 rounded-t-lg bg-gray-100 px-4 py-5">
-<Avatar
-  size={14}
-  src={imageUrl}
-  alt="Profile"
-/>
-
+              <div className=" text-primary-950 dark:bg-dark-800 flex items-center gap-4 rounded-t-lg bg-gray-100 px-4 py-5">
+                <Avatar size={20} src={imageUrl} alt="Profile" />
 
                 <div>
-
                   <p className="hover:text-primary-600 focus:text-primary-600 dark:text-dark-100 dark:hover:text-primary-400 dark:focus:text-primary-400 text-base font-medium text-gray-700">
                     {user}
-                    </p>
+                  </p>
 
-                  <p className="dark:text-dark-300 mt-0.5 text-xs text-gray-400">
+                  <p className="text-primary-950 dark:text-dark-50 mt-0.5 text-xs text-gray-400">
                     {role}
                   </p>
                 </div>
@@ -143,7 +132,7 @@ export function Profile() {
                   </Link>
                 ))}
                 <div className="px-4 pt-4">
-                  <Button className="w-full gap-2" onClick={handleLogOut}>
+                  <Button className="w-full gap-2  bg-primary-600" onClick={handleLogOut}>
                     <ArrowLeftStartOnRectangleIcon className="size-4.5" />
                     <span>Logout</span>
                   </Button>
