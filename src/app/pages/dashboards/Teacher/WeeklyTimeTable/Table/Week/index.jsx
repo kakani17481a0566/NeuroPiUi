@@ -154,7 +154,7 @@ export default function Week() {
                             "first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
                             index === 0
                               ? "text-primary-950 dark:text-dark-100"
-                              : "dark:text-dark-100 text-white",
+                              : "dark:text-dark-900 text-white",
                             header.column.getCanPin() && [
                               header.column.getIsPinned() === "left" &&
                                 "sticky z-2 ltr:left-0 rtl:right-0",
@@ -226,8 +226,8 @@ export default function Week() {
                           key={cell.id}
                           className={clsx(
                             index === 0
-                              ? "dark:bg-dark-700 dark:text-dark-100 bg-[#93E6E6] text-gray-900"
-                              : "dark:bg-dark-700 dark:text-dark-100 bg-white text-gray-900",
+                              ? "dark:bg-dark-100 dark:text-dark-900 bg-[#93E6E6] text-gray-900"
+                              : "dark:bg-dark-100 dark:text-dark-900 bg-white text-gray-900",
                             "table-td",
                             cardSkin === "shadow-sm"
                               ? "skin-shadow-sm"
