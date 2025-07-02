@@ -26,6 +26,10 @@ import {
   ClockIcon,
 } from "@heroicons/react/24/outline";
 
+import { Spinner } from "components/ui";
+
+
+
 const isSafari = getUserAgentBrowser() === "Safari";
 
 export default function Term() {
@@ -106,14 +110,14 @@ export default function Term() {
                 </span>
               )}
               {termMatch && (
-                <span className="text-primary-950 dark:text-secondary-300 flex items-center gap-1">
+                <span className="text-primary-950 dark:text-primary-600 flex items-center gap-1">
                   <BookOpenIcon className="text-primary-600 h-4 w-4" />
                   {termMatch[0]}
                 </span>
               )}
               {startEndDates && startEndDates.split("|").map((part, index) => (
                 <span key={index} className="text-primary-600 flex items-center gap-1 dark:text-rose-300">
-                  <ClockIcon className="text-primary-950 h-4 w-4" />
+                  <ClockIcon className="text-primary-950 dark:text-primary-600 h-4 w-4" />
                   {part.trim()}
                 </span>
               ))}
@@ -123,10 +127,11 @@ export default function Term() {
       })()}
 
       {loading ? (
-        <div className="dark:text-dark-300 py-10 text-center text-sm text-gray-500">
-          Loading term timetable...
-        </div>
-      ) : (
+  <div className="flex h-64 items-center justify-center">
+    <Spinner color="primary" className="size-12 border-4" />
+  </div>
+) : (
+
         <div className={clsx("flex flex-col pt-4", tableSettings.enableFullScreen && "dark:bg-dark-900 fixed inset-0 z-61 h-full w-full bg-white pt-3")}> 
           <Toolbar table={table} />
           <Card className={clsx("relative mt-3 flex grow flex-col", tableSettings.enableFullScreen && "overflow-hidden")} ref={cardRef}>

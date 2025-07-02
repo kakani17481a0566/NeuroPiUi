@@ -57,15 +57,29 @@ export function generateWeeklyTimeTableColumns(headers) {
               const trimmed = line.trim();
               let textClass = "";
 
-                if (trimmed.startsWith("AS:")) {
-                  textClass = "text-[#713427] font-bold";
-                } else if (trimmed.startsWith("FT:")) {
-                  textClass = "text-[#E27257] font-bold";
-                } else if (trimmed.startsWith("NR:")) {
-                  textClass = "text-[#B14434] font-bold";
-                } else if (trimmed.startsWith("ET:")) {
-                  textClass = "text-[#52AA97] font-bold";
-                }
+ if (trimmed.startsWith("AS:") || trimmed.startsWith("Action Song")) {
+  textClass = "text-[#713427] font-bold";
+} else if (trimmed.startsWith("FT:") || trimmed.startsWith("Fairytale")) {
+  textClass = "text-[#E27257] font-bold";
+} else if (trimmed.startsWith("NR:") || trimmed.startsWith("Nursery Rhyme")) {
+  textClass = "text-[#B14434] font-bold";
+} else if (trimmed.startsWith("ET:") || trimmed.startsWith("Event")) {
+  textClass = "text-[#52AA97] font-bold";
+} else if (trimmed.startsWith("PL:") || trimmed.startsWith("PHONICS LAB")) {
+  textClass = "text-[#83CAE6] font-bold";
+} else if (trimmed.startsWith("SL:") || trimmed.startsWith("SCIENCE LAB")) {
+  textClass = "text-[#8FD1E6] font-bold";
+} else if (trimmed.startsWith("AL:") || trimmed.startsWith("ART LAB")) {
+  textClass = "text-[#437EB4] font-bold";
+} else if (trimmed.startsWith("ML:") || trimmed.startsWith("MATH LAB")) {
+  textClass = "text-[#2F469A] font-bold";
+} else if (trimmed.startsWith("ST:") || trimmed.startsWith("Story Time")) {
+  textClass = "text-[#465C8A] font-bold";
+} else if (trimmed.startsWith("LAB:") || trimmed.startsWith("LAB")) {
+  textClass = "text-[#3366] font-bold";
+}
+
+
               return createElement(
                 "div",
                 { key: i, className: textClass },
