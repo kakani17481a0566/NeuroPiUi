@@ -9,7 +9,7 @@ import {
 
 const AttendanceHeaderBox = ({ date, className, checkedIn, checkedOut }) => {
   return (
-    <Box className="flex h-20 w-full items-center justify-between gap-4 rounded-lg bg-gray-200 px-6 dark:bg-dark-500">
+    <Box className="flex h-20 w-full items-center justify-between gap-4 rounded-lg bg-gray-200 px-6 dark:bg-dark-100">
       {/* Left: Date */}
       <div className="flex items-center gap-2 text-sm font-medium text-primary-950">
         <CalendarDaysIcon className="size-5 shrink-0 text-primary-600" />

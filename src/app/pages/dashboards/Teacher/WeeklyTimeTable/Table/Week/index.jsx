@@ -1,3 +1,4 @@
+// Import React Table utilities
 import {
   flexRender,
   getCoreRowModel,
@@ -8,35 +9,53 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+
+// Utility imports
 import clsx from "clsx";
 import { useRef, useState, useEffect, useLayoutEffect } from "react";
+
+// Data fetching and column generation
 import { fetchWeeklyTimeTableData } from "./data";
 import { generateWeeklyTimeTableColumns } from "./columns";
 
+// Shared UI components
 import { Card, Table, THead, TBody, Th, Tr, Td, Spinner } from "components/ui";
+
+// Custom hooks
 import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
+
+// Table utilities
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
 import { useSkipper } from "utils/react-table/useSkipper";
+
+// Custom toolbar and row action components
 import { SelectedRowsActions } from "./SelectedRowsActions";
 import { Toolbar } from "./Toolbar";
-import { useThemeContext } from "app/contexts/theme/context";
-import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 
+// Theme context
+import { useThemeContext } from "app/contexts/theme/context";
+
+// Detect Safari for scroll fix
+import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 const isSafari = getUserAgentBrowser() === "Safari";
 
 export default function Week() {
   const { cardSkin } = useThemeContext();
+
   const [autoResetPageIndex] = useSkipper();
-  const [orders, setOrders] = useState([]);
-  const [columns, setColumns] = useState([]);
+  const [orders, setOrders] = useState([]); // Table data
+  const [columns, setColumns] = useState([]); // Dynamic table headers
   const [tableSettings, setTableSettings] = useState({
     enableSorting: true,
     enableColumnFilters: true,
     enableFullScreen: false,
     enableRowDense: true,
   });
+
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
+
+  // Local storage state for column visibility and pinning
   const [columnVisibility, setColumnVisibility] = useLocalStorage(
     "column-visibility-orders-2",
     {},
@@ -45,11 +64,12 @@ export default function Week() {
     "column-pinning-orders-2",
     {},
   );
-  const cardRef = useRef();
-  const wrapperRef = useRef(); // ✅ New ref for scroll container
+
+  const cardRef = useRef(); // Card container
+  const wrapperRef = useRef(); // Scrollable wrapper
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch headers + data
+  // Fetch column headers and data from backend
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -67,7 +87,7 @@ export default function Week() {
     fetchData();
   }, []);
 
-  // ✅ User-friendly scroll reset when columns & data are ready
+  // Reset scroll position when data is ready
   useLayoutEffect(() => {
     if (columns.length > 0 && orders.length > 0 && wrapperRef.current) {
       wrapperRef.current.scrollLeft = 1;
@@ -75,6 +95,7 @@ export default function Week() {
     }
   }, [columns, orders]);
 
+  // Initialize TanStack Table
   const table = useReactTable({
     data: orders,
     columns,
@@ -107,12 +128,14 @@ export default function Week() {
     autoResetPageIndex,
   });
 
+  // Reset selection when orders change
   useDidUpdate(() => table.resetRowSelection(), [orders]);
+
+  // Lock body scroll in fullscreen mode
   useLockScrollbar(tableSettings.enableFullScreen);
 
   return (
-<div className="grid grid-cols-1 grid-rows-[auto_auto_1fr] px-4 py-4 font-lato uppercase text-center">
-
+    <div className="font-lato grid grid-cols-1 grid-rows-[auto_auto_1fr] px-4 py-4 text-center uppercase">
       <div
         className={clsx(
           "flex flex-col pt-4",
@@ -120,7 +143,10 @@ export default function Week() {
             "dark:bg-dark-900 fixed inset-0 z-61 h-full w-full bg-white pt-3",
         )}
       >
+        {/* Toolbar section */}
         <Toolbar table={table} />
+
+        {/* Main card wrapping the table */}
         <Card
           className={clsx(
             "relative mt-3 flex grow flex-col",
@@ -128,6 +154,7 @@ export default function Week() {
           )}
           ref={cardRef}
         >
+          {/* Scrollable container for table */}
           <div
             ref={wrapperRef}
             className="table-wrapper min-w-full grow overflow-x-auto"
@@ -143,6 +170,7 @@ export default function Week() {
                 sticky={tableSettings.enableFullScreen}
                 className="table"
               >
+                {/* Table Head */}
                 <THead className="table-thead">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <Tr key={headerGroup.id} className="table-tr">
@@ -154,43 +182,36 @@ export default function Week() {
                             "first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
                             index === 0
                               ? "text-primary-950 dark:text-dark-100"
-                              : "dark:text-dark-900 text-white",
-                            header.column.getCanPin() && [
-                              header.column.getIsPinned() === "left" &&
-                                "sticky z-2 ltr:left-0 rtl:right-0",
-                              header.column.getIsPinned() === "right" &&
-                                "sticky z-2 ltr:right-0 rtl:left-0",
-                            ],
+                              : "dark:text-dark-900 text-primary-950",
+                            header.column.getCanPin() && {
+                              "sticky z-2 ltr:left-0 rtl:right-0":
+                                header.column.getIsPinned() === "left",
+                              "sticky z-2 ltr:right-0 rtl:left-0":
+                                header.column.getIsPinned() === "right",
+                            },
                           )}
                           style={{
                             backgroundColor:
-                              index === 0
-                                ? "#93E6E6"
-                                : window.matchMedia(
-                                      "(prefers-color-scheme: dark)",
-                                    ).matches
-                                  ? "#33CDCD"
-                                  : "#93E6E6",
-                            // borderBottom: "1px solid #2BBBAD",
-                            // borderRight: "1px solid #2BBBAD",
-                                 borderBottom: "none",
+                              index === 0 ? "#93E6E6" : "#33CDCD", 
+                            borderBottom: "none",
                             borderRight: "none",
                             transform:
                               index === 0 ? "translateY(-1px)" : undefined,
                             boxShadow:
                               index === 0
-                                ? "0px 4px 10px rgba(0, 0, 0, 0.35), inset -2px 0 4px rgba(255, 255, 255, 0.2), 1px 0 0 #D2486E"
+                                ? "0px 4px 10px rgba(0, 0, 0, 0.35), inset -2px 0 4px rgba(255, 255, 255, 0.2), 1px 0 0 #2BBBAD"
                                 : undefined,
                             zIndex: 2,
                             position: "relative",
                           }}
                         >
+                          {/* Sortable column headers */}
                           {header.column.getCanSort() ? (
                             <div
                               className="flex cursor-pointer items-center space-x-3 select-none"
                               onClick={header.column.getToggleSortingHandler()}
                             >
-                              <span className="flex-1">
+                              <span className="text-primary-950 flex-1">
                                 {!header.isPlaceholder &&
                                   flexRender(
                                     header.column.columnDef.header,
@@ -211,6 +232,7 @@ export default function Week() {
                   ))}
                 </THead>
 
+                {/* Table Body */}
                 <TBody className="table-tbody">
                   {table.getRowModel().rows.map((row, rowIndex) => (
                     <Tr
@@ -246,6 +268,7 @@ export default function Week() {
                               index === 0 ? "translateY(-1px)" : undefined,
                           }}
                         >
+                          {/* Visual border if pinned */}
                           {cell.column.getIsPinned() && (
                             <div
                               className={clsx(
@@ -256,6 +279,7 @@ export default function Week() {
                               )}
                             />
                           )}
+                          {/* Render cell content */}
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),
@@ -268,6 +292,8 @@ export default function Week() {
               </Table>
             )}
           </div>
+
+          {/* Row action buttons (if any selected) */}
           <SelectedRowsActions table={table} />
         </Card>
       </div>

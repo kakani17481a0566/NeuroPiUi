@@ -5,11 +5,14 @@ import dayjs from "dayjs";
 
 // Local Imports
 import { Button } from "components/ui";
+import { getSessionData } from "utils/sessionStorage";
 
 export function RowActions({ row, table }) {
   const [hasCheckedIn, setHasCheckedIn] = useState(false);
   const [hasCheckedOut, setHasCheckedOut] = useState(false);
   const [loading, setLoading] = useState(false); // ✅ Optional spinner state
+
+  const{branch,tenantId,userId,} = getSessionData()
 
   const student = row.original;
 
@@ -25,9 +28,9 @@ export function RowActions({ row, table }) {
 
     const payload = {
       date: today,
-      userId: 1,
-      branchId: 1,
-      tenantId: 1,
+      userId: userId,
+      branchId: branch,
+      tenantId: tenantId,
       entries: [
         {
           studentId: student.studentId,
@@ -62,8 +65,9 @@ export function RowActions({ row, table }) {
     <div className="flex flex-wrap justify-center gap-2">
       <Button
         color="success"
-        variant="soft"
-        className="rounded-full px-3 py-1 text-xs"
+        // variant="soft"
+        className="bg-green-600 dark:bg-green-500 hover:bg-green-700 text-white rounded-full px-3 py-1 text-xs transition-colors duration-200"
+
         onClick={() => handleCheck("in")}
         disabled={loading || hasCheckedIn}
       >
@@ -71,7 +75,7 @@ export function RowActions({ row, table }) {
       </Button>
       <Button
         color="warning"
-        variant="soft"
+        // variant="soft"
         className="rounded-full px-3 py-1 text-xs"
         onClick={() => handleCheck("out")}
         disabled={loading || !hasCheckedIn || hasCheckedOut}

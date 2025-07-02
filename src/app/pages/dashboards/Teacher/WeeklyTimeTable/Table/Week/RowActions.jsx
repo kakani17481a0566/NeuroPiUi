@@ -139,7 +139,7 @@ export function RowActions({ row }) {
 
   return (
     <>
-      <div className="flex justify-center">
+      <div className="flex justify-center ">
         {row.getCanExpand() && (
           <Button
             isIcon
@@ -156,7 +156,7 @@ export function RowActions({ row }) {
           </Button>
         )}
 
-        <Menu as="div" className="relative z-20 inline-block text-left">
+        <Menu as="div" className="relative text-col z-20 inline-block text-left">
           <MenuButton
             as={Button}
             variant="flat"
@@ -177,7 +177,7 @@ export function RowActions({ row }) {
             leave="transition ease-in"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-2"
-            className="dark:border-dark-500 dark:bg-dark-750 absolute z-100 mt-1.5 min-w-[10rem] rounded-lg border border-gray-300 bg-white py-1 shadow-lg ltr:right-0 rtl:left-0"
+            className="dark:border-dark-500 dark:bg-dark-100 absolute z-100 mt-1.5 min-w-[10rem] rounded-lg border border-gray-300 bg-white py-1 shadow-lg ltr:right-0 rtl:left-0"
           >
             <MenuItem>
               {({ active }) => (
@@ -185,7 +185,7 @@ export function RowActions({ row }) {
                   onClick={handleViewPdfPopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100",
+                    active && "dark:bg-purple-50  bg-gray-100",
                   )}
                 >
                   <EyeIcon className=" text-primary-600 size-4.5 stroke-[1.5]" />
@@ -200,7 +200,8 @@ export function RowActions({ row }) {
                   onClick={handleViewResourcePopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100",
+                                       active && "dark:bg-purple-50  bg-gray-100",
+
                   )}
                 >
                   <LinkIcon className="  text-primary-600 size-4.5 stroke-[1.5]" />
@@ -215,7 +216,8 @@ export function RowActions({ row }) {
                   onClick={handleViewWorkSheetPopUp}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100",
+                                     active && "dark:bg-purple-50  bg-gray-100",
+
                   )}
                 >
                   <DocumentIcon className="text-primary-600 size-4.5 stroke-[1.5]" />
@@ -230,7 +232,8 @@ export function RowActions({ row }) {
                   onClick={handleViewAttendancePopup}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100",
+                                       active && "dark:bg-purple-50  bg-gray-100",
+
                   )}
                 >
                   <UserGroupIcon className="text-primary-600 size-4.5 stroke-[1.5]" />
@@ -244,7 +247,8 @@ export function RowActions({ row }) {
                   onClick={handleAssignMarks}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3",
-                    active && "dark:bg-dark-600 bg-gray-100",
+                                    active && "dark:bg-purple-50  bg-gray-100",
+
                   )}
                 >
                   <ClipboardDocumentListIcon className="text-primary-600 size-4.5 stroke-[1.5]" />
@@ -354,9 +358,9 @@ export function RowActions({ row }) {
             ) : (
               <table className="w-full table-fixed border">
                 <thead>
-                  <tr className="bg-gray-100">
+                  <tr className="bg-gray-100 ">
                     <th className="border p-2">Name</th>
-                    <th className="border p-2 text-center">Action</th>
+                    <th className="border p-2 text-center ">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -380,7 +384,7 @@ export function RowActions({ row }) {
               </table>
             )}
             <button
-              className="mt-4 rounded bg-primary-600 text-primary-950 px-4 py-2 text-white"
+              className="mt-4 rounded bg-primary-600 text-primary-950 px-4 py-2 "
               onClick={() => setShowWorkShopPopup(false)}
             >
               Close
@@ -418,12 +422,11 @@ export function RowActions({ row }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
           <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-primary-950 dark:text-dark-50">Attendance</h2>
+              <h2 className="text-lg font-semibold text-primary-950 dark:text-primary-950 text-center">Attendance</h2>
               <button
                 onClick={() => setStudentAttendancePopUp(false)}
                 className="text-xl font-bold text-primary-600"
               >
-                &times;
               </button>
             </div>
             <div className="max-h-[70vh] overflow-y-auto rounded border">
@@ -441,7 +444,7 @@ export function RowActions({ row }) {
                 onClick={() => setShowAssignmentsPopUp(false)}
                 className="text-xl font-bold text-primary-600"
               >
-                &times;
+              
               </button>
             </div>
             <div className="max-h-[70vh] overflow-y-auto rounded border">

@@ -27,7 +27,7 @@ import { Toolbar } from "./Toolbar";
 import { useThemeContext } from "app/contexts/theme/context";
 import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 import { AttendanceHeaderBox } from "./VerticalWithoutText";
-import {getSessionData}  from 'utils/sessionStorage';
+import { getSessionData } from "utils/sessionStorage";
 const isSafari = getUserAgentBrowser() === "Safari";
 
 function SubRowComponent({ row }) {
@@ -46,7 +46,7 @@ export default function AttendanceTable() {
   const [columns, setColumns] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
-  const {branch,tenantId,course}=getSessionData();
+  const { branch, tenantId, course } = getSessionData();
 
   const [columnVisibility, setColumnVisibility] = useLocalStorage(
     "column-visibility-attendance",
@@ -82,7 +82,7 @@ export default function AttendanceTable() {
       date: today,
       tenantId: tenantId,
       branchId: branch,
-      courseId:course[0].id,
+      courseId: course[0].id,
     });
     setData(response.data);
     const allowedHeaders = [
@@ -240,11 +240,12 @@ export default function AttendanceTable() {
                           key={cell.id}
                           className={clsx(
                             "relative",
-                     cell.column.id === "select" && "px-2", // or whatever spacing you want
+                            cell.column.id === "select" && "px-2", // or whatever spacing you want
 
                             cardSkin === "shadow-sm"
                               ? "dark:bg-dark-700"
                               : "dark:bg-dark-900",
+                            "dark:text-white",
                             cell.column.getCanPin() && [
                               cell.column.getIsPinned() === "left" &&
                                 "sticky z-2 ltr:left-0 rtl:right-0",
@@ -286,16 +287,15 @@ export default function AttendanceTable() {
             </Table>
           </div>
           <SelectedRowsActions table={table} />
-         {table.getCoreRowModel().rows.length > 0 ? (
-  <div className="...">
-    <PaginationSection table={table} />
-  </div>
-) : (
-  <div className="text-center py-4 text-sm text-gray-500 dark:text-dark-300">
-    No attendance records found.
-  </div>
-)}
-
+          {table.getCoreRowModel().rows.length > 0 ? (
+            <div className="...">
+              <PaginationSection table={table} />
+            </div>
+          ) : (
+            <div className="dark:text-dark-300 py-4 text-center text-sm text-gray-500">
+              No attendance records found.
+            </div>
+          )}
         </Card>
       </div>
     </div>
