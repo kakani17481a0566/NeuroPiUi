@@ -13,7 +13,7 @@ if(role==="Teacher"){
     navigation=[dashboards]
 }
 else if(role=="chairman"){
-    navigation=[UserManagement,dashboards,academics];
+    navigation=[dashboards,academics,UserManagement];
 }
 
 

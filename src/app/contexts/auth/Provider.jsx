@@ -145,7 +145,7 @@ export function AuthProvider({ children }) {
       }
       const ids=await axios.get(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/department/${departmentId}/user/${userId}`);
       // console.log(ids.data.data);
-      const{branchId,weekId,termId,courses}=ids.data.data;
+      const{branchId,weekId,termId,courses,userProfile}=ids.data.data;
 
       // localStorage.setItem("authToken", token);
       // localStorage.setItem("tenantId", tenantId);
@@ -160,7 +160,7 @@ export function AuthProvider({ children }) {
 
       setSessionData({ token: token, tid: tenantId, uid: userId,
          userName: userName,roleName:roleName, departmentId:departmentId , 
-         branchId:branchId, weekId:weekId, termId:termId,courses:courses,userImageUrl: userImageUrl});
+         branchId:branchId, weekId:weekId, termId:termId,courses:courses,userImageUrl: userImageUrl,userProfile: userProfile });
 
 
 

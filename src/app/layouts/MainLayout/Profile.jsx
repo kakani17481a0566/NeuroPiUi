@@ -7,78 +7,52 @@ import {
 } from "@headlessui/react";
 import {
   ArrowLeftStartOnRectangleIcon,
-  // Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
-// import { TbCoins, TbUser } from "react-icons/tb";
+import { TbUser } from "react-icons/tb";
 import { Link } from "react-router";
-// import { Navigate } from "react-router";
 import { useNavigate } from "react-router-dom";
-// import { clearSessionData } from "utils/sessionStorage";
-import { useAuthContext } from "app/contexts/auth/context";
-import { getSessionData } from "utils/sessionStorage";
 
 // Local Imports
 import { Avatar, AvatarDot, Button } from "components/ui";
-
-const { imageUrl } = getSessionData();
+import { useAuthContext } from "app/contexts/auth/context";
+import { getSessionData } from "utils/sessionStorage";
 
 // ----------------------------------------------------------------------
 
 const links = [
-  // {
-  //   id: "1",
-  //   title: "Profile",
-  //   description: "Your profile Setting",
-  //   to: "/settings/general",
-  //   Icon: TbUser,
-  //   color: "warning",
-  // },
-  // {
-  //   id: "4",
-  //   title: "Billing",
-  //   description: "Your billing information",
-  //   to: "/settings/billing",
-  //   Icon: TbCoins,
-  //   color: "error",
-  // },
-  // {
-  //   id: "5",
-  //   title: "Settings",
-  //   description: "Webapp settings",
-  //   to: "/settings/appearance",
-  //   Icon: Cog6ToothIcon,
-  //   color: "success",
-  // },
+  {
+    id: "1",
+    title: "Profile",
+    description: "Your profile settings",
+    to: "/settings/general",
+    Icon: TbUser,
+    color: "warning",
+  },
 ];
 
 export function Profile() {
   const navigate = useNavigate();
-  // const { setAuthenticated } = useAuthContext(); // or whatever updates auth
-  // const { dispatch } = useAuthContext();
   const { logout } = useAuthContext();
-  const { user, role } = getSessionData();
-  // const { user } = getSessionData();
+  const { userProfile, role, imageUrl } = getSessionData();
 
   const handleLogOut = async () => {
     console.log("Logging out...");
-    await logout(); // ✅ clear session + auth state
+    await logout(); // Clears session and updates auth state
     navigate("/login?redirectUrl=/");
   };
+
   return (
     <Popover className="relative">
       <PopoverButton
         as={Avatar}
         size={15}
         role="button"
-        src={imageUrl || "/default-profile.png"  } // fallback if null
+        src={imageUrl || "/default-profile.png"} // fallback image
         alt="Profile"
-        indicator={
-          <AvatarDot color="success" className="ltr:right-0 rtl:left-0" />
-        }
-        classNames={{
-          root: "cursor-pointer ",
-        }}
+        indicator={<AvatarDot color="success" className="ltr:right-0 rtl:left-0" />}
+        classNames={{ root: "cursor-pointer" }}
       />
+
       <Transition
         enter="duration-200 ease-out"
         enterFrom="translate-x-2 opacity-0"
@@ -89,30 +63,31 @@ export function Profile() {
       >
         <PopoverPanel
           anchor={{ to: "right end", gap: 12 }}
-          className="border-gray-150 shadow-soft dark:border-dark-600 dark:bg-dark-700 z-70 flex w-64 flex-col rounded-lg border bg-white transition dark:shadow-none"
+          className="z-70 flex w-64 flex-col rounded-lg border bg-white shadow-soft transition dark:border-dark-600 dark:bg-dark-700 dark:shadow-none"
         >
           {({ close }) => (
             <>
-              <div className=" text-primary-950 dark:bg-dark-800 flex items-center gap-4 rounded-t-lg bg-gray-100 px-4 py-5">
-                <Avatar size={20} src={imageUrl} alt="Profile" />
-
+              <div className="flex items-center gap-4 rounded-t-lg bg-gray-100 px-4 py-5 dark:bg-dark-800 text-primary-950">
+                <Avatar size={20} src={imageUrl || "/default-profile.png"} alt="Profile" />
                 <div>
-                  <p className="hover:text-primary-600 focus:text-primary-600 dark:text-dark-100 dark:hover:text-primary-400 dark:focus:text-primary-400 text-base font-medium text-gray-700">
-                    {user}
+                  <p className="text-base font-medium text-gray-700 dark:text-dark-100 hover:text-primary-600 focus:text-primary-600 dark:hover:text-primary-400 dark:focus:text-primary-400">
+                    {userProfile
+                      ? `${userProfile.firstName ?? ""} ${userProfile.lastName ?? ""}`.trim()
+                      : "User"}
                   </p>
-
-                  <p className="text-primary-950 dark:text-dark-50 mt-0.5 text-xs text-gray-400">
-                    {role}
+                  <p className="mt-0.5 text-xs text-gray-400 dark:text-dark-50">
+                    {role || "Role"}
                   </p>
                 </div>
               </div>
+
               <div className="flex flex-col pt-2 pb-5">
                 {links.map((link) => (
                   <Link
                     key={link.id}
                     to={link.to}
                     onClick={close}
-                    className="group dark:hover:bg-dark-600 dark:focus:bg-dark-600 flex items-center gap-3 px-4 py-2 tracking-wide outline-hidden transition-all hover:bg-gray-100 focus:bg-gray-100"
+                    className="group flex items-center gap-3 px-4 py-2 tracking-wide transition-all hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-600 dark:focus:bg-dark-600"
                   >
                     <Avatar
                       size={8}
@@ -122,17 +97,18 @@ export function Profile() {
                       <link.Icon className="size-4.5" />
                     </Avatar>
                     <div>
-                      <h2 className="group-hover:text-primary-600 group-focus:text-primary-600 dark:text-dark-100 dark:group-hover:text-primary-400 dark:group-focus:text-primary-400 font-medium text-gray-800 transition-colors">
+                      <h2 className="text-gray-800 font-medium transition-colors group-hover:text-primary-600 group-focus:text-primary-600 dark:text-dark-100 dark:group-hover:text-primary-400 dark:group-focus:text-primary-400">
                         {link.title}
                       </h2>
-                      <div className="dark:text-dark-300 truncate text-xs text-gray-400">
+                      <div className="text-xs text-gray-400 truncate dark:text-dark-300">
                         {link.description}
                       </div>
                     </div>
                   </Link>
                 ))}
+
                 <div className="px-4 pt-4">
-                  <Button className="w-full gap-2  bg-primary-600" onClick={handleLogOut}>
+                  <Button className="w-full gap-2 bg-primary-600" onClick={handleLogOut}>
                     <ArrowLeftStartOnRectangleIcon className="size-4.5" />
                     <span>Logout</span>
                   </Button>

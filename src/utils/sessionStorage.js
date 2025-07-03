@@ -1,5 +1,3 @@
-// src/utils/sessionStorage.js
-
 let jwtToken = null;
 let tenantId = null;
 let userId = null;
@@ -12,6 +10,16 @@ let term = null;
 let course = null;
 let imageUrl = null;
 
+// ✅ Safe JSON parse utility
+function safeParse(value) {
+  try {
+    if (!value || value === "undefined") return null;
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
 export const setSessionData = ({
   token,
   tid,
@@ -23,7 +31,8 @@ export const setSessionData = ({
   weekId,
   termId,
   courses,
-  userImageUrl, 
+  userImageUrl,
+  userProfile
 }) => {
   jwtToken = token;
   tenantId = tid;
@@ -46,8 +55,13 @@ export const setSessionData = ({
   localStorage.setItem("weekId", week);
   localStorage.setItem("termId", term);
   localStorage.setItem("branchId", branch);
-  localStorage.setItem("courses", JSON.stringify(course));
-  localStorage.setItem("userImageUrl", userImageUrl); 
+  localStorage.setItem("courses", JSON.stringify(course ?? []));
+  localStorage.setItem("userImageUrl", userImageUrl);
+
+  // ✅ Only save userProfile if valid
+  if (userProfile !== undefined && userProfile !== null) {
+    localStorage.setItem("userProfile", JSON.stringify(userProfile));
+  }
 };
 
 export const getSessionData = () => ({
@@ -60,8 +74,9 @@ export const getSessionData = () => ({
   week: week || localStorage.getItem("weekId"),
   term: term || localStorage.getItem("termId"),
   branch: branch || localStorage.getItem("branchId"),
-  course: course || JSON.parse(localStorage.getItem("courses") || "null"),
-  imageUrl: imageUrl || localStorage.getItem("userImageUrl"), 
+  course: course || safeParse(localStorage.getItem("courses")),
+  imageUrl: imageUrl || localStorage.getItem("userImageUrl"),
+  userProfile: safeParse(localStorage.getItem("userProfile")),
 });
 
 export const clearSessionData = () => {
@@ -87,5 +102,6 @@ export const clearSessionData = () => {
   localStorage.removeItem("termId");
   localStorage.removeItem("branchId");
   localStorage.removeItem("courses");
-  localStorage.removeItem("userImageUrl"); 
+  localStorage.removeItem("userImageUrl");
+  localStorage.removeItem("userProfile"); // ✅ Also clear userProfile
 };
