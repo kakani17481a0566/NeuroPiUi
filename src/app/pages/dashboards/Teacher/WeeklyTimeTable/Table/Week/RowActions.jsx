@@ -11,22 +11,17 @@ import {
   DocumentIcon,
   UserGroupIcon,
   ClipboardDocumentListIcon,
-} from "@heroicons/react/24/outline";
-
-import {
   ChevronUpIcon,
   EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
 
 import clsx from "clsx";
 import { useCallback, useState } from "react";
-// import {useNavigate} from 'react-router-dom';
 import PropTypes from "prop-types";
 import Vimeo from "@u-wave/react-vimeo";
 
 import { Button } from "components/ui";
 import { fetchWeeklyTimeTableData } from "./data";
-// import Attendance from "app/pages/dashboards/Teacher/WeeklyTimeTable/Table/Attendance";
 import Grades from "app/pages/tables/Grades";
 import Att from "app/pages/tables/Att";
 
@@ -45,10 +40,8 @@ export function RowActions({ row }) {
   const [assignments, setAssignments] = useState([]);
   const [showAssignmentsPopUp, setShowAssignmentsPopUp] = useState(false);
 
-  const normalizeUrl = (url) => {
-    if (!url) return "";
-    return /^https?:\/\//i.test(url) ? url : `https://${url}`;
-  };
+  const normalizeUrl = (url) =>
+    url && !/^https?:\/\//i.test(url) ? `https://${url}` : url || "";
 
   const handleViewPdfPopup = useCallback(() => {
     setShowPdfViewerModal(true);
@@ -63,16 +56,14 @@ export function RowActions({ row }) {
     setPdfPath(normalizeUrl(pdf.link));
   };
 
-  const handleClosePopup = () => {
-    setShowResourcePopup(false);
-  };
-  //  const navigate = useNavigate();
+  const handleClosePopup = () => setShowResourcePopup(false);
 
   const handleViewResourcePopup = async () => {
     setOpenedFromResources(true);
     setShowResourcePopup(true);
     setLoadingResources(true);
     setOpenedFromAssignments(false);
+
     try {
       const resourceList = await fetchWeeklyTimeTableData();
       setResources(resourceList.resources);
@@ -89,9 +80,8 @@ export function RowActions({ row }) {
     setShowVideoPlayer(true);
   };
 
-  const handleViewAttendancePopup = () => {
-    setStudentAttendancePopUp(true);
-  };
+  const handleViewAttendancePopup = () => setStudentAttendancePopUp(true);
+
   const handleAssignMarks = () => {
     console.log(row);
     setShowAssignmentsPopUp(true);
@@ -122,13 +112,9 @@ export function RowActions({ row }) {
       .split("\n")
       .map((link, index) => {
         const cleanLink = link.trim();
-        if (!cleanLink || !/^https?:\/\//i.test(cleanLink)) return null;
-
-        return {
-          name: `Worksheet ${index + 1}`,
-          link: cleanLink,
-          rawText: cleanLink,
-        };
+        return cleanLink && /^https?:\/\//i.test(cleanLink)
+          ? { name: `Worksheet ${index + 1}`, link: cleanLink, rawText: cleanLink }
+          : null;
       })
       .filter(Boolean);
 
@@ -290,69 +276,81 @@ export function RowActions({ row }) {
       )}
 
       {showResourcePopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="relative w-full max-w-4xl overflow-auto rounded-lg bg-white p-6 shadow-lg">
-            <h2 className="text-primary-950 mb-4 text-lg font-semibold">
-              Resources
-            </h2>
-            {loadingResources ? (
-              <p>Loading...</p>
-            ) : (
-              <table className="w-full table-fixed border">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="text-primary-950 w-1/2 border-b p-2">PDF</th>
-                    <th className="text-primary-950 w-1/2 border-b p-2">
-                      Video
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(() => {
-                    const pdf = resources.anx || [];
-                    const mp4 = resources.mp4 || [];
-                    const len = Math.max(pdf.length, mp4.length);
-                    return Array.from({ length: len }).map((_, i) => (
-                      <tr key={i} className="hover:bg-gray-50">
-                        <td className="border-b p-2 text-center">
-                          {pdf[i] ? (
-                            <button
-                              onClick={() => handlepdfResource(pdf[i])}
-                              className="text-primary-950 underline"
-                            >
-                              {pdf[i].name}
-                            </button>
-                          ) : (
-                            "-"
-                          )}
-                        </td>
-                        <td className="border-b p-2 text-center">
-                          {mp4[i] ? (
-                            <button
-                              onClick={() => handleResourceClick(mp4[i])}
-                              className="text-primary-950 underline"
-                            >
-                              {mp4[i].name}
-                            </button>
-                          ) : (
-                            "-"
-                          )}
-                        </td>
-                      </tr>
-                    ));
-                  })()}
-                </tbody>
-              </table>
-            )}
-            <button
-              className="bg-primary-600 mt-4 rounded px-4 py-2 text-white"
-              onClick={handleClosePopup}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="relative w-full max-w-4xl overflow-auto rounded-lg bg-white p-6 shadow-lg">
+      <h2 className="text-primary-950 mb-4 text-lg font-semibold">
+        Resources
+      </h2>
+      {loadingResources ? (
+        <p>Loading...</p>
+      ) : (
+        <table className="w-full table-fixed border">
+          <thead className="background-primary-600">
+            <tr className="bg-gray-100">
+              <th className="text-primary-950 w-1/3 border-b p-2">PDF</th>
+              <th className="text-primary-950 w-1/3 border-b p-2">Video</th>
+              <th className="text-primary-950 w-1/3 border-b p-2">Template</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(() => {
+              const pdf = resources.anx || [];
+              const mp4 = resources.mp4 || [];
+              const template = resources.template || [];
+              const len = Math.max(pdf.length, mp4.length, template.length);
+              return Array.from({ length: len }).map((_, i) => (
+                <tr key={i} className="hover:bg-gray-50">
+                  <td className="border-b p-2 text-center">
+                    {pdf[i] ? (
+                      <button
+                        onClick={() => handlepdfResource(pdf[i])}
+                        className="text-primary-950 underline"
+                      >
+                        {pdf[i].name}
+                      </button>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+                  <td className="border-b p-2 text-center">
+                    {mp4[i] ? (
+                      <button
+                        onClick={() => handleResourceClick(mp4[i])}
+                        className="text-primary-950 underline"
+                      >
+                        {mp4[i].name}
+                      </button>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+                  <td className="border-b p-2 text-center">
+                    {template[i] ? (
+                      <button
+                        onClick={() => handlepdfResource(template[i])}
+                        className="text-primary-950 underline"
+                      >
+                        {template[i].name}
+                      </button>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+                </tr>
+              ));
+            })()}
+          </tbody>
+        </table>
       )}
+      <button
+        className="bg-primary-600 mt-4 rounded px-4 py-2 text-white"
+        onClick={handleClosePopup}
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
 
       {showWorkShopPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
