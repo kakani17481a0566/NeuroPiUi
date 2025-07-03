@@ -12,8 +12,8 @@ if(role==="Teacher"){
  else if(role==="Nanny"){
     navigation=[dashboards]
 }
-else{
-    navigation=[UserManagement,dashboards];
+else if(role=="chairman"){
+    navigation=[UserManagement,dashboards,academics];
 }
 
 
