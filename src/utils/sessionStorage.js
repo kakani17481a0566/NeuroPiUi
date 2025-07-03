@@ -1,3 +1,4 @@
+// Local in-memory cache
 let jwtToken = null;
 let tenantId = null;
 let userId = null;
@@ -20,6 +21,7 @@ function safeParse(value) {
   }
 }
 
+// ✅ Set all session data
 export const setSessionData = ({
   token,
   tid,
@@ -32,8 +34,9 @@ export const setSessionData = ({
   termId,
   courses,
   userImageUrl,
-  userProfile
+  userProfile,
 }) => {
+  // Set in-memory
   jwtToken = token;
   tenantId = tid;
   userId = uid;
@@ -46,24 +49,26 @@ export const setSessionData = ({
   course = courses;
   imageUrl = userImageUrl;
 
-  localStorage.setItem("authToken", token);
-  localStorage.setItem("tenantId", tid);
-  localStorage.setItem("userId", uid);
-  localStorage.setItem("user", user);
-  localStorage.setItem("role", role);
-  localStorage.setItem("department", department);
-  localStorage.setItem("weekId", week);
-  localStorage.setItem("termId", term);
-  localStorage.setItem("branchId", branch);
-  localStorage.setItem("courses", JSON.stringify(course ?? []));
-  localStorage.setItem("userImageUrl", userImageUrl);
+  // Set in localStorage
+  localStorage.setItem("authToken", token ?? "");
+  localStorage.setItem("tenantId", tid ?? "");
+  localStorage.setItem("userId", uid ?? "");
+  localStorage.setItem("user", userName ?? "");
+  localStorage.setItem("role", roleName ?? "");
+  localStorage.setItem("department", departmentId ?? "");
+  localStorage.setItem("weekId", weekId ?? "");
+  localStorage.setItem("termId", termId ?? "");
+  localStorage.setItem("branchId", branchId ?? "");
+  localStorage.setItem("courses", JSON.stringify(courses ?? []));
+  localStorage.setItem("userImageUrl", userImageUrl ?? "");
 
-  // ✅ Only save userProfile if valid
-  if (userProfile !== undefined && userProfile !== null) {
+  // ✅ Save userProfile safely
+  if (userProfile && typeof userProfile === "object") {
     localStorage.setItem("userProfile", JSON.stringify(userProfile));
   }
 };
 
+// ✅ Get session data (from memory or fallback to localStorage)
 export const getSessionData = () => ({
   token: jwtToken || localStorage.getItem("authToken"),
   tenantId: tenantId || localStorage.getItem("tenantId"),
@@ -79,6 +84,7 @@ export const getSessionData = () => ({
   userProfile: safeParse(localStorage.getItem("userProfile")),
 });
 
+// ✅ Clear session data
 export const clearSessionData = () => {
   jwtToken = null;
   tenantId = null;
@@ -103,5 +109,5 @@ export const clearSessionData = () => {
   localStorage.removeItem("branchId");
   localStorage.removeItem("courses");
   localStorage.removeItem("userImageUrl");
-  localStorage.removeItem("userProfile"); // ✅ Also clear userProfile
+  localStorage.removeItem("userProfile");
 };

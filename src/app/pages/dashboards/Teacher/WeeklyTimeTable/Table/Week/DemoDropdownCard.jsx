@@ -15,15 +15,20 @@ import { getSessionData } from "utils/sessionStorage";
 const ReusableDropdown = ({ selected, options, onSelect, placeholder = "Select Option" }) => (
   <div className="w-full max-w-sm">
     <Menu as="div" className="relative w-full">
-      <MenuButton as={Button} color="primary" className="w-full justify-between">
+      <MenuButton as={Fragment}>
         {({ open }) => (
-          <>
+          <Button
+            type="button"
+            color="primary"
+            className="w-full justify-between"
+            aria-expanded={open}
+          >
             <span>{selected ? selected.name : placeholder}</span>
             <ChevronDownIcon
               className={clsx("ml-2 size-4 transition-transform", open && "rotate-180")}
               aria-hidden="true"
             />
-          </>
+          </Button>
         )}
       </MenuButton>
 
@@ -39,7 +44,7 @@ const ReusableDropdown = ({ selected, options, onSelect, placeholder = "Select O
         <MenuItems className="absolute z-[100] mt-2 w-full overflow-hidden rounded-lg border border-gray-300 bg-white shadow-lg dark:border-dark-500 dark:bg-dark-700">
           {options?.length > 0 ? (
             options.map((opt) => (
-              <MenuItem key={opt.id}>
+              <MenuItem key={opt.id} as={Fragment}>
                 {({ active }) => (
                   <button
                     onClick={() => onSelect?.(opt)}
@@ -69,11 +74,7 @@ const DemoDropdownCard = ({ onCourseChange }) => {
 
   useEffect(() => {
     const { course } = getSessionData();
-    const normalizedCourses = Array.isArray(course)
-      ? course
-      : course
-      ? [course]
-      : [];
+    const normalizedCourses = Array.isArray(course) ? course : course ? [course] : [];
 
     setCourses(normalizedCourses);
 

@@ -1,180 +1,111 @@
 // Import Dependencies
-import { PhoneIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { PhoneIcon } from "@heroicons/react/20/solid";
 import { EnvelopeIcon, UserIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
-import { HiPencil } from "react-icons/hi";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 // Local Imports
 import { PreviewImg } from "components/shared/PreviewImg";
-import { Avatar, Button, Input, Upload } from "components/ui";
+import { Avatar, Input } from "components/ui";
+import { getSessionData } from "utils/sessionStorage";
 
 // ----------------------------------------------------------------------
 
 export default function General() {
-  const [avatar, setAvatar] = useState(null);
+  const [displayName, setDisplayName] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [imageUrl, setImageUrl] = useState("/images/100x100.png");
+
+  const { userId, tenantId } = getSessionData();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(
+          `https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/User/${userId}?tenantId=${tenantId}`
+        );
+        const user = res.data?.data;
+
+        setDisplayName(user.username || "");
+        setFullName(`${user.firstName ?? ""} ${user.lastName ?? ""}`.trim());
+        setEmail(user.email || "");
+        setPhone(user.mobileNumber || "");
+        setImageUrl(user.userImageUrl?.trim() || "/images/100x100.png");
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
-    <div className="w-full max-w-3xl 2xl:max-w-5xl">
-      <h5 className="text-lg font-medium text-gray-800 dark:text-dark-50">
-        General
-      </h5>
-      <p className="mt-0.5 text-balance text-sm text-gray-500 dark:text-dark-200">
-        Update your account settings.
-      </p>
-      <div className="my-5 h-px bg-gray-200 dark:bg-dark-500" />
-      <div className="mt-4 flex flex-col space-y-1.5">
-        <span className="text-base font-medium text-gray-800 dark:text-dark-100">
-          Avatar
-        </span>
+    <div className="w-full font-lato  max-w-3xl 2xl:max-w-5xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-primary-800 dark:text-primary-300">
+          General
+        </h1>
+        <p className="text-sm text-primary-500 dark:text-primary-400">
+          View your account details
+        </p>
+        <hr className="mt-4 border-gray-200 dark:border-dark-600" />
+      </div>
+
+      {/* Avatar Section */}
+      <div className="flex items-center gap-4">
         <Avatar
-          size={20}
+          size={24}
           imgComponent={PreviewImg}
-          imgProps={{ file: avatar }}
-          src="/images/100x100.png"
+          imgProps={{ src: imageUrl }}
+          src={imageUrl}
           classNames={{
-            root: "rounded-xl ring-primary-600 ring-offset-[3px] ring-offset-white transition-all hover:ring-3 dark:ring-primary-500 dark:ring-offset-dark-700",
+            root: "rounded-xl ring-2 ring-primary-600 dark:ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-dark-900 transition-all shadow-md",
             display: "rounded-xl",
           }}
-          indicator={
-            <div className="absolute bottom-0 right-0 -m-1 flex items-center justify-center rounded-full bg-white dark:bg-dark-700">
-              {avatar ? (
-                <Button
-                  onClick={() => setAvatar(null)}
-                  isIcon
-                  className="size-6 rounded-full"
-                >
-                  <XMarkIcon className="size-4" />
-                </Button>
-              ) : (
-                <Upload name="avatar" onChange={setAvatar} accept="image/*">
-                  {({ ...props }) => (
-                    <Button isIcon className="size-6 rounded-full" {...props}>
-                      <HiPencil className="size-3.5" />
-                    </Button>
-                  )}
-                </Upload>
-              )}
-            </div>
-          }
         />
+        <div>
+          <p className="text-lg font-medium text-primary-900 dark:text-primary-100">
+            {fullName || "No Name"}
+          </p>
+          <p className="text-sm text-primary-500 dark:text-primary-400">
+            {displayName || "No Username"}
+          </p>
+        </div>
       </div>
-      <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 [&_.prefix]:pointer-events-none">
+
+      {/* User Info Fields */}
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
         <Input
-          placeholder="Enter Nickname"
-          label="Display name"
-          className="rounded-xl"
+          label="Display Name"
+          value={displayName}
           prefix={<UserIcon className="size-4.5" />}
+          readOnly
+          className="rounded-xl cursor-not-allowed bg-gray-100 dark:bg-dark-700 text-primary-700 dark:text-primary-300"
         />
         <Input
-          placeholder="Enter FullName"
-          label="Full name"
-          className="rounded-xl"
+          label="Full Name"
+          value={fullName}
           prefix={<UserIcon className="size-4.5" />}
+          readOnly
+          className="rounded-xl cursor-not-allowed bg-gray-100 dark:bg-dark-700 text-primary-700 dark:text-primary-300"
         />
         <Input
-          placeholder="Enter Email"
           label="Email"
-          className="rounded-xl"
+          value={email}
           prefix={<EnvelopeIcon className="size-4.5" />}
+          readOnly
+          className="rounded-xl cursor-not-allowed bg-gray-100 dark:bg-dark-700 text-primary-700 dark:text-primary-300"
         />
         <Input
-          placeholder="Phone Number"
           label="Phone Number"
-          className="rounded-xl"
+          value={phone}
           prefix={<PhoneIcon className="size-4.5" />}
+          readOnly
+          className="rounded-xl cursor-not-allowed bg-gray-100 dark:bg-dark-700 text-primary-700 dark:text-primary-300"
         />
-      </div>
-      <div className="my-7 h-px bg-gray-200 dark:bg-dark-500" />
-      <div>
-        <div>
-          <p className="text-base font-medium text-gray-800 dark:text-dark-100">
-            Linked Accounts
-          </p>
-          <p className="mt-0.5">
-            Manage your linked accounts and their permissions.
-          </p>
-        </div>
-        <div>
-          <div className="mt-4 flex items-center justify-between space-x-2 ">
-            <div className="flex min-w-0 items-center space-x-4 ">
-              <div className="size-12">
-                <img
-                  className="h-full w-full"
-                  src="/images/logos/google.svg"
-                  alt="logo"
-                />
-              </div>
-              <p className="truncate font-medium">Sign In with Google</p>
-            </div>
-            <Button
-              className="h-8 rounded-full px-3 text-xs-plus"
-              variant="outlined"
-            >
-              Connect
-            </Button>
-          </div>
-          <div className="mt-4 flex items-center justify-between space-x-2 ">
-            <div className="flex min-w-0 items-center space-x-4 ">
-              <div className="size-12">
-                <img
-                  className="h-full w-full"
-                  src="/images/logos/github-round.svg"
-                  alt="logo"
-                />
-              </div>
-              <p className="truncate font-medium">Sign In with Github</p>
-            </div>
-            <Button
-              className="h-8 rounded-full px-3 text-xs-plus"
-              variant="outlined"
-            >
-              Connect
-            </Button>
-          </div>
-          <div className="mt-4 flex items-center justify-between space-x-2 ">
-            <div className="flex min-w-0 items-center space-x-4 ">
-              <div className="size-12">
-                <img
-                  className="h-full w-full"
-                  src="/images/logos/instagram-round.svg"
-                  alt="logo"
-                />
-              </div>
-              <p className="truncate font-medium">Sign In with Instagram</p>
-            </div>
-            <Button
-              className="h-8 rounded-full px-3 text-xs-plus"
-              variant="outlined"
-            >
-              Connect
-            </Button>
-          </div>
-          <div className="mt-4 flex items-center justify-between space-x-2 ">
-            <div className="flex min-w-0 items-center space-x-4 ">
-              <div className="size-12">
-                <img
-                  className="h-full w-full"
-                  src="/images/logos/discord-round.svg"
-                  alt="logo"
-                />
-              </div>
-              <p className="truncate font-medium">Sign In with Discord</p>
-            </div>
-            <Button
-              className="h-8 rounded-full px-3 text-xs-plus"
-              variant="outlined"
-            >
-              {" "}
-              Connect
-            </Button>
-          </div>
-        </div>
-      </div>
-      <div className="mt-8 flex justify-end space-x-3 ">
-        <Button className="min-w-[7rem]">Cancel</Button>
-        <Button className="min-w-[7rem]" color="primary">
-          Save
-        </Button>
       </div>
     </div>
   );

@@ -33,7 +33,7 @@ const links = [
 export function Profile() {
   const navigate = useNavigate();
   const { logout } = useAuthContext();
-  const { userProfile, role, imageUrl } = getSessionData();
+  const { user, role, imageUrl } = getSessionData();
 
   const handleLogOut = async () => {
     console.log("Logging out...");
@@ -71,9 +71,8 @@ export function Profile() {
                 <Avatar size={20} src={imageUrl || "/default-profile.png"} alt="Profile" />
                 <div>
                   <p className="text-base font-medium text-gray-700 dark:text-dark-100 hover:text-primary-600 focus:text-primary-600 dark:hover:text-primary-400 dark:focus:text-primary-400">
-                    {userProfile
-                      ? `${userProfile.firstName ?? ""} ${userProfile.lastName ?? ""}`.trim()
-                      : "User"}
+                    {user
+                      ? `${user}`: "User Name"}
                   </p>
                   <p className="mt-0.5 text-xs text-gray-400 dark:text-dark-50">
                     {role || "Role"}
