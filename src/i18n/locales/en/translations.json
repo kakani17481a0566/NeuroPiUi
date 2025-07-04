@@ -12,6 +12,9 @@
       "Students":"Students",
       "Grades":"Grades"
     },
+     "accounts": {
+      "accounts": "Accounts"
+    },
     "usermanagement": {
       "usermanagement":"UserManagement",
       "role":"Roles"

@@ -29,13 +29,13 @@ export const academics = {
             transKey: 'nav.academics.weeklyplan',
             Icon: AcademicCapIcon,
         },
-        // {
-        //     id: 'academics.students',
-        //     path: path(ROOT_ACADEMICS, '/students'),
-        //     type: NAV_TYPE_ITEM,
-        //     title: 'students',
-        //     transKey: 'nav.academics.Students',
-        //     Icon: AcademicCapIcon,
-        // },
+        {
+            id: 'academics.students',
+            path: path(ROOT_ACADEMICS, '/students'),
+            type: NAV_TYPE_ITEM,
+            title: 'students',
+            transKey: 'nav.academics.Students',
+            Icon: AcademicCapIcon,
+        },
     ]
 };

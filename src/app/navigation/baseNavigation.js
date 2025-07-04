@@ -18,4 +18,12 @@ export const baseNavigation = [
     transKey: 'nav.academics.academics',
     Icon: AcademicCapIcon, // 🎓 Academics icon
   },
+   {
+    id: 'accounts',
+    type: NAV_TYPE_ITEM,
+    path: '/accounts',
+    title: 'Accounts',
+    transKey: 'nav.accounts.accounts',
+    Icon: AcademicCapIcon, // 🎓 Academics icon
+  },
 ];

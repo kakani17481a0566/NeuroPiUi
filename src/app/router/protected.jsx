@@ -72,7 +72,7 @@ const protectedRoutes = {
 
               path: "students",
               lazy: async () => ({
-                Component: (await import("app/pages/academics/Students")).default,
+                Component: (await import("app/pages/dashboards/Students")).default,
               }),
 
 
@@ -97,6 +97,22 @@ const protectedRoutes = {
               path: "role",
               lazy: async () => ({
                 Component: (await import("app/pages/tables/Roles")).default,
+              }),
+
+            },
+          ]
+        },
+        {
+          path: "accounts",
+          children: [
+            {
+              index: true,
+              element: <Navigate to="/accounts" />
+            },
+            {
+              path: "account",
+              lazy: async () => ({
+                Component: (await import("app/pages/dashboards/Accounts")).default,
               }),
 
             },
