@@ -4,7 +4,6 @@ import { STUDENTS_LIST } from "constants/apis";
 // Fetch logic centralized here
 export const fetchStudents= async (courseId,branchId) => {
   try {
-    console.log(courseId);
     //https://localhost:7202/api/User/by-tenant?tenantId=2
     
 

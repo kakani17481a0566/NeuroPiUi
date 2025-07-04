@@ -24,6 +24,7 @@ import { Button } from "components/ui";
 import { fetchWeeklyTimeTableData } from "./data";
 import Grades from "app/pages/tables/Grades";
 import Att from "app/pages/tables/Att";
+import { getSessionData } from "utils/sessionStorage"; 
 
 export function RowActions({ row }) {
   const [showPdfViewerModal, setShowPdfViewerModal] = useState(false);
@@ -39,7 +40,8 @@ export function RowActions({ row }) {
   const [showWorkShopPopup, setShowWorkShopPopup] = useState(false);
   const [assignments, setAssignments] = useState([]);
   const [showAssignmentsPopUp, setShowAssignmentsPopUp] = useState(false);
-
+  const {course}=getSessionData();
+  const defaultCourse=course && course.length > 0 ? course[0].id : null;
   const normalizeUrl = (url) =>
     url && !/^https?:\/\//i.test(url) ? `https://${url}` : url || "";
 
@@ -65,8 +67,9 @@ export function RowActions({ row }) {
     setOpenedFromAssignments(false);
 
     try {
-      const resourceList = await fetchWeeklyTimeTableData();
-      setResources(resourceList.resources);
+      const {resources} = await fetchWeeklyTimeTableData({courseId:defaultCourse});
+      setResources(resources);
+      
     } catch (err) {
       console.error("Failed to fetch resources:", err);
       setResources([]);
