@@ -93,7 +93,7 @@ const DemoDropdownCard = ({ onCourseChange }) => {
     <div className="px-4 py-4">
       <Box className="w-full rounded-xl bg-gray-100 dark:bg-dark-500 p-4 shadow-sm">
         <h3 className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-200">
-          Select a Course
+          Select a Grade
         </h3>
         <ReusableDropdown
           selected={selectedCourse}

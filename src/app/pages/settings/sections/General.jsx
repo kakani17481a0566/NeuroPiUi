@@ -1,6 +1,9 @@
 // Import Dependencies
-import { PhoneIcon } from "@heroicons/react/20/solid";
-import { EnvelopeIcon, UserIcon } from "@heroicons/react/24/outline";
+import {
+  PhoneIcon,
+  EnvelopeIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -42,11 +45,11 @@ export default function General() {
   }, []);
 
   return (
-    <div className="w-full font-lato  max-w-3xl 2xl:max-w-5xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+    <div className="w-full font-lato max-w-3xl 2xl:max-w-5xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-primary-800 dark:text-primary-300">
-          General
+          User Info
         </h1>
         <p className="text-sm text-primary-500 dark:text-primary-400">
           View your account details
@@ -62,7 +65,8 @@ export default function General() {
           imgProps={{ src: imageUrl }}
           src={imageUrl}
           classNames={{
-            root: "rounded-xl ring-2 ring-primary-600 dark:ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-dark-900 transition-all shadow-md",
+            root:
+              "rounded-xl ring-2 ring-primary-600 dark:ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-dark-900 transition-all shadow-md",
             display: "rounded-xl",
           }}
         />
@@ -81,30 +85,30 @@ export default function General() {
         <Input
           label="Display Name"
           value={displayName}
-          prefix={<UserIcon className="size-4.5" />}
+          prefix={<UserIcon className="size-4.5 text-primary-600" />}
           readOnly
-          className="rounded-xl cursor-not-allowed bg-gray-100 dark:bg-dark-700 text-primary-700 dark:text-primary-300"
+          className="rounded-xl cursor-not-allowed bg-gray-100 dark:bg-dark-700 text-primary-950 dark:text-primary-300"
         />
         <Input
           label="Full Name"
           value={fullName}
-          prefix={<UserIcon className="size-4.5" />}
+          prefix={<UserIcon className="size-4.5 text-primary-600" />}
           readOnly
-          className="rounded-xl cursor-not-allowed bg-gray-100 dark:bg-dark-700 text-primary-700 dark:text-primary-300"
+          className="rounded-xl cursor-not-allowed bg-gray-100 dark:bg-dark-700 text-primary-950 dark:text-primary-300"
         />
         <Input
           label="Email"
           value={email}
-          prefix={<EnvelopeIcon className="size-4.5" />}
+          prefix={<EnvelopeIcon className="size-4.5 text-primary-600" />}
           readOnly
-          className="rounded-xl cursor-not-allowed bg-gray-100 dark:bg-dark-700 text-primary-700 dark:text-primary-300"
+          className="rounded-xl cursor-not-allowed bg-gray-100 dark:bg-dark-700 text-primary-950 dark:text-primary-300"
         />
         <Input
           label="Phone Number"
           value={phone}
-          prefix={<PhoneIcon className="size-4.5" />}
+          prefix={<PhoneIcon className="size-4.5 text-primary-600" />}
           readOnly
-          className="rounded-xl cursor-not-allowed bg-gray-100 dark:bg-dark-700 text-primary-700 dark:text-primary-300"
+          className="rounded-xl cursor-not-allowed bg-gray-100 dark:bg-dark-700 text-primary-950 dark:text-primary-300"
         />
       </div>
     </div>
