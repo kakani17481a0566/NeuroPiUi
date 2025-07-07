@@ -29,13 +29,14 @@ function getActivityIcon(type) {
 }
 
 export function ActivityCell({ row, getValue }) {
-  const Icon = getActivityIcon(row.original.activity_type.key);
+  const Icon = getActivityIcon(row.original.activity_type?.key || "personal");
+  const color = activityColor[row.original.activity_type?.key] || "primary";
 
   return (
-    <div className="flex items-center space-x-4 ">
+    <div className="flex items-center space-x-4">
       <Avatar
         classNames={{ display: "rounded-lg" }}
-        initialColor={activityColor[row.original.activity_type.key]}
+        initialColor={color}
         size={9}
       >
         <Icon className="size-5" />
@@ -46,7 +47,7 @@ export function ActivityCell({ row, getValue }) {
           {getValue()}
         </p>
         <p className="mt-0.5 text-xs text-gray-400 dark:text-dark-300">
-          {row.original.activity_type.title}
+          {row.original.activity_type?.title || "General"}
         </p>
       </div>
     </div>
@@ -72,14 +73,13 @@ export function TransactionDateCell({ getValue }) {
 
 export function AmountCell({ row, getValue }) {
   const val = getValue();
-
   return (
     <span
       className={clsx(
         "font-semibold",
         val > 0
           ? "text-success dark:text-success-light"
-          : "text-error dark:text-error-light",
+          : "text-error dark:text-error-light"
       )}
     >
       {val} {row.original.account_name}
@@ -87,20 +87,21 @@ export function AmountCell({ row, getValue }) {
   );
 }
 
+// PropTypes
 ActivityCell.propTypes = {
-  row: PropTypes.object,
-  getValue: PropTypes.func,
+  row: PropTypes.object.isRequired,
+  getValue: PropTypes.func.isRequired,
 };
 
 AccountNameCell.propTypes = {
-  getValue: PropTypes.func,
+  getValue: PropTypes.func.isRequired,
 };
 
 TransactionDateCell.propTypes = {
-  getValue: PropTypes.func,
+  getValue: PropTypes.func.isRequired,
 };
 
 AmountCell.propTypes = {
-  row: PropTypes.object,
-  getValue: PropTypes.func,
+  row: PropTypes.object.isRequired,
+  getValue: PropTypes.func.isRequired,
 };

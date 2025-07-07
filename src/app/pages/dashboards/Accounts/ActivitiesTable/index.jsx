@@ -1,4 +1,5 @@
-// Local Imports
+// src/app/pages/dashboards/Accounts/ActivitiesTable/index.jsx
+
 import {
   flexRender,
   getCoreRowModel,
@@ -8,39 +9,48 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import clsx from "clsx";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
-// Import Dependencies
-import { CollapsibleSearch } from "components/shared/CollapsibleSearch";
-import { TableSortIcon } from "components/shared/table/TableSortIcon";
-import { SelectedRowsActions } from "components/shared/table/SelectedRowsActions";
 import { Card, Table, THead, TBody, Th, Tr, Td } from "components/ui";
-import { useBoxSize, useDidUpdate } from "hooks";
-import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
-import { useSkipper } from "utils/react-table/useSkipper";
+import { TableSortIcon } from "components/shared/table/TableSortIcon";
 import { PaginationSection } from "./PaginationSection";
-import { MenuAction } from "./MenuActions";
-import { columns } from "./columns";
-import { activityList } from "./fakeData";
 import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
-
-// ----------------------------------------------------------------------
+import { CollapsibleSearch } from "components/shared/CollapsibleSearch";
+import { useSkipper } from "utils/react-table/useSkipper";
+import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
+import { useBoxSize, useDidUpdate } from "hooks";
+import { SelectedRowsActions } from "components/shared/table/SelectedRowsActions";
+import { MenuAction } from "./MenuActions";
+import { columns } from "./columns"; // already mapped to your real keys
+import { fetchActivities } from "./fetchActivities"; // hits your .NET API
 
 const isSafari = getUserAgentBrowser() === "Safari";
 
-export function ActivitiesTable() {
+export function ActivitiesTable({ refreshTrigger }) {
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
   const theadRef = useRef();
-
   const { height: theadHeight } = useBoxSize({ ref: theadRef });
-
-  const [activities, setActivities] = useState([...activityList]);
 
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
 
+useEffect(() => {
+  fetchActivities()
+    .then((data) => setTransactions(data))
+    .catch((err) => {
+      console.error("Error loading transactions", err);
+      setError("Failed to load transactions.");
+    })
+    .finally(() => setLoading(false));
+}, [refreshTrigger]);
+
+
   const table = useReactTable({
-    data: activities,
+    data: transactions,
     columns,
     state: {
       globalFilter,
@@ -48,47 +58,51 @@ export function ActivitiesTable() {
     },
     meta: {
       deleteRow: (row) => {
-        // Skip page index reset until after next rerender
         skipAutoResetPageIndex();
-        setActivities((old) =>
-          old.filter(
-            (oldRow) => oldRow.activity_id !== row.original.activity_id,
-          ),
+        setTransactions((old) =>
+          old.filter((t) => t.trx_id !== row.original.trx_id)
         );
       },
       deleteRows: (rows) => {
-        // Skip page index reset until after next rerender
         skipAutoResetPageIndex();
-        const rowIds = rows.map((row) => row.original.activity_id);
-        setActivities((old) =>
-          old.filter((row) => !rowIds.includes(row.activity_id)),
-        );
+        const idsToDelete = rows.map((r) => r.original.trx_id);
+        setTransactions((old) => old.filter((t) => !idsToDelete.includes(t.trx_id)));
       },
     },
-    filterFns: {
-      fuzzy: fuzzyFilter,
-    },
-    getCoreRowModel: getCoreRowModel(),
-
-    onGlobalFilterChange: setGlobalFilter,
-    getFilteredRowModel: getFilteredRowModel(),
+    filterFns: { fuzzy: fuzzyFilter },
     globalFilterFn: fuzzyFilter,
-
-    onSortingChange: setSorting,
+    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-
     getPaginationRowModel: getPaginationRowModel(),
-
+    getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
     autoResetPageIndex,
   });
 
-  useDidUpdate(() => table.resetRowSelection(), [activities.length]);
+  useDidUpdate(() => table.resetRowSelection(), [transactions.length]);
+
+  if (loading) {
+    return (
+      <div className="mt-6 text-center text-gray-600 dark:text-dark-300">
+        Loading transactions...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mt-6 text-center text-red-500 dark:text-red-400">
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div>
       <div className="table-toolbar flex items-center justify-between">
         <h2 className="truncate text-base font-medium tracking-wide text-gray-800 dark:text-dark-100">
-          Crypto Activity Table
+          Transactions Table
         </h2>
         <div className="flex">
           <CollapsibleSearch
@@ -112,23 +126,21 @@ export function ActivitiesTable() {
                     >
                       {header.column.getCanSort() ? (
                         <div
-                          className="flex cursor-pointer select-none items-center space-x-3 "
+                          className="flex cursor-pointer select-none items-center space-x-3"
                           onClick={header.column.getToggleSortingHandler()}
                         >
                           <span className="flex-1">
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext(),
-                                )}
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                           </span>
                           <TableSortIcon sorted={header.column.getIsSorted()} />
                         </div>
-                      ) : header.isPlaceholder ? null : (
+                      ) : (
                         flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )
                       )}
                     </Th>
@@ -137,38 +149,35 @@ export function ActivitiesTable() {
               ))}
             </THead>
             <TBody>
-              {table.getRowModel().rows.map((row) => {
-                return (
-                  <Tr
-                    key={row.id}
-                    className={clsx(
-                      "relative border-y border-transparent border-b-gray-200 dark:border-b-dark-500",
-                      row.getIsSelected() &&
-                        !isSafari &&
-                        "row-selected after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500",
-                    )}
-                  >
-                    {row.getVisibleCells().map((cell) => {
-                      return (
-                        <Td key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </Td>
-                      );
-                    })}
-                  </Tr>
-                );
-              })}
+              {table.getRowModel().rows.map((row) => (
+                <Tr
+                  key={row.id}
+                  className={clsx(
+                    "relative border-y border-transparent border-b-gray-200 dark:border-b-dark-500",
+                    row.getIsSelected() &&
+                      !isSafari &&
+                      "row-selected after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500"
+                  )}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <Td key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </Td>
+                  ))}
+                </Tr>
+              ))}
             </TBody>
           </Table>
         </div>
-        {table.getCoreRowModel().rows.length && (
+
+        {!!table.getCoreRowModel().rows.length && (
           <div className="p-4 sm:px-5">
             <PaginationSection table={table} />
           </div>
-        )}{" "}
+        )}
         <SelectedRowsActions table={table} height={theadHeight} />
       </Card>
     </div>

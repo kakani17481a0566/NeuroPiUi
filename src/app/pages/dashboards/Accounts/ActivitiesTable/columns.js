@@ -1,53 +1,34 @@
-// Import Dependencies
 import { createColumnHelper } from "@tanstack/react-table";
-
-// Local Imports
-import {
-    SelectCell,
-    SelectHeader,
-} from "components/shared/table/SelectCheckbox";
-import { RowActions } from "./RowActions";
-import {
-    AccountNameCell,
-    ActivityCell,
-    AmountCell,
-    TransactionDateCell,
-} from "./rows";
-
-// ----------------------------------------------------------------------
 
 const columnHelper = createColumnHelper();
 
 export const columns = [
-    columnHelper.display({
-        id: "select",
-        header: SelectHeader,
-        cell: SelectCell,
-    }),
-    columnHelper.accessor((row) => row.activity_name, {
-        id: "activity",
-        header: "Activity",
-        cell: ActivityCell,
-    }),
-    columnHelper.accessor((row) => row.account_name, {
-        id: "account",
-        header: "Account",
-        cell: AccountNameCell,
-    }),
-    columnHelper.accessor((row) => row.transaction_date, {
-        id: "transaction_date",
-        header: "Transaction Date",
-        cell: TransactionDateCell,
-    }),
-
-    columnHelper.accessor((row) => row.amount, {
-        id: "amount",
-        header: "Amount",
-        cell: AmountCell,
-    }),
-    columnHelper.display({
-        id: "actions",
-        header: "",
-        cell: RowActions,
-    }),
-]
+  columnHelper.accessor("Col1", { header: "Transaction ID" }),
+  columnHelper.accessor("Col2", { header: "Description" }),
+  columnHelper.accessor("Col3", {
+    header: "Transaction Date",
+    cell: info => info.getValue() ? new Date(info.getValue()).toLocaleDateString() : "-",
+  }),
+  columnHelper.accessor("Col4", { header: "Amount" }),
+  columnHelper.accessor("Col5", { header: "Reference ID" }),
+  // For nested Col6.accName fallback to "-"
+//   columnHelper.accessor(row => row.Col6?.accName ?? "-", {
+//     id: "accountName",
+//     header: "Account Name",
+//   }),
+//   columnHelper.accessor("Col7", { header: "Account Name Label" }),
+//   columnHelper.accessor("Col8", { header: "Account Type" }),
+//   columnHelper.accessor("Col9", { header: "Bank Name", cell: info => info.getValue() || "-" }),
+//   columnHelper.accessor("Col10", { header: "Branch", cell: info => info.getValue() || "-" }),
+//   columnHelper.accessor("Col11", { header: "IFSC Code", cell: info => info.getValue() || "-" }),
+//   columnHelper.accessor("Col12", { header: "Transaction Type" }),
+//   columnHelper.accessor("Col13", { header: "Transaction Mode" }),
+//   columnHelper.accessor("Col14", { header: "Status" }),
+//   columnHelper.accessor("Col15", { header: "Account Head" }),
+//   columnHelper.accessor("Col16", { header: "Created By" }),
+//   columnHelper.accessor("Col17", {
+//     header: "Created On",
+//     cell: info => info.getValue() ? new Date(info.getValue()).toLocaleString() : "-",
+//   }),
+//   columnHelper.accessor("Col18", { header: "Tenant ID" }),
+];
