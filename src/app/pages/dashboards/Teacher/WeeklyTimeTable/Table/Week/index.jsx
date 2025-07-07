@@ -11,6 +11,9 @@ import {
 } from "@tanstack/react-table";
 import clsx from "clsx";
 
+import { Classes } from "src/app/pages/dashboards/Teacher/Classes/index.jsx"; // Adjust path if needed
+
+
 // Local imports
 import { Card, Table, THead, TBody, Th, Tr, Td, Spinner } from "components/ui";
 import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
@@ -115,6 +118,9 @@ export default function Week() {
 
   return (
     <div className="font-lato grid grid-cols-1 grid-rows-[auto_auto_1fr] px-4 py-4 text-center uppercase">
+   
+    
+        <Classes selectedCourseId={selectedCourseId} />
       <div
         className={clsx(
           "flex flex-col pt-4",
@@ -124,6 +130,7 @@ export default function Week() {
       >
         <DemoDropdownCard onCourseChange={setSelectedCourseId} />
         <Toolbar table={table} />
+
         <Card
           className={clsx("relative mt-3 flex grow flex-col", tableSettings.enableFullScreen && "overflow-hidden")}
           ref={cardRef}

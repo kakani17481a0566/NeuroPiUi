@@ -11,7 +11,7 @@ import { Page } from "components/shared/Page";
 import { WorkingHours } from "./WorkingHours";
 import { Students } from "./Students";
 import { WeeklyTimeTable } from "./WeeklyTimeTable";
-import { Classes } from "./Classes";
+// import { Classes } from "./Classes";
 export default function Teacher() {
   const [selectedView, setSelectedView] = useState("Week");
 
@@ -67,8 +67,7 @@ export default function Teacher() {
         <div className="grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
           {/* Main Content Section */}
           <div className="col-span-12 lg:col-span-8 xl:col-span-9">
-            <Classes />
-            <div className="mt-4">
+             <div className="mt-4">
               <WeeklyTimeTable key={selectedView} view={selectedView} />
             </div>
           </div>

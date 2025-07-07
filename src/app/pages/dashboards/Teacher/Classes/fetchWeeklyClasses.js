@@ -2,13 +2,12 @@
 import axios from "utils/axios";
 import { getSessionData } from "utils/sessionStorage";
 
-
 /**
  * Fetches weekly class timetable data and transforms it for ClassCard component.
  */
-export async function fetchWeeklyClasses() {
-  const {tenantId,course}=getSessionData();
-  const courseId=course[0].id;
+export async function fetchWeeklyClasses(courseId) {
+  const { tenantId } = getSessionData();
+
   try {
     const response = await axios.get(
       `https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/TimeTable/weekId/-1/tenantId/${tenantId}/courseId/${courseId}`
@@ -19,10 +18,9 @@ export async function fetchWeeklyClasses() {
     const colorVariants = ["primary", "info", "secondary", "success", "warning"];
     const mappedClasses = [];
 
-    // 🔽 Extract subject codes from headers[1] to headers[6]
     const subjectCodes = headers.slice(1, 7).map(h => {
       const parts = h.split("\n");
-      return parts.length > 1 ? parts[1].trim() : parts[0].trim(); // fallback to whole if no \n
+      return parts.length > 1 ? parts[1].trim() : parts[0].trim();
     });
 
     timeTableData.forEach((row, rowIndex) => {
@@ -34,7 +32,7 @@ export async function fetchWeeklyClasses() {
             image: "/images/600x400.png",
             name: subjectName.trim(),
             time: `${row.column1}`,
-            category: subjectCodes[i - 2], // 🔗 Match code by column index
+            category: subjectCodes[i - 2],
             color: colorVariants[mappedClasses.length % colorVariants.length],
             students: [],
           });
