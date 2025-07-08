@@ -5,12 +5,24 @@ const columnHelper = createColumnHelper();
 export const columns = [
   columnHelper.accessor("Col1", { header: "Transaction ID" }),
   columnHelper.accessor("Col2", { header: "Description" }),
-  columnHelper.accessor("Col3", {
-    header: "Transaction Date",
-    cell: info => info.getValue() ? new Date(info.getValue()).toLocaleDateString() : "-",
-  }),
+columnHelper.accessor("Col3", {
+  header: "Transaction Date",
+  cell: info => {
+    const value = info.getValue();
+    if (!value) return "-";
+    const date = new Date(value);
+    return date.toLocaleDateString("en-GB", {
+      weekday: "short", // Mon
+      day: "2-digit",   // 06
+      month: "short",   // Oct
+      year: "numeric",  // 2025
+    });
+  },
+}),
+
+
   columnHelper.accessor("Col4", { header: "Amount" }),
-  columnHelper.accessor("Col5", { header: "Reference ID" }),
+  // columnHelper.accessor("Col5", { header: "Reference ID" }),
   // For nested Col6.accName fallback to "-"
 //   columnHelper.accessor(row => row.Col6?.accName ?? "-", {
 //     id: "accountName",
@@ -22,10 +34,10 @@ export const columns = [
 //   columnHelper.accessor("Col10", { header: "Branch", cell: info => info.getValue() || "-" }),
 //   columnHelper.accessor("Col11", { header: "IFSC Code", cell: info => info.getValue() || "-" }),
 //   columnHelper.accessor("Col12", { header: "Transaction Type" }),
-//   columnHelper.accessor("Col13", { header: "Transaction Mode" }),
-//   columnHelper.accessor("Col14", { header: "Status" }),
+  // columnHelper.accessor("Col13", { header: "Transaction Mode" }),
+  // columnHelper.accessor("Col14", { header: "Status" }),
 //   columnHelper.accessor("Col15", { header: "Account Head" }),
-//   columnHelper.accessor("Col16", { header: "Created By" }),
+  // columnHelper.accessor("Col16", { header: "Created By" }),
 //   columnHelper.accessor("Col17", {
 //     header: "Created On",
 //     cell: info => info.getValue() ? new Date(info.getValue()).toLocaleString() : "-",
