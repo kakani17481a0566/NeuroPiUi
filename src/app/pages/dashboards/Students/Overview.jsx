@@ -1,156 +1,63 @@
-// Import Dependencies
+// // Import Dependencies
 import {
   Menu,
   MenuButton,
   MenuItem,
   MenuItems,
-  Radio,
-  RadioGroup,
+  // Radio,
+  // RadioGroup,
   Transition,
 } from "@headlessui/react";
 import { EllipsisHorizontalIcon } from "@heroicons/react/20/solid";
 import {
-  ArrowPathIcon,
+  // ArrowPathIcon,
+  ArrowRightEndOnRectangleIcon,
   CheckBadgeIcon,
-  ClockIcon,
-  CurrencyDollarIcon,
+  // ClockIcon,
+  // CurrencyDollarIcon,
+  UserGroupIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { Fragment, useState } from "react";
+import { Button,Fragment } from "react";
 // import ReactApexChart from "react-apexcharts";
+// import { useEffect } from "react";
+// import { studentDetails } from "./OrdersTable/data";
 
 // Local Imports
-import { Button, Card } from "components/ui";
+import {  Card } from "components/ui";
 
 // ----------------------------------------------------------------------
 
-const data = {
-  yearly: {
-    series: [
-      {
-        name: "Orders",
-        data: [28, 45, 35, 50, 32, 55, 23, 60, 28],
-      },
-      {
-        name: "Completed Orders",
-        data: [14, 25, 20, 25, 12, 20, 15, 20, 14],
-      },
-      {
-        name: "Refunded Orders",
-        data: [4, 5, 6, 5, 2, 5, 3, 6, 3],
-      },
-    ],
-    categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
-  },
-  monthly: {
-    series: [
-      {
-        name: "Orders",
-        data: [28, 45, 35, 50, 32, 55, 23, 60, 28, 42],
-      },
-      {
-        name: "Completed Orders",
-        data: [14, 25, 20, 25, 12, 20, 15, 20, 14, 21],
-      },
-      {
-        name: "Refunded Orders",
-        data: [4, 5, 6, 5, 2, 5, 3, 6, 3, 5],
-      },
-    ],
-    categories: [1, 4, 7, 10, 13, 16, 19, 22, 25, 28],
-  },
-};
+// 
 
-const chartConfig = {
-  colors: ["#4C4EE7", "#26E7A6", "#FF9800"],
-  chart: {
-    parentHeightOffset: 0,
-    toolbar: {
-      show: false,
-    },
-  },
-  dataLabels: {
-    enabled: false,
-  },
-  stroke: {
-    show: true,
-    width: 2,
-    colors: ["transparent"],
-  },
-  plotOptions: {
-    bar: {
-      borderRadius: 4,
-      barHeight: "90%",
-      columnWidth: "35%",
-    },
-  },
-  legend: {
-    show: false,
-  },
-  xaxis: {
-    categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
-    labels: {
-      hideOverlappingLabels: false,
-    },
-    axisBorder: {
-      show: false,
-    },
-    axisTicks: {
-      show: false,
-    },
-    tooltip: {
-      enabled: false,
-    },
-  },
-  grid: {
-    padding: {
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-    },
-  },
-  yaxis: {
-    show: false,
-    axisBorder: {
-      show: false,
-    },
-    axisTicks: {
-      show: false,
-    },
-    labels: {
-      show: false,
-    },
-  },
-  responsive: [
-    {
-      breakpoint: 850,
-      options: {
-        plotOptions: {
-          bar: {
-            columnWidth: "55%",
-          },
-        },
-      },
-    },
-  ],
-};
+export function Overview({data}) {
+  // const [data,setData]=useState();
 
-export function Overview() {
-  const [focusRange, setfocusRange] = useState("monthly");
-  const chartOptions = JSON.parse(JSON.stringify(chartConfig));
-  chartOptions.xaxis.categories = data[focusRange].categories;
+// useEffect(() => {
+//     async function fetchStudents() {
+//       try {
+//         const res = await studentDetails();
+//         setData(res.data);
+       
+//     } catch (err) {
+//         console.error("Failed to load students:", err);
+//       }
+//     }
+//     fetchStudents();
+//   }, []);
+//           console.log('overview dATA IS ',data);
+const studentData=data?.data || {};
 
   return (
     <Card className="col-span-12 lg:col-span-8">
       <div className="flex flex-col justify-between px-4 pt-3 sm:flex-row sm:items-center sm:px-5">
         <div className="flex flex-1 items-center justify-between space-x-2 sm:flex-initial ">
           <h2 className="text-sm-plus font-medium tracking-wide text-gray-800 dark:text-dark-100">
-            Order Overview
+            Attendance Record
           </h2>
           <ActionMenu />
         </div>
-        <RadioGroup
+        {/* <RadioGroup
           name="options"
           value={focusRange}
           onChange={setfocusRange}
@@ -178,38 +85,38 @@ export function Overview() {
               </Button>
             )}
           </Radio>
-        </RadioGroup>
+        </RadioGroup> */}
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3 px-4 sm:mt-5 sm:grid-cols-4 sm:px-5 lg:mt-6">
         <div className="rounded-lg bg-gray-100 p-3 dark:bg-surface-3 2xl:p-4">
           <div className="flex justify-between space-x-1">
             <p className="text-xl font-semibold text-gray-800 dark:text-dark-100">
-              $67.6k
+              {studentData?.totalStudents ?? 0}
             </p>
-            <CurrencyDollarIcon className="this:secondary size-5 text-this dark:text-this-light" />
+            <UserGroupIcon className="this:secondary size-5 text-this dark:text-this-light" />
           </div>
-          <p className="mt-1 text-xs-plus">Income</p>
+          <p className="mt-1 text-xs-plus">Total Students</p>
         </div>
         <div className="rounded-lg bg-gray-100 p-3 dark:bg-surface-3 2xl:p-4">
           <div className="flex justify-between space-x-1">
             <p className="text-xl font-semibold text-gray-800 dark:text-dark-100">
-              7.6k
+              {studentData?.checkedIn??0}
             </p>
             <CheckBadgeIcon className="this:success size-5 text-this dark:text-this-light" />
           </div>
-          <p className="mt-1 text-xs-plus">Completed</p>
+          <p className="mt-1 text-xs-plus">Checked IN</p>
         </div>
         <div className="rounded-lg bg-gray-100 p-3 dark:bg-surface-3 2xl:p-4">
           <div className="flex justify-between space-x-1">
             <p className="text-xl font-semibold text-gray-800 dark:text-dark-100">
-              1.4k
+            {studentData?.checkedOut ?? 0}
             </p>
-            <ArrowPathIcon className="this:primary size-5 text-this dark:text-this-light" />
+            <ArrowRightEndOnRectangleIcon className="this:primary size-5 text-this dark:text-this-light" />
           </div>
-          <p className="mt-1 text-xs-plus">Processing</p>
+          <p className="mt-1 text-xs-plus">Checked Out</p>
         </div>
-        <div className="rounded-lg bg-gray-100 p-3 dark:bg-surface-3 2xl:p-4">
+        {/* <div className="rounded-lg bg-gray-100 p-3 dark:bg-surface-3 2xl:p-4">
           <div className="flex justify-between space-x-1">
             <p className="text-xl font-semibold text-gray-800 dark:text-dark-100">
               345
@@ -217,7 +124,7 @@ export function Overview() {
             <ClockIcon className="this:warning size-5 text-this dark:text-this-light" />
           </div>
           <p className="mt-1 text-xs-plus">Pending</p>
-        </div>
+        </div> */}
       </div>
 
       {/* <div className="ax-transparent-gridline mt-2 overflow-hidden px-2">
@@ -316,3 +223,4 @@ function ActionMenu() {
     </Menu>
   );
 }
+

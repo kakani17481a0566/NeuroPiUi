@@ -4,20 +4,20 @@ import PropTypes from "prop-types";
 
 // Local Imports
 import { Highlight } from "components/shared/Highlight";
-import { Avatar, Badge } from "components/ui";
+import {  Badge } from "components/ui";
 import { useLocaleContext } from "app/contexts/locale/context";
 import { ensureString } from "utils/ensureString";
-import { orderStatusOptions } from "./data";
+// import {  } from "./data";
 
 // ----------------------------------------------------------------------
 
-export function OrderIdCell({ getValue }) {
-  return (
-    <span className="font-medium text-primary-600 dark:text-primary-400">
-      {getValue()}
-    </span>
-  );
-}
+// export function OrderIdCell({ getValue }) {
+//   return (
+//     <span className="font-medium text-primary-600 dark:text-primary-400">
+//       {getValue()}
+//     </span>
+//   );
+// }
 
 export function DateCell({ getValue }) {
   const { locale } = useLocaleContext();
@@ -32,28 +32,31 @@ export function DateCell({ getValue }) {
   );
 }
 
-export function CustomerCell({ row, getValue, column, table }) {
-  const globalQuery = ensureString(table.getState().globalFilter);
-  const columnQuery = ensureString(column.getFilterValue());
+// export function CustomerCell({ row, getValue, column, table }) {
+//   const globalQuery = ensureString(table.getState().globalFilter);
+//   const columnQuery = ensureString(column.getFilterValue());
 
-  const name = getValue();
+//   const name = getValue();
 
-  return (
-    <div className="flex items-center space-x-4 ">
-      <Avatar
-        size={9}
-        name={name}
-        src={row.original.customer.avatar_img}
-        classNames={{
-          display: "mask is-squircle rounded-none text-sm",
-        }}
-      />
-      <span className="font-medium text-gray-800 dark:text-dark-100">
-        <Highlight query={[globalQuery, columnQuery]}>{name}</Highlight>
-      </span>
-    </div>
-  );
-}
+//   return (
+//     <div className="flex items-center space-x-4 ">
+//       <Avatar
+//         size={9}
+//         name={name}
+//         src={row.original.customer.avatar_img}
+//         classNames={{
+//           display: "mask is-squircle rounded-none text-sm",
+//         }}
+//       />
+//       <span className="font-medium text-gray-800 dark:text-dark-100">
+//         <Highlight query={[globalQuery, columnQuery]}>{name}</Highlight>
+//       </span>
+//     </div>
+//   );
+// }
+export const CustomerCell = ({ getValue }) => <span>{getValue()}</span>;
+export const OrderIdCell = ({ getValue }) => <span>{getValue()}</span>;
+export const TimeCell = ({ getValue }) => <span>{getValue()}</span>;
 
 export function TotalCell({ getValue }) {
   return (
@@ -76,18 +79,18 @@ export function ProfitCell({ getValue, row }) {
   );
 }
 
-export function OrderStatusCell({ getValue }) {
-  const val = getValue();
-  const option = orderStatusOptions.find((item) => item.value === val);
+// export function OrderStatusCell({ getValue }) {
+//   const val = getValue();
+//   // const option = orderStatusOptions.find((item) => item.value === val);
 
-  return (
-    <Badge color={option.color} className="gap-1.5">
-      {option.icon && <option.icon className="h-4 w-4" />}
+//   return (
+//     <Badge color={option.color} className="gap-1.5">
+//       {option.icon && <option.icon className="h-4 w-4" />}
 
-      <span>{option.label}</span>
-    </Badge>
-  );
-}
+//       <span>{option.label}</span>
+//     </Badge>
+//   );
+// }
 
 export function AddressCell({ getValue, column, table }) {
   const globalQuery = ensureString(table.getState().globalFilter);
@@ -100,6 +103,22 @@ export function AddressCell({ getValue, column, table }) {
     </p>
   );
 }
+// export function TimeCell({ getValue }) {
+//   const { locale } = useLocaleContext();
+//   const timestamp = getValue();
+//   const time = dayjs(timestamp).locale(locale).format("hh:mm A");
+
+//   return (
+//     <p className="font-medium text-gray-800 dark:text-dark-100">
+//       {time}
+//     </p>
+//   );
+// }
+
+TimeCell.propTypes = {
+  getValue: PropTypes.func,
+};
+
 
 OrderIdCell.propTypes = {
   getValue: PropTypes.func,
@@ -118,9 +137,9 @@ ProfitCell.propTypes = {
   row: PropTypes.object,
 };
 
-OrderStatusCell.propTypes = {
-  getValue: PropTypes.func,
-};
+// OrderStatusCell.propTypes = {
+//   getValue: PropTypes.func,
+// };
 
 AddressCell.propTypes = {
   getValue: PropTypes.func,
@@ -134,3 +153,4 @@ CustomerCell.propTypes = {
   table: PropTypes.object,
   getValue: PropTypes.func,
 };
+
