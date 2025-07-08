@@ -11,6 +11,17 @@ import { Fragment, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button, Card, Input, Select } from "components/ui";
 import {
+  BanknotesIcon,
+  ArrowRightCircleIcon,
+  CurrencyRupeeIcon ,
+  ArrowPathIcon ,
+  CheckCircleIcon ,
+  PencilSquareIcon ,
+  BuildingLibraryIcon ,
+  BuildingOffice2Icon ,CalendarDaysIcon 
+} from "@heroicons/react/24/outline";
+
+import {
   transferMoney,
   getTransactionModes,
   getTransactionStatuses,
@@ -35,16 +46,16 @@ export function Wallets({ onTransferSuccess }) {
   const [accounts, setAccounts] = useState([]);
 
   const clearForm = () => {
-  setAmount("");
-  setDebitAccId("");
-  setCreditAccId("");
-  setTrxModeId("");
-  setTrxStatusId("");
-  setDebitAccHeadId("");
-  setCreditAccHeadId("");
-  setTrxDate("");
-  setTrxDesc("");
-};
+    setAmount("");
+    setDebitAccId("");
+    setCreditAccId("");
+    setTrxModeId("");
+    setTrxStatusId("");
+    setDebitAccHeadId("");
+    setCreditAccHeadId("");
+    setTrxDate("");
+    setTrxDesc("");
+  };
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -107,31 +118,37 @@ export function Wallets({ onTransferSuccess }) {
         success: "Money transferred successfully!",
         error: "Transfer failed. Please try again.",
         className: "soft-color",
-      }
+      },
     );
   };
 
   return (
-    <Card className="col-span-12 pb-5 lg:col-span-4">
+    <Card className="border-primary-600 dark:border-primary-600 col-span-12 border-2 pb-5 lg:col-span-4">
       <div className="flex items-center justify-between px-4 py-3 sm:px-5">
-        <h2 className="font-medium tracking-wide text-dark-700 dark:text-gray-100">
+        <h2 className="text-dark-700 font-medium tracking-wide dark:text-gray-100">
           Wallets
         </h2>
         <ActionMenu />
       </div>
 
       <div className="mt-2 px-4 sm:px-5">
-        <h2 className="font-medium tracking-wide text-gray-800 dark:text-dark-100">
+        <h2 className="dark:text-dark-100 font-medium tracking-wide text-gray-800">
           Send Money
         </h2>
 
-        {/* From Account */}
         <div className="mt-4">
-          <label htmlFor="debitAccId">From Account</label>
+          <label
+            htmlFor="debitAccId"
+            className="block flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
+            <BanknotesIcon className="text-primary-600 h-4 w-4" />
+            From Account <span className="text-red-500">*</span>
+          </label>
           <Select
             id="debitAccId"
             value={debitAccId}
             onChange={(e) => setDebitAccId(e.target.value)}
+            className="mt-1"
           >
             <option value="">Select Account</option>
             {accounts.map((acc) => (
@@ -142,13 +159,19 @@ export function Wallets({ onTransferSuccess }) {
           </Select>
         </div>
 
-        {/* To Account */}
         <div className="mt-4">
-          <label htmlFor="creditAccId">To Account</label>
+          <label
+            htmlFor="creditAccId"
+            className="block flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
+            <ArrowRightCircleIcon className="text-primary-600 h-4 w-4" />
+            To Account <span className="text-red-500">*</span>
+          </label>
           <Select
             id="creditAccId"
             value={creditAccId}
             onChange={(e) => setCreditAccId(e.target.value)}
+            className="mt-1"
           >
             <option value="">Select Account</option>
             {accounts.map((acc) => (
@@ -160,124 +183,176 @@ export function Wallets({ onTransferSuccess }) {
         </div>
 
         {/* Amount */}
-        <div className="mt-4">
-          <label htmlFor="amount">Amount</label>
-          <Input
-            id="amount"
-            type="number"
-            placeholder="Enter Amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-        </div>
-
-        {/* Transaction Mode */}
-        <div className="mt-4">
-          <label htmlFor="trxMode">Transaction Mode</label>
-          <Select
-            id="trxMode"
-            value={trxModeId}
-            onChange={(e) => setTrxModeId(e.target.value)}
-          >
-            <option value="">Select Mode</option>
-            {trxModes.map((mode) => (
-              <option key={mode.master_id} value={mode.master_id}>
-                {mode.master_name}
-              </option>
-            ))}
-          </Select>
-        </div>
-
-        {/* Transaction Status */}
-        <div className="mt-4">
-          <label htmlFor="trxStatus">Transaction Status</label>
-          <Select
-            id="trxStatus"
-            value={trxStatusId}
-            onChange={(e) => setTrxStatusId(e.target.value)}
-          >
-            <option value="">Select Status</option>
-            {trxStatuses.map((status) => (
-              <option key={status.master_id} value={status.master_id}>
-                {status.master_name}
-              </option>
-            ))}
-          </Select>
-        </div>
-
-        {/* Description */}
-        <div className="mt-4">
-          <label htmlFor="trxDesc">Description</label>
-          <Input
-            id="trxDesc"
-            type="text"
-            placeholder="Purpose of transaction"
-            value={trxDesc}
-            onChange={(e) => setTrxDesc(e.target.value)}
-          />
-        </div>
-
-        {/* Debit Account Head */}
-        <div className="mt-4">
-          <label htmlFor="debitAccHeadId">From Account Head</label>
-          <Select
-            id="debitAccHeadId"
-            value={debitAccHeadId}
-            onChange={(e) => setDebitAccHeadId(e.target.value)}
-          >
-            <option value="">Select Account Head (Optional)</option>
-            {accountHeads.map((head) => (
-              <option key={head.master_id} value={head.master_id}>
-                {head.master_name}
-              </option>
-            ))}
-          </Select>
-        </div>
-
-        {/* Credit Account Head */}
-        <div className="mt-4">
-          <label htmlFor="creditAccHeadId">To Account Head</label>
-          <Select
-            id="creditAccHeadId"
-            value={creditAccHeadId}
-            onChange={(e) => setCreditAccHeadId(e.target.value)}
-          >
-            <option value="">Select Account Head (Optional)</option>
-            {accountHeads.map((head) => (
-              <option key={head.master_id} value={head.master_id}>
-                {head.master_name}
-              </option>
-            ))}
-          </Select>
-        </div>
-
-        {/* Transaction Date */}
-        <div className="mt-4">
-          <label htmlFor="trxDate">Transaction Date</label>
-          <Input
-            id="trxDate"
-            type="date"
-            value={trxDate}
-            onChange={(e) => setTrxDate(e.target.value)}
-          />
-        </div>
-
-<div className="flex space-x-3 mt-4">
-  <Button color="primary" className="h-10 flex-1" onClick={handleTransfer}>
-    Send Money
-  </Button>
-
-  <Button
-
-    color="primary"
-    className="h-10 flex-1"
-    onClick={clearForm}
+     <div className="mt-4">
+  <label
+    htmlFor="amount"
+    className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1"
   >
-    Clear
-  </Button>
+    <CurrencyRupeeIcon className="w-4 h-4 text-primary-600" />
+    Amount <span className="text-red-500">*</span>
+  </label>
+  <Input
+    id="amount"
+    type="number"
+    placeholder="Enter Amount"
+    value={amount}
+    onChange={(e) => setAmount(e.target.value)}
+    className="mt-1"
+  />
 </div>
 
 
+        {/* Transaction Mode */}
+ <div className="mt-4">
+  <label
+    htmlFor="trxMode"
+    className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1"
+  >
+    <ArrowPathIcon className="w-4 h-4 text-primary-600" />
+    Transaction Mode <span className="text-red-500">*</span>
+  </label>
+  <Select
+    id="trxMode"
+    value={trxModeId}
+    onChange={(e) => setTrxModeId(e.target.value)}
+    className="mt-1"
+  >
+    <option value="">Select Mode</option>
+    {trxModes.map((mode) => (
+      <option key={mode.master_id} value={mode.master_id}>
+        {mode.master_name}
+      </option>
+    ))}
+  </Select>
+</div>
+
+
+        {/* Transaction Status */}
+    <div className="mt-4">
+  <label
+    htmlFor="trxStatus"
+    className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1"
+  >
+    <CheckCircleIcon className="w-4 h-4 text-primary-600" />
+    Transaction Status <span className="text-red-500">*</span>
+  </label>
+  <Select
+    id="trxStatus"
+    value={trxStatusId}
+    onChange={(e) => setTrxStatusId(e.target.value)}
+    className="mt-1"
+  >
+    <option value="">Select Status</option>
+    {trxStatuses.map((status) => (
+      <option key={status.master_id} value={status.master_id}>
+        {status.master_name}
+      </option>
+    ))}
+  </Select>
+</div>
+
+
+        {/* Description */}
+     <div className="mt-4">
+  <label
+    htmlFor="trxDesc"
+    className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1"
+  >
+    <PencilSquareIcon className="w-4 h-4 text-primary-600" />
+    Description <span className="text-red-500">*</span>
+  </label>
+  <Input
+    id="trxDesc"
+    type="text"
+    placeholder="Purpose of transaction"
+    value={trxDesc}
+    onChange={(e) => setTrxDesc(e.target.value)}
+    className="mt-1"
+  />
+</div>
+
+
+        {/* Debit Account Head */}
+ <div className="mt-4">
+  <label
+    htmlFor="debitAccHeadId"
+    className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1"
+  >
+    <BuildingLibraryIcon className="w-4 h-4 text-primary-600" />
+    From Account Head <span className="text-xs text-gray-500">(Optional)</span>
+  </label>
+  <Select
+    id="debitAccHeadId"
+    value={debitAccHeadId}
+    onChange={(e) => setDebitAccHeadId(e.target.value)}
+    className="mt-1"
+  >
+    <option value="">Select Account Head (Optional)</option>
+    {accountHeads.map((head) => (
+      <option key={head.master_id} value={head.master_id}>
+        {head.master_name}
+      </option>
+    ))}
+  </Select>
+</div>
+
+        {/* Credit Account Head */}
+     <div className="mt-4">
+  <label
+    htmlFor="creditAccHeadId"
+    className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1"
+  >
+    <BuildingOffice2Icon className="w-4 h-4 text-primary-600" />
+    To Account Head <span className="text-xs text-gray-500">(Optional)</span>
+  </label>
+  <Select
+    id="creditAccHeadId"
+    value={creditAccHeadId}
+    onChange={(e) => setCreditAccHeadId(e.target.value)}
+    className="mt-1"
+  >
+    <option value="">Select Account Head (Optional)</option>
+    {accountHeads.map((head) => (
+      <option key={head.master_id} value={head.master_id}>
+        {head.master_name}
+      </option>
+    ))}
+  </Select>
+</div>
+
+
+        {/* Transaction Date */}
+       <div className="mt-4">
+  <label
+    htmlFor="trxDate"
+    className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1"
+  >
+    <CalendarDaysIcon className="w-4 h-4 text-primary-600" />
+    Transaction Date <span className="text-red-500">*</span>
+  </label>
+  <Input
+    id="trxDate"
+    type="date"
+    value={trxDate}
+    onChange={(e) => setTrxDate(e.target.value)}
+    className="mt-1"
+  />
+</div>
+
+
+        <div className="mt-4 flex space-x-3">
+          <Button
+            color="primary"
+            className="h-10 flex-1"
+            onClick={handleTransfer}
+          >
+            Send Money
+          </Button>
+
+          <Button color="primary" className="h-10 flex-1" onClick={clearForm}>
+            Clear
+          </Button>
+        </div>
       </div>
     </Card>
   );
@@ -306,14 +381,14 @@ function ActionMenu() {
         leaveFrom="opacity-100 translate-y-0"
         leaveTo="opacity-0 translate-y-2"
       >
-        <MenuItems className="absolute z-100 mt-1.5 min-w-[10rem] rounded-lg border border-gray-300 bg-white py-1 shadow-lg shadow-gray-200/50 outline-hidden focus-visible:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:shadow-none ltr:right-0 rtl:left-0">
+        <MenuItems className="dark:border-dark-500 dark:bg-dark-700 absolute z-100 mt-1.5 min-w-[10rem] rounded-lg border border-gray-300 bg-white py-1 shadow-lg shadow-gray-200/50 outline-hidden focus-visible:outline-hidden ltr:right-0 rtl:left-0 dark:shadow-none">
           <MenuItem>
             {({ focus }) => (
               <button
                 className={clsx(
                   "flex h-9 w-full items-center px-3 tracking-wide outline-hidden transition-colors",
                   focus &&
-                    "bg-gray-100 text-gray-800 dark:bg-dark-600 dark:text-dark-100",
+                    "dark:bg-dark-600 dark:text-dark-100 bg-gray-100 text-gray-800",
                 )}
               >
                 <span>Action</span>
