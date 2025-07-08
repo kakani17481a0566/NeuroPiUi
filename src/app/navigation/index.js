@@ -16,6 +16,9 @@ if(role==="Teacher"){
 else if(role=="chairman"){
     navigation=[dashboards,academics,UserManagement];
 }
+else if(role=="admin"){
+    navigation=[accounts,academics];
+}
 
 
 export { navigation };

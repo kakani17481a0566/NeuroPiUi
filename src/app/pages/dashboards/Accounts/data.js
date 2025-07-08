@@ -1,19 +1,17 @@
 // src/app/pages/dashboards/Accounts/data.js
 
 import axios from "utils/axios";
-import { getSessionData } from "utils/sessionStorage";
-  const {tenantId}=getSessionData();
+import{GET_ACCOUNT_BY_TENANT,GET_ACCOUNT_HEADS,GET_TRANSACTION_TYPES,TRANSFER_MONEY,GET_TRANSACTION_MODES,GET_TRANSACTION_STATUS} from "constants/apis";
 
 // Transfer Money API
 export const transferMoney = async (payload) => {
-  const response = await axios.post("https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/Transaction/transfer", payload);
+  const response = await axios.post(`${TRANSFER_MONEY}`, payload);
   return response.data;
 };
 
 // Get Transaction Modes API
 export const getTransactionModes = async () => {
-  const {tenantId}=getSessionData();
-  const response = await axios.get(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/getByMasterTypeId/2/${tenantId}?isUtilites=false`);
+  const response = await axios.get(`${GET_TRANSACTION_MODES}`);
   // Normalize keys
   return response.data.data.map((item) => ({
     master_id: item.id,
@@ -28,7 +26,7 @@ export const getTransactionModes = async () => {
 export const getTransactionStatuses = async () => {
     // const {tenantId}=getSessionData();
 
-  const response = await axios.get(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/getByMasterTypeId/4/${tenantId}?isUtilites=false`);
+  const response = await axios.get(`${GET_TRANSACTION_STATUS}`)
   return response.data.data.map((item) => ({
     master_id: item.id,
     master_name: item.name,
@@ -40,7 +38,7 @@ export const getTransactionStatuses = async () => {
 
 // Get Transaction Types API (MasterTypeId = 1)
 export const getTransactionTypes = async () => {
-  const response = await axios.get(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/getByMasterTypeId/1/${tenantId}?isUtilites=false`);
+  const response = await axios.get(`${GET_TRANSACTION_TYPES}`);
   return response.data.data.map((item) => ({
     master_id: item.id,
     master_name: item.name,
@@ -52,7 +50,7 @@ export const getTransactionTypes = async () => {
 
 // Get Account Heads API (MasterTypeId = 3)
 export const getAccountHeads = async () => {
-  const response = await axios.get(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/getByMasterTypeId/3/${tenantId}?isUtilites=false`);
+  const response = await axios.get(`${GET_ACCOUNT_HEADS}`);
   return response.data.data.map((item) => ({
     master_id: item.id,
     master_name: item.name,
@@ -64,7 +62,7 @@ export const getAccountHeads = async () => {
 
 // Get All Accounts by Tenant
 export const getAccountsByTenant = async () => {
-  const response = await axios.get(`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/Account/tenant/${tenantId}`);
+  const response = await axios.get(`${GET_ACCOUNT_BY_TENANT}`);
   return response.data.data.map((item) => ({
     account_id: item.id,
     account_name: item.accName,

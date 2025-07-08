@@ -13,7 +13,7 @@ import { PrimePanel } from "./PrimePanel";
 
 // ----------------------------------------------------------------------
 
-export function Sidebar() {
+export function  Sidebar() {
   const { pathname } = useLocation();
   const { name, lgAndDown } = useBreakpointsContext();
   const { isExpanded, close } = useSidebarContext();
