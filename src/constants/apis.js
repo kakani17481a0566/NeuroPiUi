@@ -25,4 +25,10 @@ export const SAVE_ASSESSMENT_MATRIX = "https://localhost:7202/api/DailyAssessmen
 export const COURSES_LIST=`${BASE_URL}/Course/tenant/${tenantId}`;
 export const BRANCHES_LIST=`${BASE_URL}/Branch/tenant/${tenantId}`;
 export const STUDENT_ATTENDANCE=`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/students/${defaultCourse}/branch/${branch}`;
-
+export const TRANSFER_MONEY=`${BASE_URL}/Transaction/transfer`;
+export const GET_TRANSACTION_MODES=`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/getByMasterTypeId/2/${tenantId}?isUtilites=false`;
+export const GET_TRANSACTION_STATUS=`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/getByMasterTypeId/4/${tenantId}?isUtilites=false`;
+export const GET_TRANSACTION_TYPES=`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/getByMasterTypeId/1/${tenantId}?isUtilites=false`;
+export const GET_ACCOUNT_HEADS=`https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/getByMasterTypeId/3/${tenantId}?isUtilites=false`;
+export const GET_ACCOUNT_BY_TENANT=`${BASE_URL}/Account/tenant/${tenantId}`;
+export const FETCH_ACTIVITIES=`${BASE_URL}/Transaction/table/tenant/${tenantId}`;
