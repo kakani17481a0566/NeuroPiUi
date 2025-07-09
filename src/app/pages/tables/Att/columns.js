@@ -15,7 +15,10 @@ import {
 const columnHelper = createColumnHelper();
 
 function formatHeader(header) {
-  return header.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
+  if (header === "id" || header.toLowerCase().endsWith("id")) return header.toUpperCase();
+  return header
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (str) => str.toUpperCase());
 }
 
 export function generateAttendanceColumns(headers) {
@@ -28,7 +31,7 @@ export function generateAttendanceColumns(headers) {
     }),
   ];
 
-  for (const header of headers) {
+  headers.forEach((header) => {
     let cell = (info) => info.getValue();
     let filter = "text";
     let filterFn = "includesString";
@@ -60,7 +63,6 @@ export function generateAttendanceColumns(headers) {
     columns.push(
       columnHelper.accessor(header, {
         id: header,
-        label: formatHeader(header),
         header: formatHeader(header),
         cell,
         filter,
@@ -69,12 +71,11 @@ export function generateAttendanceColumns(headers) {
         enableColumnFilter: true,
       })
     );
-  }
+  });
 
   columns.push(
     columnHelper.display({
       id: "actions",
-      label: "Row Actions",
       header: "Actions",
       cell: RowActions,
     })

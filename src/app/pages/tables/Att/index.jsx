@@ -1,5 +1,3 @@
-// ✅ Updated AttendanceTable.jsx aligned with OrdersTable behavior
-
 import {
   flexRender,
   getCoreRowModel,
@@ -11,29 +9,31 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import clsx from "clsx";
 import { Fragment, useEffect, useRef, useState } from "react";
+import clsx from "clsx";
+
 import { fetchAttendanceSummary } from "./data";
 import { generateAttendanceColumns } from "./columns";
 import { TableSortIcon } from "components/shared/table/TableSortIcon";
 import { ColumnFilter } from "components/shared/table/ColumnFilter";
 import { PaginationSection } from "components/shared/table/PaginationSection";
 import { Card, Table, THead, TBody, Th, Tr, Td } from "components/ui";
-import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
-import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
-import { useSkipper } from "utils/react-table/useSkipper";
 import { SelectedRowsActions } from "./SelectedRowsActions";
 import { Toolbar } from "./Toolbar";
-import { useThemeContext } from "app/contexts/theme/context";
-import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 import { AttendanceHeaderBox } from "./VerticalWithoutText";
+
+import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
+import { useSkipper } from "utils/react-table/useSkipper";
+import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
+import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 import { getSessionData } from "utils/sessionStorage";
+import { useThemeContext } from "app/contexts/theme/context";
+
 const isSafari = getUserAgentBrowser() === "Safari";
 
 function SubRowComponent({ row }) {
   return (
-    <div className="dark:text-dark-100 p-4 text-sm text-neutral-700">
-      {/* Customize this based on your expanded content */}
+    <div className="p-4 text-sm text-neutral-700 dark:text-dark-100">
       <strong>Expanded Details:</strong> {JSON.stringify(row.original)}
     </div>
   );
@@ -41,21 +41,15 @@ function SubRowComponent({ row }) {
 
 export default function AttendanceTable() {
   const { cardSkin } = useThemeContext();
-  const [autoResetPageIndex] = useSkipper();
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
   const { branch, tenantId, course } = getSessionData();
 
-  const [columnVisibility, setColumnVisibility] = useLocalStorage(
-    "column-visibility-attendance",
-    {},
-  );
-  const [columnPinning, setColumnPinning] = useLocalStorage(
-    "column-pinning-attendance",
-    {},
-  );
+  const [columnVisibility, setColumnVisibility] = useLocalStorage("column-visibility-attendance", {});
+  const [columnPinning, setColumnPinning] = useLocalStorage("column-pinning-attendance", {});
+  const [autoResetPageIndex] = useSkipper();
 
   const [tableSettings, setTableSettings] = useState({
     enableSorting: true,
@@ -65,38 +59,27 @@ export default function AttendanceTable() {
   });
 
   const today = new Date().toISOString().split("T")[0];
-  const formattedDate = new Date(today).toLocaleDateString("en-GB"); // dd/mm/yyyy
+  const formattedDate = new Date(today).toLocaleDateString("en-GB");
+
   const className = data[0]?.className || "-";
-  const checkedInCount = data.filter(
-    (d) => d.attendanceStatus === "Checked-In",
-  ).length;
-  const checkedOutCount = data.filter(
-    (d) => d.attendanceStatus === "Checked-Out",
-  ).length;
+  const checkedInCount = data.filter((d) => d.attendanceStatus === "Checked-In").length;
+  const checkedOutCount = data.filter((d) => d.attendanceStatus === "Checked-Out").length;
 
   const cardRef = useRef();
 
   const fetchData = async () => {
-    const today = new Date().toISOString().split("T")[0];
     const response = await fetchAttendanceSummary({
       date: today,
-      tenantId: tenantId,
+      tenantId,
       branchId: branch,
-      courseId: course[0].id,
+      courseId: course[0]?.id,
     });
+
     setData(response.data);
-    const allowedHeaders = [
-      "studentId",
-      "studentName",
-      // "className",
-      // "fromTime",
-      // "toTime",
-      // "markedBy",
-      "attendanceStatus",
-    ];
-    const filteredHeaders = response.headers.filter((h) =>
-      allowedHeaders.includes(h),
-    );
+
+    const allowedHeaders = ["studentId", "studentName", "attendanceStatus"];
+    const filteredHeaders = response.headers.filter((h) => allowedHeaders.includes(h));
+
     setColumns(generateAttendanceColumns(filteredHeaders));
   };
 
@@ -116,32 +99,27 @@ export default function AttendanceTable() {
     },
     meta: { setTableSettings, fetchData },
     filterFns: { fuzzy: fuzzyFilter },
-    enableSorting: tableSettings.enableSorting,
-    enableColumnFilters: tableSettings.enableColumnFilters,
+    globalFilterFn: fuzzyFilter,
+    onGlobalFilterChange: setGlobalFilter,
+    onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnPinningChange: setColumnPinning,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
-    globalFilterFn: fuzzyFilter,
-    onGlobalFilterChange: setGlobalFilter,
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onColumnPinningChange: setColumnPinning,
-
-    // ✅ Required for checkbox row selection
+    enableSorting: tableSettings.enableSorting,
+    enableColumnFilters: tableSettings.enableColumnFilters,
     enableRowSelection: true,
     getRowCanSelect: (row) => {
       const { fromTime, toTime } = row.original;
-      const isCheckedIn = fromTime && fromTime !== "Not marked";
-      const isCheckedOut = toTime && toTime !== "Not marked";
-      return !(isCheckedIn && isCheckedOut);
+      return !(fromTime && fromTime !== "Not marked" && toTime && toTime !== "Not marked");
     },
-
-    autoResetPageIndex,
     getRowCanExpand: () => true,
+    autoResetPageIndex,
   });
 
   useDidUpdate(() => table.resetRowSelection(), [data]);
@@ -158,15 +136,14 @@ export default function AttendanceTable() {
       <div
         className={clsx(
           "flex flex-col",
-          tableSettings.enableFullScreen &&
-            "dark:bg-dark-900 fixed inset-0 z-61 h-full w-full bg-white pt-3",
+          tableSettings.enableFullScreen && "fixed inset-0 z-61 pt-3 bg-white dark:bg-dark-900"
         )}
       >
         <Toolbar table={table} />
         <Card
           className={clsx(
             "relative mt-3 flex grow flex-col",
-            tableSettings.enableFullScreen && "overflow-hidden",
+            tableSettings.enableFullScreen && "overflow-hidden"
           )}
           ref={cardRef}
         >
@@ -184,13 +161,11 @@ export default function AttendanceTable() {
                       <Th
                         key={header.id}
                         className={clsx(
-                          "dark:bg-dark-800 dark:text-dark-100 bg-neutral-200 font-semibold text-neutral-800 uppercase first:ltr:rounded-tl-lg last:ltr:rounded-tr-lg first:rtl:rounded-tr-lg last:rtl:rounded-tl-lg",
+                          "bg-neutral-200 font-semibold uppercase text-neutral-800 dark:bg-dark-800 dark:text-dark-100",
                           header.column.getCanPin() && [
-                            header.column.getIsPinned() === "left" &&
-                              "sticky z-2 ltr:left-0 rtl:right-0",
-                            header.column.getIsPinned() === "right" &&
-                              "sticky z-2 ltr:right-0 rtl:left-0",
-                          ],
+                            header.column.getIsPinned() === "left" && "sticky ltr:left-0 rtl:right-0 z-2",
+                            header.column.getIsPinned() === "right" && "sticky ltr:right-0 rtl:left-0 z-2",
+                          ]
                         )}
                       >
                         {header.column.getCanSort() ? (
@@ -199,26 +174,14 @@ export default function AttendanceTable() {
                             onClick={header.column.getToggleSortingHandler()}
                           >
                             <span className="flex-1">
-                              {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext(),
-                                  )}
+                              {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                             </span>
-                            <TableSortIcon
-                              sorted={header.column.getIsSorted()}
-                            />
+                            <TableSortIcon sorted={header.column.getIsSorted()} />
                           </div>
                         ) : header.isPlaceholder ? null : (
-                          flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )
+                          flexRender(header.column.columnDef.header, header.getContext())
                         )}
-                        {header.column.getCanFilter() ? (
-                          <ColumnFilter column={header.column} />
-                        ) : null}
+                        {header.column.getCanFilter() && <ColumnFilter column={header.column} />}
                       </Th>
                     ))}
                   </Tr>
@@ -229,54 +192,41 @@ export default function AttendanceTable() {
                   <Fragment key={row.id}>
                     <Tr
                       className={clsx(
-                        "dark:border-b-dark-500 relative border-y border-transparent border-b-neutral-200",
-                        row.getIsSelected() &&
-                          !isSafari &&
-                          "row-selected after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500 after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent",
+                        "relative border-y border-b-neutral-200 dark:border-b-dark-500",
+                        row.getIsSelected() && !isSafari &&
+                          "row-selected after:absolute after:inset-0 after:z-2 after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500"
                       )}
                     >
                       {row.getVisibleCells().map((cell) => (
                         <Td
                           key={cell.id}
                           className={clsx(
-                            "relative",
-                            cell.column.id === "select" && "px-2", // or whatever spacing you want
-
-                            cardSkin === "shadow-sm"
-                              ? "dark:bg-dark-700"
-                              : "dark:bg-dark-900",
-                            "dark:text-white",
+                            "relative dark:text-white",
+                            cell.column.id === "select" && "px-2",
+                            cardSkin === "shadow-sm" ? "dark:bg-dark-700" : "dark:bg-dark-900",
                             cell.column.getCanPin() && [
-                              cell.column.getIsPinned() === "left" &&
-                                "sticky z-2 ltr:left-0 rtl:right-0",
-                              cell.column.getIsPinned() === "right" &&
-                                "sticky z-2 ltr:right-0 rtl:left-0",
-                            ],
+                              cell.column.getIsPinned() === "left" && "sticky ltr:left-0 rtl:right-0 z-2",
+                              cell.column.getIsPinned() === "right" && "sticky ltr:right-0 rtl:left-0 z-2",
+                            ]
                           )}
                         >
                           {cell.column.getIsPinned() && (
                             <div
                               className={clsx(
-                                "dark:border-dark-500 pointer-events-none absolute inset-0 border-neutral-200",
+                                "pointer-events-none absolute inset-0 border-neutral-200 dark:border-dark-500",
                                 cell.column.getIsPinned() === "left"
                                   ? "ltr:border-r rtl:border-l"
-                                  : "ltr:border-l rtl:border-r",
+                                  : "ltr:border-l rtl:border-r"
                               )}
                             ></div>
                           )}
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </Td>
                       ))}
                     </Tr>
                     {row.getIsExpanded() && (
                       <tr>
-                        <td
-                          colSpan={row.getVisibleCells().length}
-                          className="dark:bg-dark-800 bg-neutral-50"
-                        >
+                        <td colSpan={row.getVisibleCells().length} className="bg-neutral-50 dark:bg-dark-800">
                           <SubRowComponent row={row} />
                         </td>
                       </tr>
@@ -288,11 +238,9 @@ export default function AttendanceTable() {
           </div>
           <SelectedRowsActions table={table} />
           {table.getCoreRowModel().rows.length > 0 ? (
-            <div className="...">
-              <PaginationSection table={table} />
-            </div>
+            <PaginationSection table={table} />
           ) : (
-            <div className="dark:text-dark-300 py-4 text-center text-sm text-gray-500">
+            <div className="py-4 text-center text-sm text-gray-500 dark:text-dark-300">
               No attendance records found.
             </div>
           )}
