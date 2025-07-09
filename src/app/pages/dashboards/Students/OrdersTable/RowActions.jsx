@@ -11,55 +11,63 @@ import {
   EllipsisHorizontalIcon,
   EyeIcon,
   PencilIcon,
-  TrashIcon,
+  // TrashIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { useCallback, useState } from "react";
+// import { useCallback, useState } from "react";
 import PropTypes from "prop-types";
+import StudentAttendanceGraph  from "app/pages/charts/studentattendence";
 
 // Local Imports
-import { ConfirmModal } from "components/shared/ConfirmModal";
+// import { ConfirmModal } from "components/shared/ConfirmModal";
 import { Button } from "components/ui";
+import { useState } from "react";
 
 // ----------------------------------------------------------------------
 
-const confirmMessages = {
-  pending: {
-    description:
-      "Are you sure you want to delete this order? Once deleted, it cannot be restored.",
-  },
-  success: {
-    title: "Order Deleted",
-  },
-};
+// const confirmMessages = {
+//   pending: {
+//     description:
+//       "Are you sure you want to delete this order? Once deleted, it cannot be restored.",
+//   },
+//   success: {
+//     title: "Order Deleted",
+//   },
+// };
 
-export function RowActions({ row, table }) {
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [confirmDeleteLoading, setConfirmDeleteLoading] = useState(false);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const [deleteError, setDeleteError] = useState(false);
+export function RowActions({ row }) {
+  const [showAttendancePopUp,setShowAttendancePopUp]=useState(false);
+  const handlePdfPopUpClose=()=>{
+    setShowAttendancePopUp(false);
+  }
+  const handleAttendanceOpen=()=>{
+    setShowAttendancePopUp(true);
+  }
+  // const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  // const [confirmDeleteLoading, setConfirmDeleteLoading] = useState(false);
+  // const [deleteSuccess, setDeleteSuccess] = useState(false);
+  // const [deleteError, setDeleteError] = useState(false);
 
-  const closeModal = () => {
-    setDeleteModalOpen(false);
-  };
+  // const closeModal = () => {
+  //   setDeleteModalOpen(false);
+  // };
 
-  const openModal = () => {
-    setDeleteModalOpen(true);
-    setDeleteError(false);
-    setDeleteSuccess(false);
-  };
+  // const openModal = () => {
+  //   setDeleteModalOpen(true);
+  //   setDeleteError(false);
+  //   setDeleteSuccess(false);
+  // };
 
-  const handleDeleteRows = useCallback(() => {
-    setConfirmDeleteLoading(true);
-    setTimeout(() => {
-      table.options.meta?.deleteRow(row);
-      setDeleteSuccess(true);
-      setConfirmDeleteLoading(false);
-    }, 1000);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [row]);
+  // const handleDeleteRows = useCallback(() => {
+  //   setConfirmDeleteLoading(true);
+  //   setTimeout(() => {
+  //     table.options.meta?.deleteRow(row);
+  //     setDeleteSuccess(true);
+  //     setConfirmDeleteLoading(false);
+  //   }, 1000);
+  // }, [row]);
 
-  const state = deleteError ? "error" : deleteSuccess ? "success" : "pending";
+  // const state = deleteError ? "error" : deleteSuccess ? "success" : "pending";
 
   return (
     <>
@@ -101,6 +109,7 @@ export function RowActions({ row, table }) {
             <MenuItem>
               {({ focus }) => (
                 <button
+                onClick={handleAttendanceOpen}
                   className={clsx(
                     "flex h-9 w-full items-center space-x-3 px-3 tracking-wide outline-hidden transition-colors ",
                     focus &&
@@ -126,7 +135,7 @@ export function RowActions({ row, table }) {
                 </button>
               )}
             </MenuItem>
-            <MenuItem>
+            {/* <MenuItem>
               {({ focus }) => (
                 <button
                   onClick={openModal}
@@ -139,19 +148,32 @@ export function RowActions({ row, table }) {
                   <span>Delete</span>
                 </button>
               )}
-            </MenuItem>
+            </MenuItem> */}
           </Transition>
         </Menu>
       </div>
 
-      <ConfirmModal
-        show={deleteModalOpen}
-        onClose={closeModal}
-        messages={confirmMessages}
-        onOk={handleDeleteRows}
-        confirmLoading={confirmDeleteLoading}
-        state={state}
-      />
+    {showAttendancePopUp && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="relative w-full max-w-3xl rounded-lg bg-white p-4 shadow-lg">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-primary-950 text-lg font-semibold">
+                PDF View
+              </h2>
+              <button
+                onClick={handlePdfPopUpClose}
+                className="text-primary-600 text-xl font-bold"
+                aria-label="Close"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="max-h-[70vh] overflow-auto rounded border">
+            <StudentAttendanceGraph/>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

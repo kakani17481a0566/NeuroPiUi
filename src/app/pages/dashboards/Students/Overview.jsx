@@ -43,13 +43,19 @@ export function Overview({ data }) {
         />
         <StatBox
           label="Checked IN"
-          value={studentData?.checkedIn ?? 0}
+          value={studentData?.checkedInCount ?? 0}
           Icon={CheckBadgeIcon}
           iconColor="bg-green-100 text-green-700"
         />
         <StatBox
           label="Checked OUT"
-          value={studentData?.checkedOut ?? 0}
+          value={studentData?.checkedOutCount ?? 0}
+          Icon={ArrowRightEndOnRectangleIcon}
+          iconColor="bg-blue-100 text-blue-700"
+        />
+           <StatBox
+          label="Not Marked"
+          value={studentData?.notMarkedCount ?? 0}
           Icon={ArrowRightEndOnRectangleIcon}
           iconColor="bg-blue-100 text-blue-700"
         />

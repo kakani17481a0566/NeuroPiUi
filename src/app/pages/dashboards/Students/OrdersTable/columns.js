@@ -11,11 +11,14 @@ import {
     CustomerCell,
     // DateCell,
     OrderIdCell,
+    ParentNameCell,
+    CourseNameCell,
+    PhoneNumerCell
     // OrderStatusCell,
     // ProfitCell,
-    TimeCell,
-    // TotalCell,
+       // TotalCell,
 } from "./rows";
+// import { CourseNameCell } from "../../Teacher/MediaTable/rows";
 // import { orderStatusOptions } from "./data";
 
 // ----------------------------------------------------------------------
@@ -65,18 +68,48 @@ export const columns = [
     //     filter: "numberRange",
     //     cell: ProfitCell,
     // }),
-      columnHelper.accessor((row) => row.checkedIn, {
-        id: "CheckedIN",
-        label: "Time",
-        header: "CHECKED IN",
-        cell: TimeCell,
+    //   columnHelper.accessor((row) => row.checkedIn, {
+    //     id: "CheckedIN",
+    //     label: "Time",
+    //     header: "CHECKED IN",
+    //     cell: TimeCell,
+    // }),
+    //     columnHelper.accessor((row) => row.checkedOut, {
+    //     id: "CheckedOut",
+    //     label: "Time",
+    //     header: "CHECKED OUT",
+    //     cell: TimeCell,
+    // }),
+    columnHelper.accessor((row) => row.ParentName, {
+        id: "ParentName",
+        label: "ParentName",
+        header: "Parent Name",
+        cell: ParentNameCell,
     }),
-        columnHelper.accessor((row) => row.checkedOut, {
-        id: "CheckedOut",
-        label: "Time",
-        header: "CHECKED OUT",
-        cell: TimeCell,
+        columnHelper.accessor((row) => row.courseName, {
+        id: "courseName",
+        label: "courseName",
+        header: "Course Name",
+        cell: CourseNameCell,
     }),
+    columnHelper.accessor((row) => row.MobileNumber, {
+        id: "MobileNumber",
+        label: "MobileNumber",
+        header: "Mobile Number",
+        cell: PhoneNumerCell,
+    }),
+     columnHelper.accessor((row) => row.AlternateNumber, {
+        id: "AlternateNumber",
+        label: "AlternateNumber",
+        header: "Alternate Number",
+        cell: PhoneNumerCell,
+    }),
+    //     columnHelper.accessor((row) => row.courseName, {
+    //     id: "attendanceStatus",
+    //     label: "attendanceStatus",
+    //     // header: "Course Name",
+    //     cell: CourseNameCell,
+    // }),
     // columnHelper.accessor((row) => row.order_status, {
     //     id: "order_status",
     //     label: "Order Status",

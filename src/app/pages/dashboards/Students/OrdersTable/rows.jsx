@@ -7,6 +7,7 @@ import { Highlight } from "components/shared/Highlight";
 import {  Badge } from "components/ui";
 import { useLocaleContext } from "app/contexts/locale/context";
 import { ensureString } from "utils/ensureString";
+import propTypes from "prop-types";
 // import {  } from "./data";
 
 // ----------------------------------------------------------------------
@@ -57,6 +58,12 @@ export function DateCell({ getValue }) {
 export const CustomerCell = ({ getValue }) => <span>{getValue()}</span>;
 export const OrderIdCell = ({ getValue }) => <span>{getValue()}</span>;
 export const TimeCell = ({ getValue }) => <span>{getValue()}</span>;
+export const ParentNameCell=({getValue})=><span>{getValue()}</span>
+export const CourseNameCell=({getValue})=><span>{getValue()}</span>
+export const PhoneNumerCell=({getValue})=><span>{getValue()}</span>
+
+
+
 
 export function TotalCell({ getValue }) {
   return (
@@ -153,4 +160,13 @@ CustomerCell.propTypes = {
   table: PropTypes.object,
   getValue: PropTypes.func,
 };
+ParentNameCell.propTypes = {
+  getValue: PropTypes.func,
+};
+CourseNameCell.propTypes = {
+  getValue: PropTypes.func,
+};
+PhoneNumerCell.propTypes={
+  getValue:propTypes.func,
+}
 

@@ -65,12 +65,15 @@ export default function StudentAttendance({ date }) {
       try {
         const res = await studentDetails({ date: date });
         // const formatted = res.data.map((student, index) => ({
-        const formatted = res.data.map((student) => ({
+        const formatted = res.data.records.map((student) => ({
 
           order_id: student.studentId,
-          studentName: student.studentName ,
-          checkedIn: student.fromTime,
-          checkedOut: student.toTime,
+          studentName: student.studentName,
+          courseName: student.className,
+          ParentName: student.parentName,
+          attendanceStatus: student.attendanceStatus,
+          MobileNumber:student.mobileNumber,
+          AlternateNumber:student.alternateNumber,
         }));
         console.log("Formatted data:", formatted);
         setOrders(formatted);
@@ -196,7 +199,12 @@ export default function StudentAttendance({ date }) {
                           "relative border-y border-transparent border-b-gray-200 dark:border-b-dark-500",
                           row.getIsExpanded() && "border-dashed",
                           row.getIsSelected() && !isSafari &&
-                          "row-selected after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500"
+                          "row-selected after:pointer-events-none after:absolute after:inset-0 after:z-2 after:h-full after:w-full after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500",
+                          row.original.attendanceStatus === "Not Marked"
+                            ? "bg-red-100 dark:bg-red-900"
+                            : row.original.attendanceStatus === "Marked"
+                              ? "bg-green-100 dark:bg-green-900"
+                              : "bg-gray-100 dark:bg-gray-800"
                         )}
                       >
                         {row.getVisibleCells().map((cell) => (
