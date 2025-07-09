@@ -71,6 +71,7 @@
     "react-to-print": "^3.0.5",
     "react-tooltip": "^5.28.0",
     "react-vimeo": "^2.0.0",
+    "recharts": "^3.1.0",
     "simplebar-react": "^3.3.0",
     "sonner": "^2.0.1",
     "swiper": "^11.2.6",
