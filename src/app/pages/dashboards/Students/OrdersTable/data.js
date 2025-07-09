@@ -1,17 +1,17 @@
 import axios from "axios";
-import dayjs from "dayjs";
-import {STUDENT_ATTENDANCE}from "constants/apis"
+// import dayjs from "dayjs";
+// import {STUDENT_ATTENDANCE}from "constants/apis"
 
 
-export async function studentDetails({date}) {
+export async function studentDetails() {
   try {
-        const formattedDate = dayjs(date).format("MM-DD-YYYY");
+        // const formattedDate = dayjs(date).format("MM-DD-YYYY");
 
-    const response = await axios.get(`${STUDENT_ATTENDANCE}`, {
-      params: {
-        dateTime:formattedDate ,
-        tenantId: 1,
-      },
+    const response = await axios.get(`https://localhost:7202/api/StudentAttendance/summary-structured?date=2025-07-09&tenantId=1&branchId=1&courseId=-1`, {
+      // params: {
+      //   dateTime:formattedDate ,
+      //   tenantId: 1,
+      // },
       headers: {
         "accept": "*/*"
       }

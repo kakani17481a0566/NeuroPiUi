@@ -64,11 +64,13 @@ export default function StudentAttendance({ date }) {
 
       try {
         const res = await studentDetails({ date: date });
-        const formatted = res.data.students.map((student, index) => ({
-          order_id: index + 1,
-          studentName: student.name ,
-          checkedIn: student.checkedIn,
-          checkedOut: student.checkedOut,
+        // const formatted = res.data.map((student, index) => ({
+        const formatted = res.data.map((student) => ({
+
+          order_id: student.studentId,
+          studentName: student.studentName ,
+          checkedIn: student.fromTime,
+          checkedOut: student.toTime,
         }));
         console.log("Formatted data:", formatted);
         setOrders(formatted);
