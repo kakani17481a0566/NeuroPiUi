@@ -8,7 +8,7 @@ import { Avatar, Button, Card, Tag } from "components/ui";
 
 // Domain-specific color mapping
 const domainColorMap = {
-  CLL: "#33CDCD",
+  CLL: "#465C8A",
   PSRN: "#D2486E",
   KUW: "#E27257",
   PD: "#713427",
@@ -17,7 +17,7 @@ const domainColorMap = {
 };
 
 export function ClassCard({ name, category, time, students }) {
-  const domainColor = domainColorMap[name] || "#33CDCD"; // Fallback to CLL blue
+  const domainColor = domainColorMap[name] || "#465C8A"; // Fallback to CLL blue
 
   return (
     <Card className="group flex overflow-hidden border border-gray-300 dark:border-dark-700 rounded-2xl shadow-sm hover:shadow-md transition duration-300">
