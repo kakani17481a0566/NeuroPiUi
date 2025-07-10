@@ -1,10 +1,10 @@
 // Local Imports
-import StudentAttendance from "./OrdersTable";
+import StudentAttendance from "./StudentsAttendanceTable";
 import { Page } from "components/shared/Page";
 import { Overview } from "./Overview";
 import { Calendar } from "./Calendar";
 import { useState, useEffect } from "react";
-import { studentDetails } from "./OrdersTable/data";
+import { studentDetails } from "./StudentsAttendanceTable/data";
 
 // ----------------------------------------------------------------------
 

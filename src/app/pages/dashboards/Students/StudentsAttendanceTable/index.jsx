@@ -68,7 +68,7 @@ export default function StudentAttendance({ date }) {
   const { width: cardWidth } = useBoxSize({ ref: cardRef });
 
   useEffect(() => {
-    async function fetchOrders() {
+    async function fetchStudentsAttendance() {
       setLoading(true);
       try {
         const res = await studentDetails({ date: date });
@@ -88,7 +88,7 @@ export default function StudentAttendance({ date }) {
         setLoading(false);
       }
     }
-    fetchOrders();
+    fetchStudentsAttendance();
   }, [date]);
 
   const table = useReactTable({
