@@ -31,7 +31,7 @@ if (role === "Teacher") {
             Icon: AcademicCapIcon,
         }
     ];
-} else if (role === "admin") {
+} else if (role?.toLowerCase() === "admin" || role?.toLowerCase()=="chairman") {
     childs = [
         {
             id: 'academics.termplan',

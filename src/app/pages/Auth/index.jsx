@@ -9,10 +9,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./Auth.css";
+import { getSessionData } from "utils/sessionStorage";
 
 export default function SignIn() {
   const navigate = useNavigate();
   const { login, errorMessage } = useAuthContext();
+
 
   const {
     register,
@@ -35,7 +37,13 @@ export default function SignIn() {
         username: data.username,
         password: data.password,
       });
-      navigate("/dashboards");
+      const { role } = getSessionData();
+
+      if (role?.toLowerCase() === "nanny") {
+        navigate("/dashboards/attendance");
+      } else {
+        navigate("/dashboards");
+      }
     } finally {
       setLoading(false);
     }
