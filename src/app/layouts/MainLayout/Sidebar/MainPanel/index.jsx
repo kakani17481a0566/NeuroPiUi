@@ -9,21 +9,29 @@ import { useThemeContext } from "app/contexts/theme/context";
 // import { useUserContext } from "app/contexts/user/context";
 import { settings } from "app/navigation/settings";
 import { getSessionData } from "utils/sessionStorage";
+import { useSidebarContext } from "app/contexts/sidebar/context";
+
 
 export function MainPanel({ nav, setActiveSegment, activeSegment }) {
   const { cardSkin } = useThemeContext();
   const{role}=getSessionData();
-const navigate = useNavigate();
-  // const history = useHistory();
+  const { close } = useSidebarContext();
 
+const navigate = useNavigate();
   const handleLogoClick = () => {
     if (role === "Teacher") {
     navigate("dashboards/teacher");
+   
   } else if (role === "Nanny") {
     navigate("dashboards/attendance");
+  
   } else {
     navigate("/");
+    
   }
+    close();
+  
+  
 };
 
   return (
@@ -39,7 +47,6 @@ const navigate = useNavigate();
             <Logo className="text-primary-600 dark:text-primary-400 h-[80px] w-[65px]" />
           </div>
         </div>
-
         <Menu
           nav={nav}
           activeSegment={activeSegment}

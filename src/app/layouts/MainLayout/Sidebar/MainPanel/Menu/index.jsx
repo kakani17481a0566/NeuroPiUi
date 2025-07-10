@@ -1,24 +1,34 @@
 // Import Dependencies
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 // Local Imports
 import { NAV_TYPE_ITEM } from "constants/app.constant";
 import { ScrollShadow } from "components/ui";
 import { useSidebarContext } from "app/contexts/sidebar/context";
 import { Item } from "./Item";
+// import { useState } from "react";
 
 // ----------------------------------------------------------------------
 
 export function Menu({ nav, setActiveSegment, activeSegment }) {
   const { t } = useTranslation();
-  const { isExpanded, open } = useSidebarContext();
+  const { isExpanded, open ,close} = useSidebarContext();
+
 
   const handleSegmentSelect = (path) => {
-    setActiveSegment(path);
-    if (!isExpanded) {
-      open();
+     if (activeSegment === path) {
+      if (isExpanded) {
+        close();
+      } else {
+        open();
+      }
+    } else {
+      setActiveSegment(path);
+      if (!isExpanded) {
+        open();
+      }
     }
   };
 
