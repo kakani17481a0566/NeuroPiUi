@@ -8,13 +8,13 @@ import PropTypes from "prop-types";
 // import { TableConfig } from "./TableConfig";
 
 export function Toolbar({ table }) {
-  const enableFullScreen = table.getState().tableSettings.enableFullScreen;
+  const enableFullScreen = table?.options?.meta?.tableSettings?.enableFullScreen || false;
 
   return (
     <div
       className={clsx(
         "flex items-center justify-between",
-        enableFullScreen && "px-4 sm:px-5",
+        enableFullScreen && "px-4 sm:px-5"
       )}
     >
       <h2 className="truncate text-base font-medium tracking-wide text-gray-800 dark:text-dark-100">

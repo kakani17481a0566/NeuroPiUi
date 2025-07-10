@@ -1,3 +1,4 @@
+// Import Dependencies
 import {
   flexRender,
   getCoreRowModel,
@@ -9,21 +10,19 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState, useMemo, useCallback } from "react";
 import clsx from "clsx";
 
 import { fetchAttendanceSummary } from "./data";
 import { generateAttendanceColumns } from "./columns";
 import { TableSortIcon } from "components/shared/table/TableSortIcon";
 import { ColumnFilter } from "components/shared/table/ColumnFilter";
-import { PaginationSection } from "components/shared/table/PaginationSection";
 import { Card, Table, THead, TBody, Th, Tr, Td } from "components/ui";
 import { SelectedRowsActions } from "./SelectedRowsActions";
 import { Toolbar } from "./Toolbar";
 import { AttendanceHeaderBox } from "./VerticalWithoutText";
 
 import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
-import { useSkipper } from "utils/react-table/useSkipper";
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
 import { getUserAgentBrowser } from "utils/dom/getUserAgentBrowser";
 import { getSessionData } from "utils/sessionStorage";
@@ -47,9 +46,13 @@ export default function AttendanceTable() {
   const [sorting, setSorting] = useState([]);
   const { branch, tenantId, course } = getSessionData();
 
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
   const [columnVisibility, setColumnVisibility] = useLocalStorage("column-visibility-attendance", {});
   const [columnPinning, setColumnPinning] = useLocalStorage("column-pinning-attendance", {});
-  const [autoResetPageIndex] = useSkipper();
 
   const [tableSettings, setTableSettings] = useState({
     enableSorting: true,
@@ -61,31 +64,39 @@ export default function AttendanceTable() {
   const today = new Date().toISOString().split("T")[0];
   const formattedDate = new Date(today).toLocaleDateString("en-GB");
 
-  const className = data[0]?.className || "-";
-  const checkedInCount = data.filter((d) => d.attendanceStatus === "Checked-In").length;
-  const checkedOutCount = data.filter((d) => d.attendanceStatus === "Checked-Out").length;
+  const className = useMemo(() => data[0]?.className || "-", [data]);
+  const checkedInCount = useMemo(() => data.filter((d) => d.attendanceStatus === "Checked-In").length, [data]);
+  const checkedOutCount = useMemo(() => data.filter((d) => d.attendanceStatus === "Checked-Out").length, [data]);
 
   const cardRef = useRef();
 
-  const fetchData = async () => {
-    const response = await fetchAttendanceSummary({
-      date: today,
-      tenantId,
-      branchId: branch,
-      courseId: course[0]?.id,
-    });
+  const fetchData = useCallback(async () => {
+    const currentPage = pagination.pageIndex;
 
-    setData(response.data);
+    try {
+      const response = await fetchAttendanceSummary({
+        date: today,
+        tenantId,
+        branchId: branch,
+        courseId: course[0]?.id,
+      });
 
-    const allowedHeaders = ["studentId", "studentName", "attendanceStatus"];
-    const filteredHeaders = response.headers.filter((h) => allowedHeaders.includes(h));
+      setData(response.data);
 
-    setColumns(generateAttendanceColumns(filteredHeaders));
-  };
+      const allowedHeaders = ["studentId", "studentName", "attendanceStatus"];
+      const filteredHeaders = response.headers.filter((h) => allowedHeaders.includes(h));
+
+      setColumns(generateAttendanceColumns(filteredHeaders));
+
+      setPagination((prev) => ({ ...prev, pageIndex: currentPage }));
+    } catch (err) {
+      console.error("\u274C Failed to fetch attendance data", err);
+    }
+  }, [today, tenantId, branch, course, pagination.pageIndex]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const table = useReactTable({
     data,
@@ -93,10 +104,12 @@ export default function AttendanceTable() {
     state: {
       globalFilter,
       sorting,
+      pagination,
       columnVisibility,
       columnPinning,
       tableSettings,
     },
+    onPaginationChange: setPagination,
     meta: { setTableSettings, fetchData },
     filterFns: { fuzzy: fuzzyFilter },
     globalFilterFn: fuzzyFilter,
@@ -119,40 +132,45 @@ export default function AttendanceTable() {
       return !(fromTime && fromTime !== "Not marked" && toTime && toTime !== "Not marked");
     },
     getRowCanExpand: () => true,
-    autoResetPageIndex,
+    autoResetPageIndex: false,
   });
 
   useDidUpdate(() => table.resetRowSelection(), [data]);
   useLockScrollbar(tableSettings.enableFullScreen);
 
-  return (
-    <div className="col-span-12">
-      <AttendanceHeaderBox
-        date={formattedDate}
-        className={className}
-        checkedIn={checkedInCount}
-        checkedOut={checkedOutCount}
-      />
-      <div
+
+
+return (
+  <div className="col-span-12">
+    <AttendanceHeaderBox
+      date={formattedDate}
+      className={className}
+      checkedIn={checkedInCount}
+      checkedOut={checkedOutCount}
+    />
+
+    <div
+      className={clsx(
+        "flex flex-col",
+        tableSettings.enableFullScreen && "fixed inset-0 z-61 pt-3 bg-white dark:bg-dark-900"
+      )}
+    >
+      <Toolbar table={table} />
+
+      <Card
         className={clsx(
-          "flex flex-col",
-          tableSettings.enableFullScreen && "fixed inset-0 z-61 pt-3 bg-white dark:bg-dark-900"
+          "relative mt-3 flex grow flex-col",
+          tableSettings.enableFullScreen ? "overflow-hidden" : "overflow-visible"
         )}
+        ref={cardRef}
       >
-        <Toolbar table={table} />
-        <Card
-          className={clsx(
-            "relative mt-3 flex grow flex-col",
-            tableSettings.enableFullScreen && "overflow-hidden"
-          )}
-          ref={cardRef}
-        >
-          <div className="table-wrapper scrollbar-thin scrollbar-thumb-neutral-400 dark:scrollbar-thumb-dark-300 min-w-full grow overflow-x-auto">
+        <div className="relative w-full overflow-x-auto touch-auto overflow-y-visible scrollbar-thin scrollbar-thumb-neutral-400 dark:scrollbar-thumb-dark-300">
+          <div className="min-w-[720px] md:min-w-full">
             <Table
               hoverable
               dense={tableSettings.enableRowDense}
               sticky={tableSettings.enableFullScreen}
-              className="w-full text-left rtl:text-right"
+              className="w-full text-left rtl:text-right text-xs sm:text-sm md:text-base"
             >
               <THead>
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -161,10 +179,10 @@ export default function AttendanceTable() {
                       <Th
                         key={header.id}
                         className={clsx(
-                          "bg-neutral-200 font-semibold uppercase text-neutral-800 dark:bg-dark-800 dark:text-dark-100",
+                          "bg-neutral-200 font-semibold uppercase text-neutral-800 dark:bg-dark-800 dark:text-dark-100 px-2 py-2 sm:px-4 sm:py-3",
                           header.column.getCanPin() && [
-                            header.column.getIsPinned() === "left" && "sticky ltr:left-0 rtl:right-0 z-2",
-                            header.column.getIsPinned() === "right" && "sticky ltr:right-0 rtl:left-0 z-2",
+                            header.column.getIsPinned() === "left" && "sticky ltr:left-0 rtl:right-0 z-2 bg-white dark:bg-dark-900",
+                            header.column.getIsPinned() === "right" && "sticky ltr:right-0 rtl:left-0 z-2 bg-white dark:bg-dark-900",
                           ]
                         )}
                       >
@@ -192,21 +210,20 @@ export default function AttendanceTable() {
                   <Fragment key={row.id}>
                     <Tr
                       className={clsx(
-                        "relative border-y border-b-neutral-200 dark:border-b-dark-500",
+                        "relative border-y border-b-neutral-200 dark:border-b-dark-500 hover:bg-neutral-100 dark:hover:bg-dark-700 text-sm sm:text-base whitespace-nowrap sm:whitespace-normal",
                         row.getIsSelected() && !isSafari &&
-                          "row-selected after:absolute after:inset-0 after:z-2 after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500"
+                        "row-selected after:absolute after:inset-0 after:z-2 after:border-3 after:border-transparent after:bg-primary-500/10 ltr:after:border-l-primary-500 rtl:after:border-r-primary-500"
                       )}
                     >
                       {row.getVisibleCells().map((cell) => (
                         <Td
                           key={cell.id}
                           className={clsx(
-                            "relative dark:text-white",
-                            cell.column.id === "select" && "px-2",
+                            "relative dark:text-white px-2 py-2 sm:px-4 sm:py-3",
                             cardSkin === "shadow-sm" ? "dark:bg-dark-700" : "dark:bg-dark-900",
                             cell.column.getCanPin() && [
-                              cell.column.getIsPinned() === "left" && "sticky ltr:left-0 rtl:right-0 z-2",
-                              cell.column.getIsPinned() === "right" && "sticky ltr:right-0 rtl:left-0 z-2",
+                              cell.column.getIsPinned() === "left" && "sticky ltr:left-0 rtl:right-0 z-2 bg-white dark:bg-dark-900",
+                              cell.column.getIsPinned() === "right" && "sticky ltr:right-0 rtl:left-0 z-2 bg-white dark:bg-dark-900",
                             ]
                           )}
                         >
@@ -236,16 +253,42 @@ export default function AttendanceTable() {
               </TBody>
             </Table>
           </div>
-          <SelectedRowsActions table={table} />
-          {table.getCoreRowModel().rows.length > 0 ? (
-            <PaginationSection table={table} />
-          ) : (
-            <div className="py-4 text-center text-sm text-gray-500 dark:text-dark-300">
-              No attendance records found.
-            </div>
-          )}
-        </Card>
-      </div>
+        </div>
+
+        <SelectedRowsActions table={table} />
+
+        <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4 px-4 pb-4 mt-4">
+          <div className="text-sm text-gray-600 dark:text-dark-300">
+            Showing{" "}
+            {table.getRowModel().rows.length > 0
+              ? `${pagination.pageIndex * pagination.pageSize + 1} - ${
+                  pagination.pageIndex * pagination.pageSize + table.getRowModel().rows.length
+                }`
+              : "0"}{" "}
+            of {table.getCoreRowModel().rows.length} entries
+          </div>
+
+      <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 w-full sm:w-auto">
+  <button
+    onClick={() => table.previousPage()}
+    disabled={!table.getCanPreviousPage()}
+    className="w-full sm:w-auto px-4 py-2 sm:py-1 text-sm sm:text-base rounded bg-neutral-200 dark:bg-dark-700 hover:bg-neutral-300 dark:hover:bg-dark-600 disabled:opacity-50"
+  >
+    Previous
+  </button>
+  <button
+    onClick={() => table.nextPage()}
+    disabled={!table.getCanNextPage()}
+    className="w-full sm:w-auto px-4 py-2 sm:py-1 text-sm sm:text-base rounded bg-neutral-200 dark:bg-dark-700 hover:bg-neutral-300 dark:hover:bg-dark-600 disabled:opacity-50"
+  >
+    Next
+  </button>
+</div>
+
+        </div>
+      </Card>
     </div>
-  );
+  </div>
+);
+
 }
