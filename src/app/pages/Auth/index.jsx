@@ -39,7 +39,7 @@ export default function SignIn() {
       });
       const { role } = getSessionData();
 
-      if (role?.toLowerCase() === "nanny") {
+      if (role == "Nanny") {
         navigate("/dashboards/attendance");
       } else {
         navigate("/dashboards");
