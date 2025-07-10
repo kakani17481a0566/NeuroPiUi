@@ -32,8 +32,8 @@ export const columns = [
     //     header: SelectHeader,
     //     cell: SelectCell,
     // }),
-    columnHelper.accessor((row) => row.order_id, {
-        id: "order_id",
+    columnHelper.accessor((row) => row.studentId, {
+        id: "studentId",
         label: "Order ID",
         header: "Student ID",
         cell: OrderIdCell,

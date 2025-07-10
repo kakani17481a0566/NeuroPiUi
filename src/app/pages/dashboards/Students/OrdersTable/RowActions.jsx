@@ -169,7 +169,7 @@ export function RowActions({ row }) {
               </button>
             </div>
             <div className="max-h-[70vh] overflow-auto rounded border">
-            <StudentAttendanceGraph/>
+            <StudentAttendanceGraph studentId={row.original.studentId}/>
             </div>
           </div>
         </div>

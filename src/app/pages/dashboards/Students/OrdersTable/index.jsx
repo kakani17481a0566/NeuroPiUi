@@ -67,7 +67,7 @@ export default function StudentAttendance({ date }) {
         // const formatted = res.data.map((student, index) => ({
         const formatted = res.data.records.map((student) => ({
 
-          order_id: student.studentId,
+          studentId: student.studentId,
           studentName: student.studentName,
           courseName: student.className,
           ParentName: student.parentName,

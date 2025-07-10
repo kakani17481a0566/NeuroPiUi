@@ -7,16 +7,16 @@ import {
 import { fetchAttendanceGraph } from "./data";
 import { attendanceGraphLines, timeFormatter } from "./column";
 
-export default function StudentAttendanceGraph() {
+export default function StudentAttendanceGraph({studentId}) {
   const [data, setData] = useState([]);
 
-  const studentId = 18;
+  // const studentId = 18;
   const tenantId = 1;
   const branchId = 1;
 
   useEffect(() => {
     fetchAttendanceGraph({ studentId, tenantId, branchId }).then(setData);
-  }, []);
+  }, [studentId]);
 
   return (
     <div className="w-full h-[450px] p-4 bg-white rounded-lg shadow-sm border border-gray-200">
