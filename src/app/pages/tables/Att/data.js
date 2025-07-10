@@ -1,3 +1,4 @@
+//src\app\pages\tables\Att\data.js
 import axios from "axios";
 
 /**
@@ -9,12 +10,12 @@ import axios from "axios";
  * @param {number} params.courseId
  * @returns {Promise<{headers: string[], data: object[]}>}
  */
-export async function fetchAttendanceSummary({ date, tenantId, branchId, courseId }) {
+export async function fetchAttendanceSummary({ date, tenantId,  courseId }) {
   try {
     const url = `https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/StudentAttendance/summary-structured`;
     
     const response = await axios.get(url, {
-      params: { date, tenantId, branchId, courseId },
+      params: { date, tenantId, branchId:1, courseId },
     });
 
     const result = response?.data?.data || {};
