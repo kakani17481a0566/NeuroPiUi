@@ -38,8 +38,9 @@ export default function SignIn() {
         password: data.password,
       });
       const { role } = getSessionData();
+      console.log(role);
 
-      if (role == "Nanny") {
+      if (role === "Nanny") {
         navigate("/dashboards/attendance");
       } else {
         navigate("/dashboards");

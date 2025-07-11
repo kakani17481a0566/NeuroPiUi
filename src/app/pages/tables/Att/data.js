@@ -10,12 +10,12 @@ import axios from "axios";
  * @param {number} params.courseId
  * @returns {Promise<{headers: string[], data: object[]}>}
  */
-export async function fetchAttendanceSummary({ date, tenantId,  courseId }) {
+export async function fetchAttendanceSummary({ date, tenantId }) {
   try {
     const url = `https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/StudentAttendance/summary-structured`;
     
     const response = await axios.get(url, {
-      params: { date, tenantId, branchId:1, courseId },
+      params: { date, tenantId, branchId:1, courseId:-1 },
     });
 
     const result = response?.data?.data || {};
