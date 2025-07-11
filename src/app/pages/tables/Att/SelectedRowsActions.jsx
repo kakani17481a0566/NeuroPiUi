@@ -6,10 +6,12 @@ import { Button, GhostSpinner } from "components/ui";
 import { Transition } from "@headlessui/react";
 import { ConfirmModal } from "components/shared/ConfirmModal";
 import { ArrowDownCircleIcon, ArrowUpCircleIcon } from "@heroicons/react/24/outline";
+import { getSessionData } from "utils/sessionStorage";
+import { toast } from "react-hot-toast";
 
 export function SelectedRowsActions({ table }) {
   const [checkLoading, setCheckLoading] = useState(false);
-  const [confirmType, setConfirmType] = useState(null); // "in" or "out"
+  const [confirmType, setConfirmType] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const selectedRows = table.getSelectedRowModel().rows;
@@ -33,28 +35,31 @@ export function SelectedRowsActions({ table }) {
     const today = dayjs().format("YYYY-MM-DD");
 
     const entries = selectedRows
-      .filter((row) => {
-        const { fromTime, toTime } = row.original;
+      .filter(({ original }) => {
+        const { fromTime, toTime } = original;
         if (type === "in") return !fromTime || fromTime === "Not marked";
         if (type === "out") return fromTime && fromTime !== "Not marked" && (!toTime || toTime === "Not marked");
         return false;
       })
-      .map((row) => ({
-        studentId: row.original.studentId,
-        fromTime: type === "in" ? now : "00:00:00",
-        toTime: type === "out" ? now : "00:00:00",
-      }));
+      .map(({ original }) => {
+        const entry = { studentId: original.studentId };
+        if (type === "in") entry.fromTime = now;
+        if (type === "out") entry.toTime = now;
+        return entry;
+      });
 
     if (!entries.length) {
       setCheckLoading(false);
+      toast("No eligible students to mark.", { icon: "⚠️" });
       return;
     }
 
+    const { userId, branch: branchId, tenantId } = getSessionData();
     const payload = {
       date: today,
-      userId: 1,
-      branchId: 1,
-      tenantId: 1,
+      userId,
+      branchId,
+      tenantId,
       entries,
     };
 
@@ -63,8 +68,10 @@ export function SelectedRowsActions({ table }) {
         "https://neuropi-fhafe3gchabde0gb.canadacentral-01.azurewebsites.net/api/StudentAttendance/mark-attendance",
         payload
       );
+      toast.success(`✅ Bulk Check-${type === "in" ? "In" : "Out"} successful`);
       table.options.meta?.fetchData?.();
     } catch (err) {
+      toast.error(`❌ Failed to check-${type}: ${err.message}`);
       console.error(`Bulk check-${type} failed:`, err);
     } finally {
       setCheckLoading(false);
@@ -83,10 +90,10 @@ export function SelectedRowsActions({ table }) {
     confirmType === "in"
       ? totalSelected - alreadyCheckedIn
       : selectedRows.filter(
-          (row) =>
-            row.original.fromTime &&
-            row.original.fromTime !== "Not marked" &&
-            (!row.original.toTime || row.original.toTime === "Not marked")
+          ({ original }) =>
+            original.fromTime &&
+            original.fromTime !== "Not marked" &&
+            (!original.toTime || original.toTime === "Not marked")
         ).length;
 
   const confirmMessages = {
@@ -95,28 +102,17 @@ export function SelectedRowsActions({ table }) {
       description: `You selected ${totalSelected} students.\n\n` +
         `✔️ Already Checked-In: ${alreadyCheckedIn}\n` +
         `✔️ Already Checked-Out: ${alreadyCheckedOut}\n\n` +
-        `👉 Eligible for ${confirmType === "in" ? "Check-In" : "Check-Out"}: ${eligibleCount}`,
-      actionText: confirmType === "in" ? "Confirm Check-In" : "Confirm Check-Out",
+        `👉 Eligible for ${confirmType === "in" ? "Check-In" : confirmType === "out" ? "Check-Out" : ""}: ${eligibleCount}`,
+      actionText: confirmType === "in" ? "Confirm Check-In" : confirmType === "out" ? "Confirm Check-Out" : "Confirm",
     },
   };
 
   return (
     <>
-      {/* Background overlay when modal is shown */}
-      <Transition
-        show={showConfirmModal}
-        as={Fragment}
-        enter="transition-opacity ease-out duration-200"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition-opacity ease-in duration-150"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-      >
+      <Transition show={showConfirmModal} as={Fragment}>
         <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
       </Transition>
 
-      {/* Bottom floating bar */}
       <Transition
         as={Fragment}
         show={table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()}
@@ -131,7 +127,7 @@ export function SelectedRowsActions({ table }) {
           <div className="w-full max-w-xl px-2 py-4 sm:absolute sm:-translate-y-1/2 sm:px-4">
             <div className="pointer-events-auto flex items-center justify-between rounded-lg px-3 py-2 font-medium dark:bg-dark-50 dark:text-dark-900 sm:px-4 sm:py-3">
               <p>
-                <span>{selectedRows.length} Selected</span>
+                <span>{totalSelected} Selected</span>
                 <span className="max-sm:hidden"> from {table.getCoreRowModel().rows.length}</span>
               </p>
 
@@ -175,7 +171,6 @@ export function SelectedRowsActions({ table }) {
         </div>
       </Transition>
 
-      {/* Confirmation Modal */}
       <ConfirmModal
         show={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}

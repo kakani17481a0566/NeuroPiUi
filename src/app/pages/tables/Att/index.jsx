@@ -24,7 +24,6 @@ import { AttendanceHeaderBox } from "./VerticalWithoutText";
 import { useLockScrollbar, useLocalStorage, useDidUpdate } from "hooks";
 import { fuzzyFilter } from "utils/react-table/fuzzyFilter";
 import { getSessionData } from "utils/sessionStorage";
-// import { useThemeContext } from "app/contexts/theme/context";
 
 function SubRowComponent({ row }) {
   const { parentName, mobileNumber, alternateNumber } = row.original;
@@ -38,7 +37,6 @@ function SubRowComponent({ row }) {
 }
 
 export default function AttendanceTable() {
-  // const { cardSkin } = useThemeContext();
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -66,12 +64,9 @@ export default function AttendanceTable() {
 
   const fetchData = useCallback(async () => {
     if (!tenantId) return;
-
     try {
       const response = await fetchAttendanceSummary({ date: today, tenantId });
-
       setData(response.data);
-
       const allowedHeaders = ["studentId", "studentName", "attendanceStatus"];
       const filteredHeaders = response.headers.filter((h) => allowedHeaders.includes(h));
       setColumns(generateAttendanceColumns(filteredHeaders));
@@ -113,10 +108,10 @@ export default function AttendanceTable() {
     enableSorting: tableSettings.enableSorting,
     enableColumnFilters: tableSettings.enableColumnFilters,
     enableRowSelection: true,
-    getRowCanSelect: (row) => {
-      const { fromTime, toTime } = row.original;
-      return !(fromTime && fromTime !== "Not marked" && toTime && toTime !== "Not marked");
-    },
+ getRowCanSelect: (row) => {
+  return row.original.attendanceStatus !== "Checked-Out";
+},
+
     getRowCanExpand: () => true,
     autoResetPageIndex: false,
   });
@@ -133,42 +128,21 @@ export default function AttendanceTable() {
         checkedOut={checkedOutCount}
       />
 
-      <div
-        className={clsx(
-          "flex flex-col",
-          tableSettings.enableFullScreen && "fixed inset-0 z-61 pt-3 bg-white dark:bg-dark-900"
-        )}
-      >
+      <div className={clsx("flex flex-col", tableSettings.enableFullScreen && "fixed inset-0 z-61 pt-3 bg-white dark:bg-dark-900")}> 
         <Toolbar table={table} />
 
-        <Card
-          className={clsx(
-            "relative mt-3 flex grow flex-col",
-            tableSettings.enableFullScreen ? "overflow-hidden" : "overflow-visible"
-          )}
-          ref={cardRef}
-        >
+        <Card className={clsx("relative mt-3 flex grow flex-col", tableSettings.enableFullScreen ? "overflow-hidden" : "overflow-visible")} ref={cardRef}>
           <div className="relative w-full overflow-x-auto">
             <div className="min-w-[720px] md:min-w-full">
-              <Table
-                hoverable
-                dense={tableSettings.enableRowDense}
-                sticky={tableSettings.enableFullScreen}
-                className="w-full text-left rtl:text-right text-xs sm:text-sm md:text-base"
-              >
+              <Table hoverable dense={tableSettings.enableRowDense} sticky={tableSettings.enableFullScreen} className="w-full text-left rtl:text-right text-xs sm:text-sm md:text-base">
                 <THead>
                   {table.getHeaderGroups().map((headerGroup) => (
                     <Tr key={headerGroup.id}>
                       {headerGroup.headers.map((header) => (
-                        <Th key={header.id}>
+                        <Th key={header.id} className="bg-neutral-100 dark:bg-dark-800 text-xs sm:text-sm font-semibold px-2 py-3 text-gray-700 dark:text-gray-200">
                           {header.column.getCanSort() ? (
-                            <div
-                              className="flex cursor-pointer items-center space-x-3"
-                              onClick={header.column.getToggleSortingHandler()}
-                            >
-                              <span>
-                                {flexRender(header.column.columnDef.header, header.getContext())}
-                              </span>
+                            <div className="flex cursor-pointer items-center space-x-3" onClick={header.column.getToggleSortingHandler()}>
+                              <span>{flexRender(header.column.columnDef.header, header.getContext())}</span>
                               <TableSortIcon sorted={header.column.getIsSorted()} />
                             </div>
                           ) : (
@@ -183,16 +157,16 @@ export default function AttendanceTable() {
                 <TBody>
                   {table.getRowModel().rows.length === 0 ? (
                     <Tr>
-                      <Td colSpan={columns.length} className="text-center py-6 text-gray-500 dark:text-dark-300">
+                      <Td colSpan={columns.length} className="text-center py-10 text-sm text-gray-500 dark:text-dark-300">
                         No attendance records found.
                       </Td>
                     </Tr>
                   ) : (
                     table.getRowModel().rows.map((row) => (
                       <Fragment key={row.id}>
-                        <Tr>
+                        <Tr className="hover:bg-neutral-100 dark:hover:bg-dark-700 border-b border-neutral-200 dark:border-dark-500">
                           {row.getVisibleCells().map((cell) => (
-                            <Td key={cell.id}>
+                            <Td key={cell.id} className="px-2 py-2 text-sm text-gray-900 dark:text-gray-100">
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </Td>
                           ))}
@@ -212,35 +186,20 @@ export default function AttendanceTable() {
             </div>
           </div>
 
-          <SelectedRowsActions table={table} />
+          <SelectedRowsActions table={table} className="mt-4" />
 
           <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4 px-4 pb-4 mt-4">
             <div className="text-sm text-gray-600 dark:text-dark-300">
-              Showing{" "}
-              {table.getRowModel().rows.length > 0
-                ? `${pagination.pageIndex * pagination.pageSize + 1} - ${
-                    pagination.pageIndex * pagination.pageSize + table.getRowModel().rows.length
-                  }`
-                : "0"}{" "}
-              of {table.getCoreRowModel().rows.length} entries
+              Showing {table.getRowModel().rows.length > 0 ? `${pagination.pageIndex * pagination.pageSize + 1} - ${pagination.pageIndex * pagination.pageSize + table.getRowModel().rows.length}` : "0"} of {table.getCoreRowModel().rows.length} entries
             </div>
-<div className="w-full flex flex-col sm:flex-row items-center sm:justify-end gap-2 sm:gap-3">
-  <button
-    onClick={() => table.previousPage()}
-    disabled={!table.getCanPreviousPage()}
-    className="w-full sm:w-auto px-4 py-2 text-sm rounded bg-neutral-200 dark:bg-dark-700 hover:bg-neutral-300 dark:hover:bg-dark-600 disabled:opacity-50"
-  >
-    Previous
-  </button>
-  <button
-    onClick={() => table.nextPage()}
-    disabled={!table.getCanNextPage()}
-    className="w-full sm:w-auto px-4 py-2 text-sm rounded bg-neutral-200 dark:bg-dark-700 hover:bg-neutral-300 dark:hover:bg-dark-600 disabled:opacity-50"
-  >
-    Next
-  </button>
-</div>
-
+            <div className="w-full flex flex-col sm:flex-row items-center sm:justify-end gap-3 mt-2">
+              <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()} className="w-full sm:w-auto px-5 py-2 rounded text-sm bg-neutral-200 dark:bg-dark-700 hover:bg-neutral-300 dark:hover:bg-dark-600 disabled:opacity-50">
+                Previous
+              </button>
+              <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()} className="w-full sm:w-auto px-5 py-2 rounded text-sm bg-neutral-200 dark:bg-dark-700 hover:bg-neutral-300 dark:hover:bg-dark-600 disabled:opacity-50">
+                Next
+              </button>
+            </div>
           </div>
         </Card>
       </div>

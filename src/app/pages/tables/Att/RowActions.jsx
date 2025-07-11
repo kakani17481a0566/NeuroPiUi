@@ -10,13 +10,11 @@ import { getSessionData } from "utils/sessionStorage";
 export function RowActions({ row, table }) {
   const [hasCheckedIn, setHasCheckedIn] = useState(false);
   const [hasCheckedOut, setHasCheckedOut] = useState(false);
-  const [loading, setLoading] = useState(false); // ✅ Optional spinner state
+  const [loading, setLoading] = useState(false);
 
-  const{branch,tenantId,userId,} = getSessionData()
-
+  const { branch, tenantId, userId } = getSessionData();
   const student = row.original;
 
-  // ✅ Sync status flags from props
   useEffect(() => {
     setHasCheckedIn(student.fromTime && student.fromTime !== "Not marked");
     setHasCheckedOut(student.toTime && student.toTime !== "Not marked");
@@ -26,18 +24,19 @@ export function RowActions({ row, table }) {
     const now = dayjs().format("HH:mm:ss");
     const today = dayjs().format("YYYY-MM-DD");
 
+    // ✅ FIX: Only send the field being updated
+    const entry = {
+      studentId: student.studentId,
+      ...(type === "in" && { fromTime: now }),
+      ...(type === "out" && { toTime: now }),
+    };
+
     const payload = {
       date: today,
       userId: userId,
       branchId: branch,
       tenantId: tenantId,
-      entries: [
-        {
-          studentId: student.studentId,
-          fromTime: type === "in" ? now : "00:00:00",
-          toTime: type === "out" ? now : "00:00:00",
-        },
-      ],
+      entries: [entry],
     };
 
     try {
@@ -50,12 +49,9 @@ export function RowActions({ row, table }) {
       if (type === "in") setHasCheckedIn(true);
       if (type === "out") setHasCheckedOut(true);
 
-      // ✅ Refresh table data
       await table.options.meta?.fetchData?.();
-
-      // TODO: Show toast/snackbar if needed
     } catch (err) {
-      console.error("Attendance marking failed:", err);
+      console.error("❌ Attendance marking failed:", err);
     } finally {
       setLoading(false);
     }
@@ -65,9 +61,7 @@ export function RowActions({ row, table }) {
     <div className="flex flex-wrap justify-center gap-2">
       <Button
         color="success"
-        // variant="soft"
         className="bg-green-600 dark:bg-green-500 hover:bg-green-700 text-white rounded-full px-3 py-1 text-xs transition-colors duration-200"
-
         onClick={() => handleCheck("in")}
         disabled={loading || hasCheckedIn}
       >
@@ -75,7 +69,6 @@ export function RowActions({ row, table }) {
       </Button>
       <Button
         color="warning"
-        // variant="soft"
         className="rounded-full px-3 py-1 text-xs"
         onClick={() => handleCheck("out")}
         disabled={loading || !hasCheckedIn || hasCheckedOut}
