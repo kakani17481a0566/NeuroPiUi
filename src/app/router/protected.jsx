@@ -5,6 +5,7 @@ import { Navigate } from "react-router";
 import { AppLayout } from "app/layouts/AppLayout";
 import { DynamicLayout } from "app/layouts/DynamicLayout";
 import AuthGuard from "middleware/AuthGuard";
+import RoleBasedRedirect from './RoleBasedRedirect';
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +26,7 @@ const protectedRoutes = {
           children: [
             {
               index: true,
-              element: <Navigate to="/dashboards/Teacher" />,
+              element: <RoleBasedRedirect />,
             },
             {
               path: "home",
